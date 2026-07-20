@@ -272,10 +272,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .tech-summary .bio-value{margin-top:0;}
 .op-summary{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(13,27,42,.06);}
 .op-summary.positive,.op-summary.negative{border-color:var(--border);background:#fff;}
-.perf-bad{--perf-color:var(--perf-bad-color,#9A3B30);--perf-text:#FFFFFF;}
-.perf-mid{--perf-color:var(--perf-mid-color,#C9A24E);--perf-text:#0D1B2A;}
-.perf-good{--perf-color:var(--perf-good-color,#6B7056);--perf-text:#FFFFFF;}
-.perf-great{--perf-color:var(--perf-great-color,#0D4F8B);--perf-text:#FFFFFF;}
+.perf-bad{--perf-color:var(--perf-bad-color,#9A3B30);--perf-text:var(--perf-bad-text,#FFFFFF);}
+.perf-mid{--perf-color:var(--perf-mid-color,#C9A24E);--perf-text:var(--perf-mid-text,#0D1B2A);}
+.perf-good{--perf-color:var(--perf-good-color,#6B7056);--perf-text:var(--perf-good-text,#FFFFFF);}
+.perf-great{--perf-color:var(--perf-great-color,#0D4F8B);--perf-text:var(--perf-great-text,#FFFFFF);}
 .op-month.perf-bad,.op-metric.perf-bad,
 .op-month.perf-mid,.op-metric.perf-mid,
 .op-month.perf-good,.op-metric.perf-good,
@@ -5041,8 +5041,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           <div class="performance-param-grid">
             <div class="field"><label>Vermelho até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorRuim" value="#9A3B30" title="Cor da faixa vermelha"><input type="text" inputmode="decimal" id="p-rentFaixaMedia" value="1,50"></div></div>
             <div class="field"><label>Dourado até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorMedia" value="#C9A24E" title="Cor da faixa dourada"><input type="text" inputmode="decimal" id="p-rentFaixaBoa" value="2,00"></div></div>
-            <div class="field"><label>Verde até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorBoa" value="#6B7056" title="Cor da faixa verde"><input type="text" inputmode="decimal" id="p-rentFaixaOtima" value="2,50"></div></div>
-            <div class="field"><label>Azul acima de</label><div class="performance-param-color"><input type="color" id="p-rentCorOtima" value="#0D4F8B" title="Cor da faixa azul"><input type="text" value="2,50%" readonly aria-label="Azul acima do limite verde"></div></div>
+            <div class="field"><label>Verde até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorBoa" value="#6B7056" title="Cor da faixa verde"><input type="text" inputmode="decimal" id="p-rentFaixaOtima" value="2,50" oninput="atualizarResumoFaixasRentabilidade()"></div></div>
+            <div class="field"><label>Azul acima de</label><div class="performance-param-color"><input type="color" id="p-rentCorOtima" value="#0D4F8B" title="Cor da faixa azul"><input type="text" id="p-rentFaixaAzul" value="2,50%" readonly aria-label="Azul acima do limite verde"></div></div>
           </div>
           <div class="form-btns">
             <button class="btn-save" onclick="salvarParams()">Salvar Parâmetros</button>
@@ -7089,6 +7089,29 @@ function fmtAt(v){return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maxim
 function fmtKg(v){return v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' kg';}
 function fmtPct(v){if(v===null||v===undefined||isNaN(v))return '—';return(v*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';}
 function fmtNum(v,d=2){if(v===null||v===undefined||isNaN(v))return '—';return (parseFloat(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function performanceHex(value,fallback){
+  var hex=String(value||'').trim().toUpperCase();
+  return /^#[0-9A-F]{6}$/.test(hex)?hex:fallback;
+}
+function performanceContrast(hex){
+  hex=performanceHex(hex,'#0D1B2A').slice(1);
+  var r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+  return ((r*299+g*587+b*114)/1000)>160?'#0D1B2A':'#FFFFFF';
+}
+function applyPerformanceTheme(params){
+  params=params||getParams();
+  var root=document.documentElement;
+  [['bad','rentCorRuim','#9A3B30'],['mid','rentCorMedia','#C9A24E'],['good','rentCorBoa','#6B7056'],['great','rentCorOtima','#0D4F8B']].forEach(function(item){
+    var color=performanceHex(params[item[1]],item[2]);
+    root.style.setProperty('--perf-'+item[0]+'-color',color);
+    root.style.setProperty('--perf-'+item[0]+'-text',performanceContrast(color));
+  });
+}
+function atualizarResumoFaixasRentabilidade(){
+  var limite=document.getElementById('p-rentFaixaOtima');
+  var azul=document.getElementById('p-rentFaixaAzul');
+  if(azul)azul.value=fmtNum(finNum(limite&&limite.value),2)+'%';
+}
 function fmtLastUpdate(iso){
   if(!iso)return 'Não registrada';
   var d=new Date(iso);
@@ -9293,7 +9316,6 @@ function renderFuturos(){
   var registros=filtrados.map(function(c){
     var r=futuroResultado(c);
     var lote=loteMap[c.loteId]||getLotes().find(function(l){return l.id===c.loteId;});
-    return {c:c,r:r,lote:teId]||getLotes().find(function(l){return l.id===c.loteId;});
     return {c:c,r:r,lote:lote,dadosLote:futuroDadosLote(lote)};
   });
   registros.sort(function(a,b){
@@ -14097,12 +14119,18 @@ function calcular(opts){
   const investTotalLoteCalc=investAnimCalc*qtd;
 
   const pos=lucroAnimCalc>=0;
+  const performanceParams=getParams();
+  applyPerformanceTheme(performanceParams);
+  const limiteMediaPct=Math.max(0,finNum(performanceParams.rentFaixaMedia));
+  const limiteBoaPct=Math.max(limiteMediaPct,finNum(performanceParams.rentFaixaBoa));
+  const limiteOtimaPct=Math.max(limiteBoaPct,finNum(performanceParams.rentFaixaOtima));
+  const limiteMedia=limiteMediaPct/100,limiteBoa=limiteBoaPct/100,limiteOtima=limiteOtimaPct/100;
   let perfClass='perf-bad';
-  if(rentMesCalc>0.025){
+  if(rentMesCalc>limiteOtima){
     perfClass='perf-great';
-  }else if(rentMesCalc>0.02){
+  }else if(rentMesCalc>limiteBoa){
     perfClass='perf-good';
-  }else if(rentMesCalc>0.015){
+  }else if(rentMesCalc>limiteMedia){
     perfClass='perf-mid';
   }
   document.getElementById('kpi-main').className='kpi-box full '+(pos?'positive':'negative');
@@ -14428,10 +14456,16 @@ function deleteManagedUser(username){
 }
 function loadParamsForm(){
   var p=getParams();
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&p[k]!==undefined&&p[k]!==null)el.value=brNum(p[k],String(p[k]).indexOf('.')>=0?2:0);
   });
+  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B']].forEach(function(item){
+    var el=document.getElementById('p-'+item[0]);
+    if(el)el.value=performanceHex(p[item[0]],item[1]);
+  });
+  atualizarResumoFaixasRentabilidade();
+  applyPerformanceTheme(p);
   var nextLotEl=document.getElementById('p-nextLotNumber');
   if(nextLotEl)nextLotEl.value=proximoNumeroLote(getLotes());
   setParamPrecoMode(p.precoCompraMode==='at'?'at':'kg');
@@ -14459,11 +14493,17 @@ function salvarParams(){
   if(!requirePermission('settings.parameters','Apenas usuários autorizados podem alterar os parâmetros padrão.'))return;
   var cfg=loadConfig();
   if(!cfg.params)cfg.params={};
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&el.value!=='')cfg.params[k]=finNum(el.value);
   });
   cfg.params.freteCarretas=Math.max(1,Math.round(cfg.params.freteCarretas||1));
+  var faixaMedia=finNum(cfg.params.rentFaixaMedia),faixaBoa=finNum(cfg.params.rentFaixaBoa),faixaOtima=finNum(cfg.params.rentFaixaOtima);
+  if(faixaMedia<0||faixaBoa<=faixaMedia||faixaOtima<=faixaBoa){toast('⚠ As faixas devem estar em ordem crescente: vermelho, dourado e verde.');return;}
+  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B']].forEach(function(item){
+    var el=document.getElementById('p-'+item[0]);
+    cfg.params[item[0]]=performanceHex(el&&el.value,item[1]);
+  });
   var nextLotEl=document.getElementById('p-nextLotNumber');
   var nextLotNumber=normalizarNumeroLote(nextLotEl&&nextLotEl.value);
   if(!nextLotNumber){
@@ -16760,4 +16800,10 @@ restoreBasicSession();
     </div>
     <div class="fut-modal-actions">
       <button type="button" class="cancel" onclick="fecharModalLiquidarFuturo()">Cancelar</button>
-      <button type="button" class="save" onclick="confirmarLiquidacaoFuturo()">Confirmar l
+      <button type="button" class="save" onclick="confirmarLiquidacaoFuturo()">Confirmar liquidação</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+</body>
+</html>
