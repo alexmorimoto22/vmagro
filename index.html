@@ -276,10 +276,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .perf-mid{--perf-color:var(--perf-mid-color,#C9A24E);--perf-text:var(--perf-mid-text,#0D1B2A);}
 .perf-good{--perf-color:var(--perf-good-color,#6B7056);--perf-text:var(--perf-good-text,#FFFFFF);}
 .perf-great{--perf-color:var(--perf-great-color,#0D4F8B);--perf-text:var(--perf-great-text,#FFFFFF);}
+.perf-excellent{--perf-color:var(--perf-excellent-color,#D97706);--perf-text:var(--perf-excellent-text,#FFFFFF);}
 .op-month.perf-bad,.op-metric.perf-bad,
 .op-month.perf-mid,.op-metric.perf-mid,
 .op-month.perf-good,.op-metric.perf-good,
-.op-month.perf-great,.op-metric.perf-great{
+.op-month.perf-great,.op-metric.perf-great,
+.op-month.perf-excellent,.op-metric.perf-excellent{
   border-color:var(--perf-color)!important;
   border-width:2px!important;
   background:var(--perf-color)!important;
@@ -296,9 +298,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   color:var(--perf-text)!important;
   opacity:.88;
 }
-.performance-param-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.performance-param-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;}
 .performance-param-color{display:grid;grid-template-columns:46px minmax(0,1fr);gap:8px;align-items:center;}
 .performance-param-color input[type="color"]{width:46px;height:42px;padding:3px;border:1px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;}
+@media(max-width:1100px){.performance-param-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(max-width:760px){.performance-param-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:420px){.performance-param-grid{grid-template-columns:1fr;}}
 .op-summary-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
@@ -1181,6 +1184,11 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	.status-total-cell.money{font-size:11.7px;}
 	.status-total-cell.positive{color:var(--green);}
 	.status-total-cell.negative{color:var(--red);}
+  .status-cell.status-profit-color,.status-total-cell.status-profit-color{background:var(--perf-color)!important;color:var(--perf-text)!important;font-weight:850;}
+  .status-cell.status-profit-color{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);}
+  .status-total-cell.status-profit-color{border-color:rgba(255,255,255,.28);}
+  .status-mobile-line>span.status-profit-color{background:var(--perf-color)!important;color:var(--perf-text)!important;border-radius:5px;padding:5px 7px;}
+  .status-mobile-line>span.status-profit-color em{color:var(--perf-text)!important;opacity:.8;}
   .status-row:last-child{border-bottom:none;}
   .status-row:hover{background:#fbfdfe;box-shadow:inset 3px 0 0 var(--accent);}
   .status-row:active{cursor:grabbing;}
@@ -5037,15 +5045,23 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             <div class="field"><label>Prazo recebimento (dias)</label><input type="text" inputmode="numeric" id="p-prazoPag" value="7"></div>
             <div class="field"></div>
           </div>
-          <div class="cfg-row-lbl">Cores da rentabilidade ao mês</div>
-          <div class="performance-param-grid">
-            <div class="field"><label>Vermelho até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorRuim" value="#9A3B30" title="Cor da faixa vermelha"><input type="text" inputmode="decimal" id="p-rentFaixaMedia" value="1,50"></div></div>
-            <div class="field"><label>Dourado até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorMedia" value="#C9A24E" title="Cor da faixa dourada"><input type="text" inputmode="decimal" id="p-rentFaixaBoa" value="2,00"></div></div>
-            <div class="field"><label>Verde até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorBoa" value="#6B7056" title="Cor da faixa verde"><input type="text" inputmode="decimal" id="p-rentFaixaOtima" value="2,50" oninput="atualizarResumoFaixasRentabilidade()"></div></div>
-            <div class="field"><label>Azul acima de</label><div class="performance-param-color"><input type="color" id="p-rentCorOtima" value="#0D4F8B" title="Cor da faixa azul"><input type="text" id="p-rentFaixaAzul" value="2,50%" readonly aria-label="Azul acima do limite verde"></div></div>
-          </div>
           <div class="form-btns">
             <button class="btn-save" onclick="salvarParams()">Salvar Parâmetros</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Cores da rentabilidade ao mês</div>
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:12px;">Defina as cores e os limites usados para sinalizar a rentabilidade mensal.</div>
+          <div class="performance-param-grid">
+            <div class="field"><label>Vermelho abaixo de (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorRuim" value="#9A3B30" title="Cor da faixa vermelha"><input type="text" inputmode="decimal" id="p-rentFaixaMedia" value="1,60"></div></div>
+            <div class="field"><label>Dourado até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorMedia" value="#C9A24E" title="Cor da faixa dourada"><input type="text" inputmode="decimal" id="p-rentFaixaBoa" value="2,00"></div></div>
+            <div class="field"><label>Verde oliva até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorBoa" value="#6B7056" title="Cor da faixa verde oliva"><input type="text" inputmode="decimal" id="p-rentFaixaOtima" value="2,50"></div></div>
+            <div class="field"><label>Azul até (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorOtima" value="#0D4F8B" title="Cor da faixa azul"><input type="text" inputmode="decimal" id="p-rentFaixaExcelente" value="3,50" oninput="atualizarResumoFaixasRentabilidade()"></div></div>
+            <div class="field"><label>Laranja a partir de (%)</label><div class="performance-param-color"><input type="color" id="p-rentCorExcelente" value="#D97706" title="Cor da faixa laranja"><input type="text" id="p-rentFaixaLaranja" value="3,50%" readonly aria-label="Laranja a partir do limite azul"></div></div>
+          </div>
+          <div class="form-btns">
+            <button class="btn-save" onclick="salvarParams()">Salvar cores</button>
           </div>
         </div>
 
@@ -6095,7 +6111,7 @@ function sortByName(items){
 function getFrigs(){return sortByName(loadConfig().frigorificos);}
 function getVends(){return sortByName(loadConfig().vendedores||[]);}
 function getBoiteis(){return sortByName(loadConfig().boiteis||[]);}
-function getParams(){var p=Object.assign({},dfParams(),loadConfig().params||{});if(p&&typeof p.funrural==='number'&&p.funrural>0&&p.funrural<0.05)p.funrural=p.funrural*100;return p;}
+function getParams(){var saved=(loadConfig().params||{}),p=Object.assign({},dfParams(),saved);if(!Object.prototype.hasOwnProperty.call(saved,'rentFaixaExcelente'))p.rentFaixaMedia=1.6;if(p&&typeof p.funrural==='number'&&p.funrural>0&&p.funrural<0.05)p.funrural=p.funrural*100;return p;}
 function neutralizarAjusteFreteRealizadoLegado(lote){
   if(!lote)return false;
   var aj=lote.ajusteReal||lote.apuracao;
@@ -7078,8 +7094,8 @@ function dfParams(){return{
   msKG:1.30,opDia:2.00,custoArrobaProd:0,sanidade:12.00,
   freteCusto:17.00,bonusFrete:60,freteKm:150,freteCarretas:1,
   funrural:0.2,corretagemB3:0.15,valorAt:350.00,bonus:1.0,desconto:1.0,prazoPag:7,
-  rentFaixaMedia:1.5,rentFaixaBoa:2.0,rentFaixaOtima:2.5,
-  rentCorRuim:'#9A3B30',rentCorMedia:'#C9A24E',rentCorBoa:'#6B7056',rentCorOtima:'#0D4F8B',
+  rentFaixaMedia:1.6,rentFaixaBoa:2.0,rentFaixaOtima:2.5,rentFaixaExcelente:3.5,
+  rentCorRuim:'#9A3B30',rentCorMedia:'#C9A24E',rentCorBoa:'#6B7056',rentCorOtima:'#0D4F8B',rentCorExcelente:'#D97706',
   customCosts:[]
 };}
 
@@ -7101,16 +7117,28 @@ function performanceContrast(hex){
 function applyPerformanceTheme(params){
   params=params||getParams();
   var root=document.documentElement;
-  [['bad','rentCorRuim','#9A3B30'],['mid','rentCorMedia','#C9A24E'],['good','rentCorBoa','#6B7056'],['great','rentCorOtima','#0D4F8B']].forEach(function(item){
+  [['bad','rentCorRuim','#9A3B30'],['mid','rentCorMedia','#C9A24E'],['good','rentCorBoa','#6B7056'],['great','rentCorOtima','#0D4F8B'],['excellent','rentCorExcelente','#D97706']].forEach(function(item){
     var color=performanceHex(params[item[1]],item[2]);
     root.style.setProperty('--perf-'+item[0]+'-color',color);
     root.style.setProperty('--perf-'+item[0]+'-text',performanceContrast(color));
   });
 }
+function performanceClassForMonthly(rate,params){
+  params=params||getParams();
+  var media=Math.max(0,finNum(params.rentFaixaMedia))/100;
+  var boa=Math.max(media,finNum(params.rentFaixaBoa)/100);
+  var otima=Math.max(boa,finNum(params.rentFaixaOtima)/100);
+  var excelente=Math.max(otima,finNum(params.rentFaixaExcelente)/100);
+  if(rate>=excelente)return 'perf-excellent';
+  if(rate>otima)return 'perf-great';
+  if(rate>boa)return 'perf-good';
+  if(rate>=media)return 'perf-mid';
+  return 'perf-bad';
+}
 function atualizarResumoFaixasRentabilidade(){
-  var limite=document.getElementById('p-rentFaixaOtima');
-  var azul=document.getElementById('p-rentFaixaAzul');
-  if(azul)azul.value=fmtNum(finNum(limite&&limite.value),2)+'%';
+  var limite=document.getElementById('p-rentFaixaExcelente');
+  var laranja=document.getElementById('p-rentFaixaLaranja');
+  if(laranja)laranja.value=fmtNum(finNum(limite&&limite.value),2)+'%';
 }
 function fmtLastUpdate(iso){
   if(!iso)return 'Não registrada';
@@ -11294,6 +11322,8 @@ function setStatusFooterValue(key,value,cls){
   el.className='status-total-cell '+statusColClass(key)+' '+(cls||'');
 }
 function applyStatusColumnFilters(){
+  var performanceParams=getParams();
+  applyPerformanceTheme(performanceParams);
   var rows=document.querySelectorAll('#lote-list .status-row[data-lid]');
   var qtd=0,kmRodados=0,faturamento=0,capital=0,lucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0;
   var quebraPctPeso=0,quebraKgPeso=0,rcExpectativaPeso=0,rcExpectativaQtd=0,rcRealizadoPeso=0,rcRealizadoQtd=0,consumoExpectativaPeso=0,consumoExpectativaQtd=0,consumoRealizadoPeso=0,consumoRealizadoQtd=0;
@@ -11360,6 +11390,7 @@ function applyStatusColumnFilters(){
   var rentOperacao=capital>0?lucro/capital:0;
   var prazoMedio=capitalPrazo>0?prazoPeso/capitalPrazo:(prazoQtd>0?prazoSoma/prazoQtd:0);
   var rentMes=(capital>0&&prazoMedio>0)?rentOperacao/(prazoMedio/30):0;
+  var totalPerformanceClass='status-profit-color '+performanceClassForMonthly(rentMes,performanceParams);
   setStatusTotal('status-total-qtd',qtd.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.');
   setStatusTotal('status-total-fat',fmt(faturamento));
   setStatusTotal('status-total-capital',fmt(capital));
@@ -11392,8 +11423,8 @@ function applyStatusColumnFilters(){
   setStatusFooterValue('faturamento',fmt(faturamento),'money');
   setStatusFooterValue('capital',fmt(capital),'money');
   setStatusFooterValue('lucro',fmt(lucro),'money '+(lucro>=0?'positive':'negative'));
-  setStatusFooterValue('rent',fmtPct(rentOperacao),rentOperacao>=0?'positive':'negative');
-  setStatusFooterValue('rentmes',fmtPct(rentMes),rentMes>=0?'positive':'negative');
+  setStatusFooterValue('rent',fmtPct(rentOperacao),totalPerformanceClass);
+  setStatusFooterValue('rentmes',fmtPct(rentMes),totalPerformanceClass);
   setStatusFooterValue('quebraPct',qtd>0?fmtNum(quebraPctPeso/qtd,2)+'%':'—');
   setStatusFooterValue('quebraKg',qtd>0?fmtNum(quebraKgPeso/qtd,1)+' kg':'—');
   setStatusFooterValue('rcExpectativa',rcExpectativaQtd>0?fmtNum(rcExpectativaPeso/rcExpectativaQtd,2)+'%':'—');
@@ -11615,6 +11646,8 @@ function endStatusColumnResize(){
 function renderLotes(){
   var container=document.getElementById('lote-list');
   if(!container)return;
+  var statusPerformanceParams=getParams();
+  applyPerformanceTheme(statusPerformanceParams);
   if(_editLoteId)closeEditPanel();
   var fV=(document.getElementById('filter-vend')||{value:''}).value;
   var fFrig=document.getElementById('filter-frig')?document.getElementById('filter-frig').value:'';
@@ -11785,6 +11818,7 @@ function renderLotes(){
     var lucroVal=o?fmt(lucro):'—';
     var rentVal=o?fmtPct(metric.rent):'—';
     var rentMesVal=o?fmtPct(metric.rentMes):'—';
+    var rentPerformanceClass=o?performanceClassForMonthly(metric.rentMes,statusPerformanceParams):'';
     var rcExpectativaRaw=finNum(o&&o.rendA_pct);
     var rcRealizadoRaw=['abatido','recebido'].indexOf(l.status)>=0?finNum(zooRealizadoRc.rendA):0;
     var zooSimuladoQuebra=biometriaSimuladaOrc(o);
@@ -11942,8 +11976,8 @@ function renderLotes(){
       +'<span class="money" data-status-mobile-field="capital"><em>Capital</em>'+escHtml(fmtCompactMoney(capital))+'</span>'
       +'<span class="money" data-status-mobile-field="faturamento"><em>Faturam.</em>'+escHtml(fmtCompactMoney(faturamento))+'</span>'
       +'<span class="profit" data-status-mobile-field="lucro"><em>Lucro</em>'+escHtml(fmtCompactMoney(lucro))+'</span>'
-      +'<span class="rate" data-status-mobile-field="rent"><em>% oper.</em>'+escHtml(rentVal)+'</span>'
-      +'<span class="rate" data-status-mobile-field="rentmes"><em>% mês</em>'+escHtml(rentMesVal)+'</span>'
+      +'<span class="rate status-profit-color '+rentPerformanceClass+'" data-status-mobile-field="rent"><em>% oper.</em>'+escHtml(rentVal)+'</span>'
+      +'<span class="rate status-profit-color '+rentPerformanceClass+'" data-status-mobile-field="rentmes"><em>% mês</em>'+escHtml(rentMesVal)+'</span>'
       +'<span class="rate" data-status-mobile-field="rcExpectativa"><em>RC expectativa</em>'+escHtml(rcExpectativaVal)+'</span>'
       +'<span class="rate" data-status-mobile-field="rcRealizado"><em>RC realizado</em>'+escHtml(rcRealizadoVal)+'</span>'
       +'<span data-status-mobile-field="consumoMedioExpectativa"><em>Cons. méd. expectativa</em>'+escHtml(consumoMedioExpectativaVal)+'</span>'
@@ -11984,8 +12018,8 @@ function renderLotes(){
       +statusCell('faturamento',faturamentoVal,'money')
       +statusCell('capital',capitalVal,'money')
       +statusCell('lucro',lucroVal,'money '+lucroCls)
-      +statusCell('rent',rentVal,'rate')
-      +statusCell('rentmes',rentMesVal,'rate')
+      +statusCell('rent',rentVal,'rate status-profit-color '+rentPerformanceClass)
+      +statusCell('rentmes',rentMesVal,'rate status-profit-color '+rentPerformanceClass)
       +statusCell('rcExpectativa',rcExpectativaVal,'rate')
       +statusCell('rcRealizado',rcRealizadoVal,'rate')
       +statusCell('consumoMedioExpectativa',consumoMedioExpectativaVal,'rate')
@@ -14121,18 +14155,7 @@ function calcular(opts){
   const pos=lucroAnimCalc>=0;
   const performanceParams=getParams();
   applyPerformanceTheme(performanceParams);
-  const limiteMediaPct=Math.max(0,finNum(performanceParams.rentFaixaMedia));
-  const limiteBoaPct=Math.max(limiteMediaPct,finNum(performanceParams.rentFaixaBoa));
-  const limiteOtimaPct=Math.max(limiteBoaPct,finNum(performanceParams.rentFaixaOtima));
-  const limiteMedia=limiteMediaPct/100,limiteBoa=limiteBoaPct/100,limiteOtima=limiteOtimaPct/100;
-  let perfClass='perf-bad';
-  if(rentMesCalc>limiteOtima){
-    perfClass='perf-great';
-  }else if(rentMesCalc>limiteBoa){
-    perfClass='perf-good';
-  }else if(rentMesCalc>limiteMedia){
-    perfClass='perf-mid';
-  }
+  const perfClass=performanceClassForMonthly(rentMesCalc,performanceParams);
   document.getElementById('kpi-main').className='kpi-box full '+(pos?'positive':'negative');
   const resultadoEl=document.getElementById('resultado');
   resultadoEl.className='result-single result-'+modeloCalc;
@@ -14456,11 +14479,11 @@ function deleteManagedUser(username){
 }
 function loadParamsForm(){
   var p=getParams();
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima','rentFaixaExcelente'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&p[k]!==undefined&&p[k]!==null)el.value=brNum(p[k],String(p[k]).indexOf('.')>=0?2:0);
   });
-  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B']].forEach(function(item){
+  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B'],['rentCorExcelente','#D97706']].forEach(function(item){
     var el=document.getElementById('p-'+item[0]);
     if(el)el.value=performanceHex(p[item[0]],item[1]);
   });
@@ -14493,14 +14516,14 @@ function salvarParams(){
   if(!requirePermission('settings.parameters','Apenas usuários autorizados podem alterar os parâmetros padrão.'))return;
   var cfg=loadConfig();
   if(!cfg.params)cfg.params={};
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag','rentFaixaMedia','rentFaixaBoa','rentFaixaOtima','rentFaixaExcelente'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&el.value!=='')cfg.params[k]=finNum(el.value);
   });
   cfg.params.freteCarretas=Math.max(1,Math.round(cfg.params.freteCarretas||1));
-  var faixaMedia=finNum(cfg.params.rentFaixaMedia),faixaBoa=finNum(cfg.params.rentFaixaBoa),faixaOtima=finNum(cfg.params.rentFaixaOtima);
-  if(faixaMedia<0||faixaBoa<=faixaMedia||faixaOtima<=faixaBoa){toast('⚠ As faixas devem estar em ordem crescente: vermelho, dourado e verde.');return;}
-  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B']].forEach(function(item){
+  var faixaMedia=finNum(cfg.params.rentFaixaMedia),faixaBoa=finNum(cfg.params.rentFaixaBoa),faixaOtima=finNum(cfg.params.rentFaixaOtima),faixaExcelente=finNum(cfg.params.rentFaixaExcelente);
+  if(faixaMedia<0||faixaBoa<=faixaMedia||faixaOtima<=faixaBoa||faixaExcelente<=faixaOtima){toast('⚠ As cinco faixas devem permanecer em ordem crescente.');return;}
+  [['rentCorRuim','#9A3B30'],['rentCorMedia','#C9A24E'],['rentCorBoa','#6B7056'],['rentCorOtima','#0D4F8B'],['rentCorExcelente','#D97706']].forEach(function(item){
     var el=document.getElementById('p-'+item[0]);
     cfg.params[item[0]]=performanceHex(el&&el.value,item[1]);
   });
