@@ -7297,7 +7297,7 @@ var HOME_PIE_GROUPS=[
   {key:'abate',label:'Abate'},
   {key:'recebimento',label:'Recebimento'}
 ];
-var homeChartState={inicio:'',fim:'',modo:'periodo',metricas:{faturamento:true,capital:true,lucro:true},barOptionsOpen:false,pieMetrics:['qtd'],pieOptionsOpen:false,pieGroup:'ano'};
+var homeChartState={inicio:'',fim:'',modo:'periodo',metricas:{faturamento:true,capital:true,lucro:true},barOptionsOpen:false,pieMetrics:['qtd'],pieOptionsOpen:false,pieGroup:'ano',pieSubgroup:''};
 var homePiePinnedSubtotal=null;
 function pieSubtotalChart(event){
   var panel=event&&event.currentTarget&&event.currentTarget.closest('.home-chart-panel');
@@ -7452,6 +7452,12 @@ function homePieToggleMetric(metrica,event){
 function homePieSetGroup(grupo){
   if(!HOME_PIE_GROUPS.some(function(item){return item.key===grupo;}))return;
   homeChartState.pieGroup=grupo;
+  if(homeChartState.pieSubgroup===grupo)homeChartState.pieSubgroup='';
+  renderHome();
+}
+function homePieSetSubgroup(grupo){
+  if(grupo&&(!HOME_PIE_GROUPS.some(function(item){return item.key===grupo;})||grupo===homeChartState.pieGroup))grupo='';
+  homeChartState.pieSubgroup=grupo||'';
   renderHome();
 }
 function homeChartFilterStatus(encoded){
@@ -7463,7 +7469,7 @@ function homeChartFilterStatus(encoded){
   renderHome();
 }
 function homeChartResetControls(){
-  homeChartState.inicio='';homeChartState.fim='';homeChartState.modo='periodo';homeChartState.metricas={faturamento:true,capital:true,lucro:true};homeChartState.barOptionsOpen=false;homeChartState.pieMetrics=['qtd'];homeChartState.pieOptionsOpen=false;homeChartState.pieGroup='ano';
+  homeChartState.inicio='';homeChartState.fim='';homeChartState.modo='periodo';homeChartState.metricas={faturamento:true,capital:true,lucro:true};homeChartState.barOptionsOpen=false;homeChartState.pieMetrics=['qtd'];homeChartState.pieOptionsOpen=false;homeChartState.pieGroup='ano';homeChartState.pieSubgroup='';
   renderHome();
 }
 function homeOverviewSetPeriod(campo,valor){
@@ -8072,9 +8078,11 @@ function renderHomeDashboardNovo(lotes){
   function tableEmpty(cols,msg){
     return '<tr><td colspan="'+cols+'" class="home-empty-small">'+escHtml(msg)+'</td></tr>';
   }
-function homePieChartHtml(groups,totalQtd,grouping){
+function homePieChartHtml(groups,totalQtd,grouping,subgrouping){
     grouping=grouping||HOME_PIE_GROUPS[0];
-    var isStatusGroup=grouping.key==='status';
+    subgrouping=subgrouping||null;
+    var isStatusGroup=grouping.key==='status'||(subgrouping&&subgrouping.key==='status');
+    var simpleStatusGroup=grouping.key==='status'&&!subgrouping;
     var colors={embarque:'#C9A24E',confinando:'#6B7056',escalado:'#1F5B8F',abatido:'#515640',recebido:'#9A8C7A'};
     var groupPalette=['#C9A24E','#6B7056','#1F5B8F','#515640','#9A8C7A','#7C6E64','#4D7C6B','#8C6B4E','#9E7FBA','#6C7A89','#A06B4E','#3C6E91'];
     var metricMap={};
@@ -8116,7 +8124,7 @@ function homePieChartHtml(groups,totalQtd,grouping){
         var value=valueFor(group,key),part=Math.abs(value),pct=total>0?part/total*100:0;
         var selectedStatus=isStatusGroup&&homeFilterSelected('status').indexOf(group.status)>=0;
         var encoded=encodeURIComponent(group.status).replace(/'/g,'%27');
-        var color=isStatusGroup?(colors[group.status]||'#C8C1B4'):groupPalette[groupIndex%groupPalette.length];
+        var color=simpleStatusGroup?(colors[group.status]||'#C8C1B4'):groupPalette[groupIndex%groupPalette.length];
         if(pct>0){
           var hoverLabel=encodeURIComponent(group.nome),hoverValue=encodeURIComponent(displayValue(metric,value));
           var pinned=homePiePinnedSubtotal&&homePiePinnedSubtotal.chart==='distribution'&&homePiePinnedSubtotal.label===group.nome&&homePiePinnedSubtotal.value===displayValue(metric,value);
@@ -8132,7 +8140,7 @@ function homePieChartHtml(groups,totalQtd,grouping){
       var selectedStatus=isStatusGroup&&activeStatus.indexOf(group.status)>=0;
       var encoded=encodeURIComponent(group.status).replace(/'/g,'%27');
       var values=selected.map(function(key){var metric=metricMap[key];return '<strong>'+escHtml(metric.label)+': '+escHtml(displayValue(metric,valueFor(group,key)))+'</strong>';}).join('');
-      var color=isStatusGroup?(colors[group.status]||'#C8C1B4'):groupPalette[groupIndex%groupPalette.length];
+      var color=simpleStatusGroup?(colors[group.status]||'#C8C1B4'):groupPalette[groupIndex%groupPalette.length];
       var content='<span class="home-chart-legend-dot" style="background:'+color+'"></span><span>'+escHtml(group.nome)+'</span><span class="home-chart-legend-values">'+values+'</span>';
       return isStatusGroup?'<button type="button" class="home-chart-legend-button'+(selectedStatus?' active':'')+'" onclick="homeChartFilterStatus(\''+encoded+'\')">'+content+'</button>':'<div class="home-chart-legend-button">'+content+'</div>';
     }).join('');
@@ -8142,10 +8150,11 @@ function homePieChartHtml(groups,totalQtd,grouping){
     });
     var metricHint=selected.length>1?'Anéis do externo para o interno: '+selected.map(function(key){return metricMap[key].label;}).join(' · '):firstMetric.label;
     var groupOptions=HOME_PIE_GROUPS.map(function(item){return '<option value="'+item.key+'"'+(item.key===grouping.key?' selected':'')+'>'+escHtml(item.label)+'</option>';}).join('');
-    var chartTitle='Distribuição por '+grouping.label.toLowerCase();
-    var chartNote=isStatusGroup?'Toque em uma fatia para filtrar os lotes':'Compare os indicadores por '+grouping.label.toLowerCase()+'.';
+    var subgroupOptions='<option value=""'+(!subgrouping?' selected':'')+'>Sem subdivisão</option>'+HOME_PIE_GROUPS.filter(function(item){return item.key!==grouping.key;}).map(function(item){return '<option value="'+item.key+'"'+(subgrouping&&item.key===subgrouping.key?' selected':'')+'>'+escHtml(item.label)+'</option>';}).join('');
+    var chartTitle='Distribuição por '+grouping.label.toLowerCase()+(subgrouping?' e '+subgrouping.label.toLowerCase():'');
+    var chartNote=subgrouping?'Grupos por '+grouping.label.toLowerCase()+', subdivididos por '+subgrouping.label.toLowerCase()+'.':(isStatusGroup?'Toque em uma fatia para filtrar os lotes':'Compare os indicadores por '+grouping.label.toLowerCase()+'.');
     if(homeChartPanelCollapsed('pie'))return '<div class="home-chart-panel collapsed"><div class="home-chart-head"><div><div class="home-chart-title">'+escHtml(chartTitle)+'</div><div class="home-chart-note">'+escHtml(chartNote)+'</div></div><button type="button" class="home-chart-collapse" onclick="toggleHomeChartPanel(\'pie\')">Mostrar quadro</button></div></div>';
-    return '<div class="home-chart-panel" data-pie-chart="distribution"><div class="home-chart-head"><div><div class="home-chart-title">'+escHtml(chartTitle)+'</div><div class="home-chart-note">'+escHtml(chartNote)+'</div></div><div class="home-pie-head-actions"><div class="home-chart-control" style="min-width:142px"><label for="home-pie-group">Agrupar por</label><select id="home-pie-group" onchange="homePieSetGroup(this.value)">'+groupOptions+'</select></div><div class="home-pie-options"><button type="button" class="home-pie-options-btn'+(homeChartState.pieOptionsOpen?' active':'')+'" onclick="homePieToggleOptions(event)">Dados visíveis · '+selected.length+'/3</button><div class="home-pie-options-panel'+(homeChartState.pieOptionsOpen?' open':'')+'" onclick="event.stopPropagation()"><div class="home-pie-options-title">Dados visíveis</div><div class="home-pie-options-sub">Escolha até três indicadores para comparar.</div><div class="home-pie-options-grid">'+options+'</div></div></div><button type="button" class="home-chart-collapse" onclick="toggleHomeChartPanel(\'pie\')">Minimizar quadro</button></div></div>'
+    return '<div class="home-chart-panel" data-pie-chart="distribution"><div class="home-chart-head"><div><div class="home-chart-title">'+escHtml(chartTitle)+'</div><div class="home-chart-note">'+escHtml(chartNote)+'</div></div><div class="home-pie-head-actions"><div class="home-chart-control" style="min-width:142px"><label for="home-pie-group">Agrupar por</label><select id="home-pie-group" onchange="homePieSetGroup(this.value)">'+groupOptions+'</select></div><div class="home-chart-control" style="min-width:142px"><label for="home-pie-subgroup">Subdividir por</label><select id="home-pie-subgroup" onchange="homePieSetSubgroup(this.value)">'+subgroupOptions+'</select></div><div class="home-pie-options"><button type="button" class="home-pie-options-btn'+(homeChartState.pieOptionsOpen?' active':'')+'" onclick="homePieToggleOptions(event)">Dados visíveis · '+selected.length+'/3</button><div class="home-pie-options-panel'+(homeChartState.pieOptionsOpen?' open':'')+'" onclick="event.stopPropagation()"><div class="home-pie-options-title">Dados visíveis</div><div class="home-pie-options-sub">Escolha até três indicadores para comparar.</div><div class="home-pie-options-grid">'+options+'</div></div></div><button type="button" class="home-chart-collapse" onclick="toggleHomeChartPanel(\'pie\')">Minimizar quadro</button></div></div>'
       +'<div class="home-chart-note" style="margin:-4px 0 10px">'+escHtml(metricHint)+'</div>'
       +'<div class="home-pie-layout"><div class="home-pie'+(selected.length>1?' multi':'')+'"><svg width="160" height="160" viewBox="0 0 100 100" role="img" aria-label="Distribuição por status">'+slices.join('')+'</svg><div class="home-pie-center"><strong>'+escHtml(centerValue(firstMetric,firstTotal))+'</strong><span>'+escHtml(firstMetric.label)+'</span>'+piePinnedSubtotalHtml('distribution')+'</div></div><div class="home-chart-legend">'+legend+'</div></div></div>';
   }
@@ -8254,8 +8263,28 @@ function homePieChartHtml(groups,totalQtd,grouping){
   });
   var pieGroupDef=HOME_PIE_GROUPS.filter(function(item){return item.key===homeChartState.pieGroup;})[0]||HOME_PIE_GROUPS[0];
   homeChartState.pieGroup=pieGroupDef.key;
+  var pieSubgroupDef=HOME_PIE_GROUPS.filter(function(item){return item.key===homeChartState.pieSubgroup&&item.key!==pieGroupDef.key;})[0]||null;
+  homeChartState.pieSubgroup=pieSubgroupDef?pieSubgroupDef.key:'';
   var pieGroups=statusGroups;
-  if(pieGroupDef.key!=='status'){
+  if(pieSubgroupDef){
+    var pieCombined={};
+    filtrados.forEach(function(row){
+      var principal=String(row[pieGroupDef.key]||'A definir');
+      var secundario=String(row[pieSubgroupDef.key]||'A definir');
+      var chave=principal+'\u001f'+secundario;
+      if(!pieCombined[chave])pieCombined[chave]={rows:[],principal:principal,secundario:secundario};
+      pieCombined[chave].rows.push(row);
+    });
+    pieGroups=Object.keys(pieCombined).map(function(chave){
+      var item=pieCombined[chave],group=sumRows(item.rows);
+      var principalLabel=['entrada','abate','recebimento'].indexOf(pieGroupDef.key)>=0?dateBR(item.principal):homeFilterDisplayValue(pieGroupDef.key,item.principal);
+      var secundarioLabel=['entrada','abate','recebimento'].indexOf(pieSubgroupDef.key)>=0?dateBR(item.secundario):homeFilterDisplayValue(pieSubgroupDef.key,item.secundario);
+      group.nome=principalLabel+' · '+secundarioLabel;
+      if(pieGroupDef.key==='status')group.status=item.principal;
+      if(pieSubgroupDef.key==='status')group.status=item.secundario;
+      return group;
+    }).sort(function(a,b){return b.qtd-a.qtd;});
+  }else if(pieGroupDef.key!=='status'){
     pieGroups=groupRows(filtrados,function(row){return row[pieGroupDef.key]||'A definir';}).map(function(group){
       if(['entrada','abate','recebimento'].indexOf(pieGroupDef.key)>=0)group.nome=dateBR(group.nome);
       return group;
@@ -8471,7 +8500,7 @@ function homePieChartHtml(groups,totalQtd,grouping){
   var filtrosMinimizados=homeFiltersCollapsed();
   var quadrosMinimizados=false;
   live.innerHTML=''
-    +(quadrosMinimizados?'':'<div class="home-charts-grid"><div class="home-pie-pair">'+homePieChartHtml(pieGroups,total.qtd,pieGroupDef)+futCoverageChartHtml(lotesDisponiveisB3().filter(function(lote){return filtrados.some(function(row){return row.id===lote.id;});}))+'</div>'+homeMonthlyBarsHtml(chartRows,homeChartState.metricas,chartPeriodOptions)+homeOverviewLineChartHtml(filtrados)+'</div>'+homeOperationalPanelsHtml());
+    +(quadrosMinimizados?'':'<div class="home-charts-grid"><div class="home-pie-pair">'+homePieChartHtml(pieGroups,total.qtd,pieGroupDef,pieSubgroupDef)+futCoverageChartHtml(lotesDisponiveisB3().filter(function(lote){return filtrados.some(function(row){return row.id===lote.id;});}))+'</div>'+homeMonthlyBarsHtml(chartRows,homeChartState.metricas,chartPeriodOptions)+homeOverviewLineChartHtml(filtrados)+'</div>'+homeOperationalPanelsHtml());
 
   applyHomeColumnWidths();
   fitHomeMoneyValues(live);
