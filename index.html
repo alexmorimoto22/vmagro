@@ -6959,7 +6959,7 @@ function coberturaB3LoteEncerrado(lote){
   var resumo=resumoB3NaoCanceladoLote(lote&&lote.id);
   if(!resumo.contratos)return {cobertura:'—',remanescente:'',estado:'Encerrado',filtro:'Encerrado',meta:0,travados:0};
   if(resumo.liquidados<=0)return {
-    cobertura:fmtContratosB3(resumo.abertos)+' ctr',remanescente:'',estado:'Travado',filtro:'Travado',meta:0,travados:resumo.contratos
+    cobertura:fmtContratosB3(resumo.abertos)+'/'+fmtContratosB3(resumo.contratos)+' ctr',remanescente:'',estado:'Travado',filtro:'Travado',meta:0,travados:resumo.contratos
   };
   if(resumo.abertos>0)return {
     cobertura:fmtContratosB3(resumo.liquidados)+'/'+fmtContratosB3(resumo.contratos)+' ctr',remanescente:'',estado:'Liquidado parcial',filtro:'Liquidado parcial',meta:0,travados:resumo.contratos
@@ -6969,7 +6969,7 @@ function coberturaB3LoteEncerrado(lote){
   };
 }
 function textoCoberturaB3(lote,orc,resumo,mostrarMetaDecimal){
-  resumo=resumo||resultadoB3Lote(lote&&lote.id);
+  resumo=resumoB3NaoCanceladoLote(lote&&lote.id);
   if(!loteTemCoberturaB3Ativa(lote)){
     var encerrado=coberturaB3LoteEncerrado(lote);
     return encerrado.estado==='Encerrado'?'Encerrado':encerrado.cobertura;
@@ -6981,7 +6981,7 @@ function textoCoberturaB3(lote,orc,resumo,mostrarMetaDecimal){
   return fmtContratosB3(contratosTravados)+'/'+meta+' ctr';
 }
 function coberturaStatusB3(lote,orc,resumo){
-  resumo=resumo||resultadoB3Lote(lote&&lote.id);
+  resumo=resumoB3NaoCanceladoLote(lote&&lote.id);
   if(!loteTemCoberturaB3Ativa(lote))return coberturaB3LoteEncerrado(lote);
   var nec=necessidadeContratosB3(lote,orc);
   var contratosTravados=parseFloat(resumo.contratos!==undefined?resumo.contratos:resumo.contratosB3)||0;
