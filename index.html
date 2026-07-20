@@ -916,8 +916,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .fut-contract-month.fut-month-9{background:#E8ECD9;color:#596331;border-color:#D1D9AE;}
 .fut-contract-month.fut-month-10{background:#E1EAF4;color:#345A7D;border-color:#C1D3E5;}
 .fut-contract-month.fut-month-11{background:#EFE5DC;color:#75513A;border-color:#DEC9B8;}
-.fut-contract-month.fut-month-12{background:#E5E8EC;color:#465667;border-color:#CAD1D9;}
+  .fut-contract-month.fut-month-12{background:#E5E8EC;color:#465667;border-color:#CAD1D9;}
 #panel-futuros td>.fut-contract-month{margin-left:0;}
+.boitel-color-tag{display:inline-block;max-width:100%;padding:4px 7px;border:1px solid var(--boitel-border,#D8CBB5);border-radius:5px;background:var(--boitel-bg,#F2EDE3);color:var(--boitel-text,#51483E);font-weight:850;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;}
+#panel-lotes .status-mobile-line .boitel-color-tag{padding:3px 6px;color:var(--boitel-text,#51483E);}
 .fut-mobile-sub{font-size:10px;color:var(--text-3);margin-top:3px;}
 .fut-mobile-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 13px;background:#fff;border-bottom:1px solid var(--border);}
 .fut-mobile-quick-item{min-width:0;}
@@ -6866,6 +6868,21 @@ function classeMesVencimentoB3(vencimento){
   var m=String(vencimento||'').match(/^\d{4}-(\d{2})$/);
   return m?'fut-month-'+parseInt(m[1],10):'';
 }
+function boitelTagHtml(nome){
+  var texto=String(nome||'A definir');
+  var paleta=[
+    ['#E7EFF7','#28577A','#C6D9EA'],['#F3E7EC','#7C3F59','#E2C7D3'],
+    ['#E5F0E8','#376348','#C5DDCC'],['#F8E9DC','#8B4E23','#EBCDB4'],
+    ['#F2E9D6','#79602A','#E1D0A8'],['#E2EEEE','#356364','#BFDBDB'],
+    ['#EEE6F3','#66477A','#D8C5E3'],['#F7E4E0','#8A4438','#E9C4BC'],
+    ['#E8ECD9','#596331','#D1D9AE'],['#E1EAF4','#345A7D','#C1D3E5'],
+    ['#EFE5DC','#75513A','#DEC9B8'],['#E5E8EC','#465667','#CAD1D9']
+  ];
+  var hash=0,normalizado=texto.trim().toLocaleLowerCase('pt-BR');
+  for(var i=0;i<normalizado.length;i++)hash=((hash<<5)-hash+normalizado.charCodeAt(i))|0;
+  var cor=paleta[Math.abs(hash)%paleta.length];
+  return '<span class="boitel-color-tag" style="--boitel-bg:'+cor[0]+';--boitel-text:'+cor[1]+';--boitel-border:'+cor[2]+'" title="'+escHtml(texto)+'">'+escHtml(texto)+'</span>';
+}
 function fmtContratosB3(v){
   return Math.round(parseFloat(v)||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
 }
@@ -9561,7 +9578,7 @@ function renderFuturos(){
       lote:'<span class="strong">'+loteNome+'</span><div class="muted">'+loteStatus+'</div>',
       totalContratosLote:lote?'<span class="strong">'+fmtContratosLoteB3(totalContratosLote)+' ctr</span>':'<span class="muted">—</span>',
       momentoLote:'<span class="strong">'+loteStatus+'</span>',
-      confinamento:escHtml(dadosLote.confinamento),origem:escHtml(dadosLote.origem),qtdLote:escHtml(dadosLote.qtd),entradaLote:escHtml(dadosLote.entrada),
+      confinamento:boitelTagHtml(dadosLote.confinamento),origem:escHtml(dadosLote.origem),qtdLote:escHtml(dadosLote.qtd),entradaLote:escHtml(dadosLote.entrada),
       faturamentoLote:'<span class="money">'+escHtml(dadosLote.faturamento)+'</span>',
       codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'<span class="muted">Sem vencimento</span>',lado:escHtml(r.lado==='compra'?'Compra':'Venda'),
       qtdOriginal:fmtContratosB3(r.qtdContratos||0)+' ctr',aberto:fmtContratosB3(r.qtdAberta||0)+' ctr',liquidado:fmtContratosB3(r.qtdLiquidada||0)+' ctr',
@@ -9586,7 +9603,7 @@ function renderFuturos(){
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Abertura</div><div class="fut-mobile-value">'+abertura+'<div class="muted">'+vendaData+'</div></div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Liquidação</div><div class="fut-mobile-value">'+liq+'<div class="muted">'+liqData+'</div></div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Resultado</div><div class="fut-mobile-value '+resClass+'">'+resultado+'</div></div>'
-        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Confinamento</div><div class="fut-mobile-value">'+escHtml(dadosLote.confinamento)+'</div></div>'
+        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Confinamento</div><div class="fut-mobile-value">'+boitelTagHtml(dadosLote.confinamento)+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Origem</div><div class="fut-mobile-value">'+escHtml(dadosLote.origem)+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Qtd / entrada</div><div class="fut-mobile-value">'+escHtml(dadosLote.qtd)+'<div class="muted">'+escHtml(dadosLote.entrada)+'</div></div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Faturamento lote</div><div class="fut-mobile-value">'+escHtml(dadosLote.faturamento)+'</div></div>'
@@ -11847,6 +11864,9 @@ function renderLotes(){
     var v=(val===null||val===undefined||val==='')?'—':String(val);
     return '<div class="status-cell '+statusColClass(key)+' '+(cls||'')+'" data-status-col="'+key+'" title="'+escHtml(v)+'">'+escHtml(v)+'</div>';
   }
+  function statusCellHtml(key,html,title,cls){
+    return '<div class="status-cell '+statusColClass(key)+' '+(cls||'')+'" data-status-col="'+key+'" title="'+escHtml(title||'')+'">'+html+'</div>';
+  }
   var statusFilterOptions={};
   function filterOptionsHtml(key){
     var opts=statusFilterOptions[key]||[];
@@ -12146,7 +12166,7 @@ function renderLotes(){
       +'<span data-status-mobile-field="gmdChegada"><em>GMD chegada</em>'+escHtml(gmdChegadaVal)+'</span>'
       +'<span data-status-mobile-field="gmcOrigem"><em>GMC origem</em>'+escHtml(gmcOrigemVal)+'</span>'
       +'<span data-status-mobile-field="gmcChegada"><em>GMC chegada</em>'+escHtml(gmcChegadaVal)+'</span>'
-      +'<span class="confinement" data-status-mobile-field="boitel" title="'+escHtml(confinamento)+'"><em>Boitel</em>'+escHtml(confinamento)+'</span>'
+      +'<span class="confinement" data-status-mobile-field="boitel" title="'+escHtml(confinamento)+'"><em>Boitel</em>'+boitelTagHtml(confinamento)+'</span>'
       +'<span data-status-mobile-field="modalidade"><em>Modalidade</em>'+escHtml(modalidadeVal)+'</span>'
       +'<span data-status-mobile-field="eficiencia" title="'+escHtml(eficienciaVal)+'"><em>Efic. origem</em>'+escHtml(eficienciaVal)+'</span>'
       +'<span data-status-mobile-field="eficienciaChegada" title="'+escHtml(eficienciaChegadaVal)+'"><em>Efic. chegada</em>'+escHtml(eficienciaChegadaVal)+'</span>'
@@ -12158,7 +12178,7 @@ function renderLotes(){
     return '<div class="status-row'+(idx%2?' status-row-alt':'')+'" style="grid-template-columns:'+statusGridTemplate()+'" data-lid="'+l.id+'" data-lote-seq="'+escHtml(numeroLote)+'" data-status="'+(l.status||'embarque')+'" draggable="true"'+attrs+'>'
       +statusLabel
       +statusCell('ano',anoVal,'muted')
-      +statusCell('confinamento',confinamento,'muted')
+      +statusCellHtml('confinamento',boitelTagHtml(confinamento),confinamento,'muted')
       +statusCell('modalidade',modalidadeVal,'muted')
       +statusCell('raca',racaVal,'muted')
       +statusCell('origem',origemVal,'muted')
