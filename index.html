@@ -757,10 +757,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .fut-month-dashboard-note{font-size:9.5px;color:var(--text-3);margin-top:3px;}
   .fut-month-dashboard-toggle{min-height:32px;padding:0 11px;border:1px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font:800 9.5px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
   .fut-month-dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-top:11px;}
-  .fut-month-dashboard-item{display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:center;min-height:54px;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;min-width:0;}
+  .fut-month-dashboard-item{width:100%;display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:center;min-height:54px;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;min-width:0;text-align:left;font-family:'Inter',sans-serif;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s;}
+  .fut-month-dashboard-item:hover{border-color:var(--month-color,var(--gold));box-shadow:0 4px 12px rgba(13,27,42,.08);transform:translateY(-1px);}
+  .fut-month-dashboard-item.active{border-color:var(--month-color,var(--gold));box-shadow:inset 0 0 0 1px var(--month-color,var(--gold)),0 4px 12px rgba(13,27,42,.08);background:#fffdf8;}
   .fut-month-dashboard-bar{width:5px;height:32px;border-radius:4px;background:var(--month-color,var(--gold));}
-  .fut-month-dashboard-label{font-size:10px;font-weight:800;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .fut-month-dashboard-value{font-size:17px;font-weight:900;color:var(--navy);line-height:1.1;margin-top:4px;}
+  .fut-month-dashboard-label{display:block;font-size:10px;font-weight:800;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fut-month-dashboard-value{display:block;font-size:17px;font-weight:900;color:var(--navy);line-height:1.1;margin-top:4px;}
   .fut-month-dashboard-value span{font-size:9px;color:var(--text-3);font-weight:750;margin-left:3px;}
   @media(max-width:620px){.fut-month-dashboard{padding:11px;}.fut-month-dashboard-grid{grid-template-columns:1fr 1fr;}.fut-month-dashboard-item{min-height:50px;padding:8px;}.fut-month-dashboard-value{font-size:15px;}}
   @media(max-width:390px){.fut-month-dashboard-grid{grid-template-columns:1fr;}}
@@ -9365,6 +9367,20 @@ function toggleFutMonthDashboard(){
   try{localStorage.setItem(key,localStorage.getItem(key)==='1'?'0':'1');}catch(e){}
   renderFuturos();
 }
+function filtrarFuturosPorMes(mes){
+  var valor=mes==='sem-mes'?'__sem_mes__':mes;
+  var ativo=tableFilterSelected('fut','vencimento');
+  var remover=ativo.length===1&&ativo[0]===valor;
+  Object.keys(futColumnFilters).forEach(function(key){futColumnFilters[key]=[];});
+  futColumnFilters.vencimento=remover?[]:[valor];
+  tableMultiOpen={scope:'',key:''};
+  document.querySelectorAll('body>.table-multi-menu.table-multi-floating').forEach(function(menu){menu.remove();});
+  renderFuturos();
+  requestAnimationFrame(function(){
+    var tabela=document.querySelector('#panel-futuros .fut-list-card');
+    if(tabela)tabela.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
 function renderFutMonthDashboard(lotes,contratos){
   var host=document.getElementById('fut-month-dashboard');
   if(!host)return;
@@ -9400,7 +9416,9 @@ function renderFutMonthDashboard(lotes,contratos){
     var numeroMes=item.key==='sem-mes'?0:parseInt(item.key.slice(5,7),10);
     var label=item.key==='sem-mes'?'Sem mês definido':mesAnoVencimentoB3(item.key);
     var cor=numeroMes?cores[numeroMes-1]:'#8A7967';
-    return '<div class="fut-month-dashboard-item" style="--month-color:'+cor+'"><span class="fut-month-dashboard-bar"></span><div><div class="fut-month-dashboard-label">'+escHtml(label)+'</div><div class="fut-month-dashboard-value">'+fmtContratosB3(item.travados)+'/'+fmtContratosLoteB3(item.necessarios)+'<span>ctr</span></div></div></div>';
+    var filtroValor=item.key==='sem-mes'?'__sem_mes__':item.key;
+    var ativo=tableFilterSelected('fut','vencimento').indexOf(filtroValor)>=0;
+    return '<button type="button" class="fut-month-dashboard-item'+(ativo?' active':'')+'" style="--month-color:'+cor+'" aria-pressed="'+(ativo?'true':'false')+'" onclick="filtrarFuturosPorMes(\''+item.key+'\')"><span class="fut-month-dashboard-bar"></span><span><span class="fut-month-dashboard-label">'+escHtml(label)+'</span><span class="fut-month-dashboard-value">'+fmtContratosB3(item.travados)+'/'+fmtContratosLoteB3(item.necessarios)+'<span>ctr</span></span></span></button>';
   }).join('');
   host.innerHTML='<div class="fut-month-dashboard">'+head+'<div class="fut-month-dashboard-grid">'+(cards||'<div class="fut-month-dashboard-note">Nenhum lote ativo com necessidade de contratos.</div>')+'</div></div>';
 }
@@ -9424,7 +9442,10 @@ function renderFuturos(){
       if(!filtros.length)return true;
       if(col.key==='lote'&&filtros.indexOf('livre')>=0&&!c.loteId)return true;
       var valor=_statusNorm(futColumnFilterValue(c,r,lote,dados,col.key));
-      return filtros.some(function(filtro){return _statusNorm(valor).indexOf(_statusNorm(filtro))>=0;});
+      return filtros.some(function(filtro){
+        if(col.key==='vencimento'&&filtro==='__sem_mes__')return !valor;
+        return _statusNorm(valor).indexOf(_statusNorm(filtro))>=0;
+      });
     });
   });
   var total={registros:filtrados.length,contratos:0,abertos:0,liquidados:0,arrobas:0,resultado:0};
