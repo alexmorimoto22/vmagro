@@ -751,6 +751,19 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .fut-card.primary .fut-card-value{color:#fff;}
   .fut-card-sub{font-size:10.5px;color:var(--text-3);margin-top:6px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .fut-card.primary .fut-card-sub{color:rgba(242,237,227,.72);}
+  .fut-month-dashboard{background:rgba(255,253,247,.9);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin:0 0 12px;box-shadow:0 3px 14px rgba(13,27,42,.05);}
+  .fut-month-dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .fut-month-dashboard-title{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--navy);}
+  .fut-month-dashboard-note{font-size:9.5px;color:var(--text-3);margin-top:3px;}
+  .fut-month-dashboard-toggle{min-height:32px;padding:0 11px;border:1px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy);font:800 9.5px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
+  .fut-month-dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-top:11px;}
+  .fut-month-dashboard-item{display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:center;min-height:54px;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;min-width:0;}
+  .fut-month-dashboard-bar{width:5px;height:32px;border-radius:4px;background:var(--month-color,var(--gold));}
+  .fut-month-dashboard-label{font-size:10px;font-weight:800;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fut-month-dashboard-value{font-size:17px;font-weight:900;color:var(--navy);line-height:1.1;margin-top:4px;}
+  .fut-month-dashboard-value span{font-size:9px;color:var(--text-3);font-weight:750;margin-left:3px;}
+  @media(max-width:620px){.fut-month-dashboard{padding:11px;}.fut-month-dashboard-grid{grid-template-columns:1fr 1fr;}.fut-month-dashboard-item{min-height:50px;padding:8px;}.fut-month-dashboard-value{font-size:15px;}}
+  @media(max-width:390px){.fut-month-dashboard-grid{grid-template-columns:1fr;}}
   .fut-layout{display:grid;grid-template-columns:1fr;gap:14px;align-items:start;}
   .fut-form{order:1;background:rgba(255,253,247,.9);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 5px 20px rgba(13,27,42,.05);width:100%;margin:0 auto;}
   .fut-form.is-collapsed{padding:0;overflow:hidden;}
@@ -889,7 +902,20 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .fut-mobile-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px 13px;background:rgba(13,27,42,.035);border-bottom:1px solid var(--border);}
 .fut-mobile-top>.badge{flex:0 0 auto;align-self:flex-start;margin:0;padding:5px 9px;font-size:8.5px;line-height:1;border-radius:999px;}
 .fut-mobile-title{font-size:13px;font-weight:850;color:var(--navy);line-height:1.25;}
-.fut-contract-month{display:inline-flex;align-items:center;margin-left:6px;padding:3px 7px;border-radius:999px;background:rgba(201,162,78,.14);color:var(--taupe);font-size:10px;font-weight:850;white-space:nowrap;vertical-align:middle;}
+.fut-contract-month{display:inline-flex;align-items:center;margin-left:6px;padding:3px 7px;border-radius:999px;background:rgba(201,162,78,.14);color:var(--taupe);font-size:10px;font-weight:850;white-space:nowrap;vertical-align:middle;border:1px solid transparent;}
+.fut-contract-month.fut-month-1{background:#E7EFF7;color:#28577A;border-color:#C6D9EA;}
+.fut-contract-month.fut-month-2{background:#F3E7EC;color:#7C3F59;border-color:#E2C7D3;}
+.fut-contract-month.fut-month-3{background:#E5F0E8;color:#376348;border-color:#C5DDCC;}
+.fut-contract-month.fut-month-4{background:#F8E9DC;color:#8B4E23;border-color:#EBCDB4;}
+.fut-contract-month.fut-month-5{background:#F2E9D6;color:#79602A;border-color:#E1D0A8;}
+.fut-contract-month.fut-month-6{background:#E2EEEE;color:#356364;border-color:#BFDBDB;}
+.fut-contract-month.fut-month-7{background:#EEE6F3;color:#66477A;border-color:#D8C5E3;}
+.fut-contract-month.fut-month-8{background:#F7E4E0;color:#8A4438;border-color:#E9C4BC;}
+.fut-contract-month.fut-month-9{background:#E8ECD9;color:#596331;border-color:#D1D9AE;}
+.fut-contract-month.fut-month-10{background:#E1EAF4;color:#345A7D;border-color:#C1D3E5;}
+.fut-contract-month.fut-month-11{background:#EFE5DC;color:#75513A;border-color:#DEC9B8;}
+.fut-contract-month.fut-month-12{background:#E5E8EC;color:#465667;border-color:#CAD1D9;}
+#panel-futuros td>.fut-contract-month{margin-left:0;}
 .fut-mobile-sub{font-size:10px;color:var(--text-3);margin-top:3px;}
 .fut-mobile-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 13px;background:#fff;border-bottom:1px solid var(--border);}
 .fut-mobile-quick-item{min-width:0;}
@@ -4668,6 +4694,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <button class="fut-new-btn" onclick="limparFormFuturo()">+ Novo contrato</button>
       </div>
       <div id="fut-summary"></div>
+      <div id="fut-month-dashboard"></div>
       <div class="fut-layout">
         <div class="fut-form is-collapsed" id="fut-form-card">
           <div class="fut-form-head">
@@ -6831,7 +6858,11 @@ function mesAnoVencimentoB3(vencimento){
   var m=String(vencimento||'').match(/^(\d{4})-(\d{2})$/);
   if(!m)return '';
   var d=new Date(parseInt(m[1],10),parseInt(m[2],10)-1,1);
-  return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/\s+de\s+/g,' ');
+}
+function classeMesVencimentoB3(vencimento){
+  var m=String(vencimento||'').match(/^\d{4}-(\d{2})$/);
+  return m?'fut-month-'+parseInt(m[1],10):'';
 }
 function fmtContratosB3(v){
   return Math.round(parseFloat(v)||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
@@ -9329,6 +9360,50 @@ function futCoverageChartHtml(lotes){
     +'<div class="home-chart-legend-button"><span class="home-chart-legend-dot" style="background:#6B7056"></span><span>Travados</span><span class="home-chart-legend-values"><strong>'+fmtContratosB3(travados)+' ctr</strong></span></div>';
   return '<div class="home-chart-panel fut-coverage-panel" data-pie-chart="b3">'+head+'<div class="home-pie-layout"><div class="home-pie"><svg width="160" height="160" viewBox="0 0 100 100" role="img" aria-label="Cobertura de contratos B3">'+circles+'</svg><div class="home-pie-center"><strong>'+fmtContratosB3(totalNecessario)+'</strong><span>Total necessário</span>'+piePinnedSubtotalHtml('b3')+'</div></div><div class="home-chart-legend">'+legend+'</div></div></div>';
 }
+function toggleFutMonthDashboard(){
+  var key='vm_fut_month_dashboard_collapsed_v1';
+  try{localStorage.setItem(key,localStorage.getItem(key)==='1'?'0':'1');}catch(e){}
+  renderFuturos();
+}
+function renderFutMonthDashboard(lotes,contratos){
+  var host=document.getElementById('fut-month-dashboard');
+  if(!host)return;
+  var meses={};
+  function ensure(key){
+    key=key||'sem-mes';
+    if(!meses[key])meses[key]={key:key,travados:0,necessarios:0};
+    return meses[key];
+  }
+  (lotes||[]).forEach(function(lote){
+    if(!loteTemCoberturaB3Ativa(lote))return;
+    var abate=abatePrevistoLoteB3(lote);
+    var mes=abate&&/^\d{4}-\d{2}/.test(abate)?abate.slice(0,7):'sem-mes';
+    var necessidade=necessidadeContratosB3(lote,(lote.orcamentos&&lote.orcamentos[0])||{});
+    ensure(mes).necessarios+=Math.max(0,parseFloat(necessidade.necessarios)||0);
+  });
+  (contratos||[]).forEach(function(c){
+    var r=futuroResultado(c);
+    var lote=(lotes||[]).find(function(l){return l.id===c.loteId;});
+    if(r.status==='cancelado'||!lote||!loteTemCoberturaB3Ativa(lote))return;
+    var mes=/^\d{4}-\d{2}$/.test(String(c.vencimento||''))?c.vencimento:'sem-mes';
+    ensure(mes).travados+=Math.max(0,parseFloat(r.qtdContratos)||0);
+  });
+  var itens=Object.keys(meses).map(function(key){return meses[key];}).filter(function(item){return item.travados>0||item.necessarios>0;}).sort(function(a,b){
+    if(a.key==='sem-mes')return 1;if(b.key==='sem-mes')return -1;return a.key.localeCompare(b.key);
+  });
+  var collapsed=false;
+  try{collapsed=localStorage.getItem('vm_fut_month_dashboard_collapsed_v1')==='1';}catch(e){}
+  var head='<div class="fut-month-dashboard-head"><div><div class="fut-month-dashboard-title">Cobertura mensal B3</div><div class="fut-month-dashboard-note">Contratos travados / necessidade projetada</div></div><button type="button" class="fut-month-dashboard-toggle" onclick="toggleFutMonthDashboard()">'+(collapsed?'Mostrar dashboard':'Minimizar dashboard')+'</button></div>';
+  if(collapsed){host.innerHTML='<div class="fut-month-dashboard">'+head+'</div>';return;}
+  var cores=['#28577A','#7C3F59','#376348','#8B4E23','#79602A','#356364','#66477A','#8A4438','#596331','#345A7D','#75513A','#465667'];
+  var cards=itens.map(function(item){
+    var numeroMes=item.key==='sem-mes'?0:parseInt(item.key.slice(5,7),10);
+    var label=item.key==='sem-mes'?'Sem mês definido':mesAnoVencimentoB3(item.key);
+    var cor=numeroMes?cores[numeroMes-1]:'#8A7967';
+    return '<div class="fut-month-dashboard-item" style="--month-color:'+cor+'"><span class="fut-month-dashboard-bar"></span><div><div class="fut-month-dashboard-label">'+escHtml(label)+'</div><div class="fut-month-dashboard-value">'+fmtContratosB3(item.travados)+'/'+fmtContratosLoteB3(item.necessarios)+'<span>ctr</span></div></div></div>';
+  }).join('');
+  host.innerHTML='<div class="fut-month-dashboard">'+head+'<div class="fut-month-dashboard-grid">'+(cards||'<div class="fut-month-dashboard-note">Nenhum lote ativo com necessidade de contratos.</div>')+'</div></div>';
+}
 function renderFuturos(){
   fillFuturoLoteSelects();
   var lotes=lotesDisponiveisB3();
@@ -9339,6 +9414,7 @@ function renderFuturos(){
     if(linked&&!canViewLot(linked))return false;
     return !c.loteId||loteMap[c.loteId]||!!linked;
   });
+  renderFutMonthDashboard(lotes,arr);
   var filtrados=arr.filter(function(c){
     var r=futuroResultado(c);
     var lote=loteMap[c.loteId]||getLotes().find(function(l){return l.id===c.loteId;});
@@ -9439,7 +9515,8 @@ function renderFuturos(){
     var st='<span class="badge '+futuroStatusClass(r.status)+'">'+escHtml(futuroStatusLabel(r.status))+'</span>';
     var contrato=escHtml(gerarCodigoB3(c.vencimento)||c.codigo||'Contrato B3');
     var mesContrato=mesAnoVencimentoB3(c.vencimento);
-    var contratoComMes=contrato+(mesContrato?'<span class="fut-contract-month">'+escHtml(mesContrato)+'</span>':'');
+    var classeMesContrato=classeMesVencimentoB3(c.vencimento);
+    var contratoComMes=contrato+(mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'');
     var loteNome=escHtml(lote?loteLabelB3(lote):(c.operacaoNome||'Operação livre'));
     var loteStatus=escHtml(lote&&STATUS_CFG[lote.status]?STATUS_CFG[lote.status].label:(r.operacao==='livre'?'Livre':'—'));
     var totalContratosLote=lote?necessidadeContratosB3(lote,(lote.orcamentos&&lote.orcamentos[0])).necessarios||0:0;
@@ -9465,7 +9542,7 @@ function renderFuturos(){
       momentoLote:'<span class="strong">'+loteStatus+'</span>',
       confinamento:escHtml(dadosLote.confinamento),origem:escHtml(dadosLote.origem),qtdLote:escHtml(dadosLote.qtd),entradaLote:escHtml(dadosLote.entrada),
       faturamentoLote:'<span class="money">'+escHtml(dadosLote.faturamento)+'</span>',
-      codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month">'+escHtml(mesContrato)+'</span><div class="muted">'+escHtml(c.vencimento||'')+'</div>':'<span class="muted">Sem vencimento</span>',lado:escHtml(r.lado==='compra'?'Compra':'Venda'),
+      codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'<span class="muted">Sem vencimento</span>',lado:escHtml(r.lado==='compra'?'Compra':'Venda'),
       qtdOriginal:fmtContratosB3(r.qtdContratos||0)+' ctr',aberto:fmtContratosB3(r.qtdAberta||0)+' ctr',liquidado:fmtContratosB3(r.qtdLiquidada||0)+' ctr',
       abertura:'<span class="money">'+abertura+'</span><div class="muted">'+vendaData+'</div>',liquidacao:'<span class="money">'+liq+'</span><div class="muted">'+liqData+'</div>',
       resultadoRealizado:'<span class="money '+resClass+'">'+resultado+'</span>',resultadoAberto:'<span class="money">Em aberto</span>',acoes:actions
