@@ -1368,6 +1368,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	  .ep-partial-box{background:#f8fafb;border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:6px;}
 	  .ep-partial-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;}
 	  .ep-partial-help{font-size:10px;color:var(--text-3);line-height:1.45;margin-top:8px;}
+	  .ep-b3-transfer{margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:8px;background:#fff;}
+	  .ep-b3-transfer-title{font-size:9px;font-weight:850;letter-spacing:1px;text-transform:uppercase;color:var(--navy);margin-bottom:7px;}
+	  .ep-b3-transfer-grid{display:grid;grid-template-columns:minmax(150px,.7fr) 1.3fr;gap:8px;align-items:end;}
+	  .ep-b3-preview{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+	  .ep-b3-preview-item{padding:7px 9px;border-radius:6px;background:var(--surface2);font-size:9px;color:var(--text-3);}
+	  .ep-b3-preview-item strong{display:block;margin-top:2px;color:var(--navy);font-size:12px;}
+	  .ep-b3-warning{display:none;margin-top:8px;padding:8px;border-radius:6px;background:rgba(201,162,78,.14);color:#755923;font-size:10px;line-height:1.4;}
+	  .ep-b3-confirm{display:flex;align-items:flex-start;gap:7px;margin-top:7px;font-size:10px;color:var(--text-2);}
+	  .ep-b3-confirm input{width:auto;min-height:auto;margin-top:1px;}
 	  .btn-ep-danger{background:rgba(154,59,48,.07);border:1px solid rgba(154,59,48,.22);color:var(--red);border-radius:7px;padding:9px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 	  .btn-ep-danger:hover{background:rgba(154,59,48,.12);border-color:rgba(154,59,48,.34);}
 
@@ -1423,6 +1432,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	    .card,.lote-form-card,.cfg-form,.ep,.item-card,.resumo-block{border-radius:10px;padding:14px 12px;}
 	    .section-label{font-size:9px;letter-spacing:1.4px;margin:18px 0 10px;}
 	    .form-btns,.ep-actions,.quick-add-btns{display:grid;grid-template-columns:1fr;gap:8px;}
+	    .ep-b3-transfer-grid,.ep-b3-preview{grid-template-columns:1fr;}
 	    .btn-save,.btn-cancel,.btn-add,.btn-ep-save,.btn-ep-detail,.btn-calc,.btn-clear-calc,.btn-novo-lote{width:100%;min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
 	    #panel-lotes{width:calc(100vw - 16px);}
 	    .lotes-toolbar{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px;}
@@ -6933,9 +6943,37 @@ function necessidadeContratosB3(lote,orc){
   var necessarios=arrobas>0?arrobas/porContrato:0;
   return {arrobas:arrobas,porContrato:porContrato,necessarios:necessarios,metaOperacional:metaOperacionalContratosB3(necessarios)};
 }
+function resumoB3NaoCanceladoLote(loteId){
+  var out={contratos:0,abertos:0,liquidados:0,registros:0};
+  contratosB3PorLote(loteId).forEach(function(c){
+    var r=futuroResultado(c);
+    if(r.status==='cancelado')return;
+    out.registros+=1;
+    out.contratos+=r.qtdContratos||0;
+    out.abertos+=r.qtdAberta||0;
+    out.liquidados+=r.qtdLiquidada||0;
+  });
+  return out;
+}
+function coberturaB3LoteEncerrado(lote){
+  var resumo=resumoB3NaoCanceladoLote(lote&&lote.id);
+  if(!resumo.contratos)return {cobertura:'—',remanescente:'',estado:'Encerrado',filtro:'Encerrado',meta:0,travados:0};
+  if(resumo.liquidados<=0)return {
+    cobertura:fmtContratosB3(resumo.abertos)+' ctr',remanescente:'',estado:'Travado',filtro:'Travado',meta:0,travados:resumo.contratos
+  };
+  if(resumo.abertos>0)return {
+    cobertura:fmtContratosB3(resumo.liquidados)+'/'+fmtContratosB3(resumo.contratos)+' ctr',remanescente:'',estado:'Liquidado parcial',filtro:'Liquidado parcial',meta:0,travados:resumo.contratos
+  };
+  return {
+    cobertura:fmtContratosB3(resumo.liquidados)+'/'+fmtContratosB3(resumo.contratos)+' ctr',remanescente:'',estado:'Liquidado',filtro:'Liquidado',meta:0,travados:resumo.contratos
+  };
+}
 function textoCoberturaB3(lote,orc,resumo,mostrarMetaDecimal){
   resumo=resumo||resultadoB3Lote(lote&&lote.id);
-  if(!loteTemCoberturaB3Ativa(lote))return 'Encerrado';
+  if(!loteTemCoberturaB3Ativa(lote)){
+    var encerrado=coberturaB3LoteEncerrado(lote);
+    return encerrado.estado==='Encerrado'?'Encerrado':encerrado.cobertura;
+  }
   var nec=necessidadeContratosB3(lote,orc);
   var contratosTravados=parseFloat(resumo.contratos!==undefined?resumo.contratos:resumo.contratosB3)||0;
   if(!nec.necessarios)return contratosTravados?fmtContratosB3(contratosTravados)+' ctr':'Sem meta';
@@ -6944,7 +6982,7 @@ function textoCoberturaB3(lote,orc,resumo,mostrarMetaDecimal){
 }
 function coberturaStatusB3(lote,orc,resumo){
   resumo=resumo||resultadoB3Lote(lote&&lote.id);
-  if(!loteTemCoberturaB3Ativa(lote))return {cobertura:'—',remanescente:'',estado:'Encerrado',filtro:'Encerrado',meta:0,travados:0};
+  if(!loteTemCoberturaB3Ativa(lote))return coberturaB3LoteEncerrado(lote);
   var nec=necessidadeContratosB3(lote,orc);
   var contratosTravados=parseFloat(resumo.contratos!==undefined?resumo.contratos:resumo.contratosB3)||0;
   if(!nec.necessarios){
@@ -8816,11 +8854,18 @@ function verLiquidacoesFuturo(id){
   var c=getFuturos().find(function(x){return x.id===id;});
   if(!c)return;
   var liqs=liquidacoesFuturo(c);
-  if(!liqs.length){toast('Nenhuma liquidação registrada');return;}
-  alert(liqs.map(function(l,i){
+  var transferencias=Array.isArray(c.transferHistory)?c.transferHistory:[];
+  if(!liqs.length&&!transferencias.length){toast('Nenhum histórico registrado');return;}
+  var linhas=[];
+  if(liqs.length)linhas.push('LIQUIDAÇÕES',liqs.map(function(l,i){
     var res=calcularResultadoLiquidacaoB3(c,l,normalizarQtdContratoB3(c).qtd);
     return (i+1)+'. '+fmtContratosB3(l.qtdContratos)+' ctr · '+(l.data?dateBRFromIso(l.data):'sem data')+' · R$ '+fmtNum(l.preco,2)+'/@ · '+fmt(res);
   }).join('\n'));
+  if(transferencias.length)linhas.push('TRANSFERÊNCIAS',transferencias.map(function(t,i){
+    var data=t.data?new Date(t.data).toLocaleString('pt-BR'):'sem data';
+    return (i+1)+'. '+fmtContratosB3(t.qtdContratos)+' ctr · destino lote '+(t.destinoNumero||t.destinoLoteId||'—')+' · '+data+' · '+(t.usuario||'Usuário');
+  }).join('\n'));
+  alert(linhas.join('\n\n'));
 }
 function getFutColVisible(){
   var saved={};
@@ -9220,7 +9265,7 @@ function renderFuturos(){
     var actions=(r.qtdAberta>0&&r.status!=='cancelado'?'<button class="fut-action success" onclick="abrirModalLiquidarFuturo(\''+c.id+'\')">Liquidar</button>':'')
       +(c.loteId?'<button class="fut-action" onclick="abrirLoteNoStatus(\''+c.loteId+'\')">Status</button>':'')
       +'<button class="fut-action" onclick="editarFuturo(\''+c.id+'\')">Editar</button>'
-      +(r.liquidacoes.length?'<button class="fut-action" onclick="verLiquidacoesFuturo(\''+c.id+'\')">Histórico</button>':'')
+      +((r.liquidacoes.length||(c.transferHistory||[]).length)?'<button class="fut-action" onclick="verLiquidacoesFuturo(\''+c.id+'\')">Histórico</button>':'')
       +(r.status!=='cancelado'?'<button class="fut-action warn" onclick="cancelarFuturo(\''+c.id+'\')">Cancelar</button>':'')
       +'<button class="fut-action danger" onclick="deletarFuturo(\''+c.id+'\')">Excluir</button>';
     var cells={
@@ -9901,9 +9946,9 @@ function openEditPanel(loteId, cardEl){
     +'<div class="ep-section">Parcial / Exclusão</div>'
     +'<div class="ep-partial-box">'
       +'<div class="ep-partial-grid">'
-        +'<div class="field" style="margin:0"><label style="font-size:10px">Qtd parcial (cab.)</label><input type="number" id="ep-parcial-qtd" min="1" max="'+(parseFloat(lote.qtd)||'')+'" step="1" placeholder="Ex: 20"></div>'
+        +'<div class="field" style="margin:0"><label style="font-size:10px">Qtd parcial (cab.)</label><input type="number" id="ep-parcial-qtd" min="1" max="'+(parseFloat(lote.qtd)||'')+'" step="1" placeholder="Ex: 20" oninput="atualizarTransferenciaB3Parcial(true)"></div>'
         +'<div class="field" style="margin:0"><label style="font-size:10px">Número da parcial</label><input type="text" inputmode="text" pattern="[0-9]+-[0-9]+" id="ep-parcial-numero" value="'+escHtml(proximoNumeroParcial(lote,getLotes()))+'" placeholder="Ex: 105-1"></div>'
-        +'<div class="field" style="margin:0"><label style="font-size:10px">Status da parcial</label><select id="ep-parcial-status">'
+        +'<div class="field" style="margin:0"><label style="font-size:10px">Status da parcial</label><select id="ep-parcial-status" onchange="atualizarTransferenciaB3Parcial(false)">'
           +'<option value="'+(lote.status||'embarque')+'">Mesmo status</option>'
           +'<option value="embarque">Embarque</option>'
           +'<option value="confinando">Confinado</option>'
@@ -9911,6 +9956,15 @@ function openEditPanel(loteId, cardEl){
           +'<option value="abatido">Abatido</option>'
           +'<option value="recebido">Recebido</option>'
         +'</select></div>'
+      +'</div>'
+      +'<div class="ep-b3-transfer" id="ep-b3-transfer">'
+        +'<div class="ep-b3-transfer-title">Transferência assistida B3</div>'
+        +'<div class="ep-b3-transfer-grid">'
+          +'<div class="field" style="margin:0"><label style="font-size:10px">Contratos para a parcial</label><input type="number" id="ep-parcial-contratos" min="0" step="1" value="0" oninput="this.dataset.manual=\'1\';atualizarTransferenciaB3Parcial(false)"><div class="hint" id="ep-parcial-contratos-hint">Sugestão proporcional automática</div></div>'
+          +'<div class="ep-b3-preview"><div class="ep-b3-preview-item">Lote original<strong id="ep-b3-prev-original">—</strong></div><div class="ep-b3-preview-item">Nova parcial<strong id="ep-b3-prev-parcial">—</strong></div></div>'
+        +'</div>'
+        +'<div class="ep-b3-warning" id="ep-b3-partial-warning"></div>'
+        +'<label class="ep-b3-confirm" id="ep-b3-partial-confirm" style="display:none"><input type="checkbox" id="ep-b3-allow-partial"> Autorizar o uso do saldo aberto de contrato parcialmente liquidado</label>'
       +'</div>'
       +'<div class="ep-actions" style="margin-top:10px;">'
         +'<button class="btn-ep-detail" type="button" data-action="split-lote">Gerar parcial</button>'
@@ -9928,6 +9982,7 @@ function openEditPanel(loteId, cardEl){
   ajustarEditPanelAoViewport(cardEl);
   requestAnimationFrame(function(){ajustarEditPanelAoViewport(cardEl);});
   if(document.getElementById('ep-real-fat'))atualizarRealizadoPainel();
+  atualizarTransferenciaB3Parcial(true);
   var finalModeInitial=document.getElementById('ep-final-mode');
   if(finalModeInitial)setResultadoFinalMode(finalModeInitial.value,true);
   ep.scrollIntoView&&ep.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -10048,6 +10103,107 @@ function escalarValoresLote(lote,ratio,novaQtd,sufixoLabel){
   }
 }
 
+function resumoTransferivelB3(loteId){
+  var resumo={abertos:0,limpos:0,parciais:0,registrosParciais:0};
+  contratosB3PorLote(loteId).forEach(function(c){
+    var r=futuroResultado(c);
+    if(r.status==='cancelado'||r.qtdAberta<=0)return;
+    resumo.abertos+=r.qtdAberta;
+    if(r.qtdLiquidada>0){resumo.parciais+=r.qtdAberta;resumo.registrosParciais+=1;}
+    else resumo.limpos+=r.qtdAberta;
+  });
+  return resumo;
+}
+
+function atualizarTransferenciaB3Parcial(sugerir){
+  var input=document.getElementById('ep-parcial-contratos');
+  if(!input||!_editLoteId)return;
+  var lote=getLotes().find(function(l){return l.id===_editLoteId;});
+  if(!lote)return;
+  var qtdTotal=finNum(lote.qtd);
+  var qtdParcial=finNum((document.getElementById('ep-parcial-qtd')||{}).value);
+  var ratio=qtdTotal>0&&qtdParcial>0?Math.min(1,qtdParcial/qtdTotal):0;
+  var transferiveis=resumoTransferivelB3(lote.id);
+  var sugerido=Math.min(transferiveis.abertos,Math.round(transferiveis.abertos*ratio));
+  if(sugerir||input.dataset.manual!=='1'){
+    input.value=sugerido;
+    input.dataset.manual='0';
+  }
+  input.max=transferiveis.abertos;
+  var mover=Math.max(0,Math.min(transferiveis.abertos,Math.round(finNum(input.value))));
+  var atual=resultadoB3Lote(lote.id).contratos||0;
+  var orc=(lote.orcamentos&&lote.orcamentos[0])||{};
+  var necAtual=necessidadeContratosB3(lote,orc).metaOperacional||0;
+  var necOriginal=Math.max(0,Math.round(necAtual*(1-ratio)));
+  var statusParcial=(document.getElementById('ep-parcial-status')||{}).value||lote.status;
+  var necParcial=(statusParcial==='abatido'||statusParcial==='recebido')?0:Math.max(0,Math.round(necAtual*ratio));
+  var originalEl=document.getElementById('ep-b3-prev-original');
+  var parcialEl=document.getElementById('ep-b3-prev-parcial');
+  if(originalEl)originalEl.textContent=fmtContratosB3(Math.max(0,atual-mover))+'/'+fmtContratosB3(necOriginal)+' ctr';
+  if(parcialEl)parcialEl.textContent=necParcial
+    ?fmtContratosB3(mover)+'/'+fmtContratosB3(necParcial)+' ctr'
+    :(mover>0?'Travado · '+fmtContratosB3(mover)+' ctr':'Encerrado');
+  var hint=document.getElementById('ep-parcial-contratos-hint');
+  if(hint)hint.textContent='Sugestão: '+fmtContratosB3(sugerido)+' ctr · Disponíveis em aberto: '+fmtContratosB3(transferiveis.abertos)+' ctr';
+  var usaParcial=mover>transferiveis.limpos&&transferiveis.parciais>0;
+  var warning=document.getElementById('ep-b3-partial-warning');
+  var confirmEl=document.getElementById('ep-b3-partial-confirm');
+  if(warning){
+    warning.style.display=usaParcial?'block':'none';
+    warning.textContent=usaParcial?'A quantidade informada exige usar saldo aberto de '+transferiveis.registrosParciais+' contrato(s) parcialmente liquidado(s). As liquidações já realizadas permanecerão no lote original.':'';
+  }
+  if(confirmEl)confirmEl.style.display=usaParcial?'flex':'none';
+  if(!usaParcial){var check=document.getElementById('ep-b3-allow-partial');if(check)check.checked=false;}
+}
+
+function transferirContratosB3ParaParcial(origem,destino,qtd,autorizarParcial,numeroDestino){
+  qtd=Math.max(0,Math.round(finNum(qtd)));
+  if(!qtd)return {ok:true,movidos:0,ids:[]};
+  var arr=getFuturos();
+  var candidatos=arr.filter(function(c){return c.loteId===origem;}).map(function(c){return {c:c,r:futuroResultado(c)};})
+    .filter(function(x){return x.r.status!=='cancelado'&&x.r.qtdAberta>0;})
+    .sort(function(a,b){return (a.r.qtdLiquidada>0?1:0)-(b.r.qtdLiquidada>0?1:0);});
+  var limpos=candidatos.reduce(function(s,x){return s+(x.r.qtdLiquidada>0?0:x.r.qtdAberta);},0);
+  var total=candidatos.reduce(function(s,x){return s+x.r.qtdAberta;},0);
+  if(qtd>total)return {ok:false,msg:'Existem apenas '+fmtContratosB3(total)+' contrato(s) aberto(s) disponíveis.'};
+  if(qtd>limpos&&!autorizarParcial)return {ok:false,msg:'Confirme a autorização para utilizar saldo de contrato parcialmente liquidado.'};
+  var restante=qtd,ids=[],agora=new Date().toISOString();
+  candidatos.forEach(function(x,idx){
+    if(restante<=0)return;
+    var c=x.c,r=x.r;
+    var mover=Math.min(restante,r.qtdAberta);
+    var historico={origemLoteId:origem,destinoLoteId:destino,destinoNumero:numeroDestino||'',qtdContratos:mover,data:agora,usuario:currentUser||''};
+    if(r.qtdLiquidada===0&&mover===r.qtdContratos){
+      c.loteId=destino;
+      c.transferHistory=(c.transferHistory||[]).concat([historico]);
+      ids.push(c.id);
+    }else{
+      var original=clonarLoteObj(c);
+      var totalAntes=r.qtdContratos;
+      var custosAntes=finNum(original.custos!==undefined?original.custos:original.fees_opening);
+      c.qtdContratos=totalAntes-mover;
+      c.custos=totalAntes>0?custosAntes*(c.qtdContratos/totalAntes):0;
+      c.transferHistory=(c.transferHistory||[]).concat([historico]);
+      var novo=Object.assign({},original,{
+        id:'b3_'+Date.now()+'_'+idx,
+        loteId:destino,
+        qtdContratos:mover,
+        custos:totalAntes>0?custosAntes*(mover/totalAntes):0,
+        liquidacoes:[],
+        status:undefined,
+        transferHistory:(original.transferHistory||[]).concat([historico]),
+        criadoPor:currentUser||original.criadoPor||'',
+        atualizadoEm:agora
+      });
+      arr.push(novo);
+      ids.push(novo.id);
+    }
+    restante-=mover;
+  });
+  saveFuturos(arr);
+  return {ok:true,movidos:qtd,ids:ids,at:agora};
+}
+
 function gerarParcialLote(){
   if(!_editLoteId)return;
   if(!requirePermission('lots.edit_all'))return;
@@ -10080,6 +10236,15 @@ function gerarParcialLote(){
   var restante=qtdTotal-qtdParcial;
   var ratioParcial=qtdParcial/qtdTotal;
   var ratioRestante=restante/qtdTotal;
+  var qtdContratos=Math.max(0,Math.round(finNum((document.getElementById('ep-parcial-contratos')||{}).value)));
+  var transferiveis=resumoTransferivelB3(lote.id);
+  if(qtdContratos>transferiveis.abertos){toast('⚠ Existem apenas '+fmtContratosB3(transferiveis.abertos)+' contrato(s) aberto(s) disponíveis');return;}
+  var usaContratoParcial=qtdContratos>transferiveis.limpos;
+  var autorizarParcial=!!((document.getElementById('ep-b3-allow-partial')||{}).checked);
+  if(usaContratoParcial&&!autorizarParcial){toast('⚠ Autorize o uso do saldo de contrato parcialmente liquidado');return;}
+  var confirmMsg='Gerar o lote '+numeroParcial+' com '+qtdParcial+' cab.\n\nTransferência B3: '+fmtContratosB3(qtdContratos)+' contrato(s).\nLote original após a operação: '+fmtContratosB3(Math.max(0,(resultadoB3Lote(lote.id).contratos||0)-qtdContratos))+' contrato(s).';
+  if(usaContratoParcial)confirmMsg+='\n\nAtenção: será utilizado saldo aberto de contrato parcialmente liquidado; as liquidações anteriores permanecerão no lote original.';
+  if(!confirm(confirmMsg))return;
   var parcial=clonarLoteObj(lote);
   parcial.id='lote_'+Date.now();
   parcial.lot_number=numeroParcial;
@@ -10089,6 +10254,11 @@ function gerarParcialLote(){
   parcial.obs=((parcial.obs||'')+(parcial.obs?'\n':'')+'Parcial de '+qtdParcial+' cab. gerada do lote original.').trim();
   escalarValoresLote(parcial,ratioParcial,qtdParcial,'Parcial '+qtdParcial+' cab.');
   escalarValoresLote(lote,ratioRestante,restante,null);
+  var transferencia=transferirContratosB3ParaParcial(lote.id,parcial.id,qtdContratos,autorizarParcial,numeroParcial);
+  if(!transferencia.ok){toast('⚠ '+transferencia.msg);return;}
+  var historicoTransferencia={origemLoteId:lote.id,destinoLoteId:parcial.id,destinoNumero:numeroParcial,qtdContratos:transferencia.movidos,data:transferencia.at||new Date().toISOString(),usuario:currentUser||'',contratos:transferencia.ids||[]};
+  lote.b3TransferHistory=(lote.b3TransferHistory||[]).concat([historicoTransferencia]);
+  parcial.b3TransferHistory=(parcial.b3TransferHistory||[]).concat([historicoTransferencia]);
   arr.splice(i+1,0,parcial);
   saveLotes(arr);
   closeEditPanel();
@@ -11356,7 +11526,7 @@ function renderLotes(){
     return '<div class="status-filter-cell '+statusColClass('status')+'"'+statusColumnDropAttrs(c)+'>'+statusColumnDragHandle(c)+statusFilterLabel(c)+tableMultiFilterHtml('status','status',options,'Todos os status')+statusFilterResizeHandle(c)+'</div>';
   }
   function filterB3(c){
-    var estados=['Aberto','Parcial','Travado'];
+    var estados=['Aberto','Parcial','Travado','Liquidado parcial','Liquidado','Encerrado'];
     return '<div class="status-filter-cell '+statusColClass('b3')+'"'+statusColumnDropAttrs(c)+'>'+statusColumnDragHandle(c)+statusFilterLabel(c)+tableMultiFilterHtml('status','b3',estados.map(function(estado){return {value:estado,label:estado};}),'Todos')+statusFilterResizeHandle(c)+'</div>';
   }
   function statusHeaderHtml(){
@@ -11765,7 +11935,8 @@ function renderLotes(){
     statusFilterOptions[key].sort(function(a,b){return String(a).localeCompare(String(b),'pt-BR',{numeric:true});});
   });
   var mobileConfinamentoAtual=statusColumnFilters.confinamento||'';
-  var mobileB3Atual=['Aberto','Parcial','Travado'].indexOf(statusColumnFilters.b3)>=0?statusColumnFilters.b3:'';
+  var mobileB3Estados=['Aberto','Parcial','Travado','Liquidado parcial','Liquidado','Encerrado'];
+  var mobileB3Atual=mobileB3Estados.indexOf(statusColumnFilters.b3)>=0?statusColumnFilters.b3:'';
   var mobileConfinamentoOptions='<option value="">Todos os confinamentos</option>'+(statusFilterOptions.confinamento||[]).map(function(value){
     return '<option value="'+escHtml(value)+'"'+(value===mobileConfinamentoAtual?' selected':'')+'>'+escHtml(value)+'</option>';
   }).join('');
@@ -11780,7 +11951,7 @@ function renderLotes(){
     +'</div>'
     +'<div class="status-mobile-filter-panel">'
       +'<div class="status-mobile-filter-field"><label for="status-mobile-confinamento">Confinamento</label><select id="status-mobile-confinamento" onchange="updateStatusColumnFilter(\'confinamento\',this.value)">'+mobileConfinamentoOptions+'</select></div>'
-      +'<div class="status-mobile-filter-field"><label for="status-mobile-b3">B3</label><select id="status-mobile-b3" onchange="updateStatusColumnFilter(\'b3\',this.value)"><option value=""'+(!mobileB3Atual?' selected':'')+'>Todos</option><option value="Aberto"'+(mobileB3Atual==='Aberto'?' selected':'')+'>Aberto</option><option value="Parcial"'+(mobileB3Atual==='Parcial'?' selected':'')+'>Parcial</option><option value="Travado"'+(mobileB3Atual==='Travado'?' selected':'')+'>Travado</option></select></div>'
+      +'<div class="status-mobile-filter-field"><label for="status-mobile-b3">B3</label><select id="status-mobile-b3" onchange="updateStatusColumnFilter(\'b3\',this.value)"><option value=""'+(!mobileB3Atual?' selected':'')+'>Todos</option>'+mobileB3Estados.map(function(estado){return '<option value="'+escHtml(estado)+'"'+(mobileB3Atual===estado?' selected':'')+'>'+escHtml(estado)+'</option>';}).join('')+'</select></div>'
       +'<button type="button" class="status-mobile-filter-clear" onclick="document.getElementById(\'status-mobile-confinamento\').value=\'\';document.getElementById(\'status-mobile-b3\').value=\'\';statusColumnFilters.confinamento=\'\';updateStatusColumnFilter(\'b3\',\'\')">Limpar</button>'
     +'</div>'
     +'<div class="status-mobile-head">'
