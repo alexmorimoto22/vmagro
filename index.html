@@ -878,6 +878,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .fut-modal-actions button{min-height:42px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:850;padding:0 16px;cursor:pointer;}
 .fut-modal-actions .save{background:var(--olive);border:1px solid var(--olive);color:#fff;}
 .fut-modal-actions .cancel{background:#fff;border:1px solid var(--border);color:var(--text-2);}
+.fut-modal-actions .fut-cancel-confirm{background:#9A3B30;border-color:#9A3B30;color:#fff;}
+.fut-modal-actions .fut-cancel-confirm:hover{background:#823128;border-color:#823128;}
 .fut-mobile-list{display:none;}
 .fut-mobile-card{background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 10px rgba(13,27,42,.05);}
 .fut-mobile-card summary{list-style:none;cursor:pointer;}
@@ -8966,16 +8968,38 @@ function confirmarLiquidacaoFuturo(){
 }
 function cancelarFuturo(id){
   if(!requirePermission('b3.edit'))return;
-  if(!confirm('Cancelar este contrato? O histórico será mantido.'))return;
+  var contrato=getFuturos().find(function(c){return c.id===id;});
+  if(!contrato)return;
+  var input=document.getElementById('fut-cancelar-id');
+  var modal=document.getElementById('fut-cancelar-modal');
+  if(input)input.value=id;
+  if(modal){
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    var voltar=modal.querySelector('.cancel');
+    if(voltar)setTimeout(function(){voltar.focus();},0);
+  }
+}
+function fecharModalCancelarFuturo(){
+  var modal=document.getElementById('fut-cancelar-modal');
+  var input=document.getElementById('fut-cancelar-id');
+  if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
+  if(input)input.value='';
+}
+function confirmarCancelamentoFuturo(){
+  if(!requirePermission('b3.edit'))return;
+  var id=(document.getElementById('fut-cancelar-id')||{}).value||'';
   var arr=getFuturos();
   var i=arr.findIndex(function(c){return c.id===id;});
-  if(i<0)return;
+  if(i<0){fecharModalCancelarFuturo();return;}
   arr[i].status='cancelado';
   arr[i].atualizadoEm=new Date().toISOString();
   saveFuturos(arr);
+  fecharModalCancelarFuturo();
   renderFuturos();
   renderHome();
   if(document.getElementById('panel-lotes')&&document.getElementById('panel-lotes').style.display!=='none')renderLotes();
+  toast('✓ Contrato cancelado');
 }
 function verLiquidacoesFuturo(id){
   var c=getFuturos().find(function(x){return x.id===id;});
@@ -16827,6 +16851,27 @@ restoreBasicSession();
     </div>
   </div>
 </div>
+<div class="fut-modal-backdrop" id="fut-cancelar-modal" aria-hidden="true" onclick="if(event.target===this)fecharModalCancelarFuturo()">
+  <div class="fut-modal" role="dialog" aria-modal="true" aria-labelledby="fut-cancelar-title" aria-describedby="fut-cancelar-text">
+    <div class="fut-modal-head">
+      <div>
+        <div class="fut-modal-title" id="fut-cancelar-title">Cancelar contrato</div>
+        <div class="fut-modal-sub" id="fut-cancelar-text">Deseja cancelar este lote de contrato(s)?</div>
+      </div>
+      <button class="fut-modal-close" type="button" aria-label="Fechar" onclick="fecharModalCancelarFuturo()">×</button>
+    </div>
+    <input type="hidden" id="fut-cancelar-id">
+    <div class="fut-modal-actions">
+      <button type="button" class="cancel" onclick="fecharModalCancelarFuturo()">Não, voltar</button>
+      <button type="button" class="save fut-cancel-confirm" onclick="confirmarCancelamentoFuturo()">Sim, cancelar</button>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('keydown',function(event){
+  if(event.key==='Escape')fecharModalCancelarFuturo();
+});
+</script>
 <div id="toast"></div>
 </body>
 </html>
