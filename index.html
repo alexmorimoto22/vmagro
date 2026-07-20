@@ -4552,9 +4552,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
               <tr><td>Bônus frete</td><td id="d-bonusFreteAt">—</td><td id="d-bonusFrete">—</td><td id="d-bonusFreteBoitel">—</td></tr>
               <tr><td>Frete líquido</td><td id="d-freteAnimAt">—</td><td id="d-freteAnim">—</td><td id="d-freteAnimBoitel">—</td></tr>
               <tr><td>Comissão</td><td id="d-comsAt">—</td><td id="d-coms">—</td><td id="d-comsBoitel">—</td></tr>
-              <tr><td>Sanidade</td><td id="d-sanidadeAt">—</td><td id="d-sanidade2">—</td><td id="d-sanidadeBoitel">—</td></tr>
               <tr id="d-custom-costs-rows"></tr>
               <tr class="res-total"><td>Investimento total / animal</td><td id="d-custoAtSaida">—</td><td id="d-invest">—</td><td id="d-investBoitel">—</td></tr>
+              <tr><td>Sanidade <span style="font-size:9px;color:var(--text-3);">(custo operacional)</span></td><td id="d-sanidadeAt">—</td><td id="d-sanidade2">—</td><td id="d-sanidadeBoitel">—</td></tr>
               <tr><td>Custo por @ produzida</td><td id="d-custoProdAt">—</td><td id="d-custoAt">—</td><td id="d-custoAtBoitel">—</td></tr>
 
               <tr class="res-group"><td colspan="4">Faturamento</td></tr>
@@ -4911,7 +4911,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             <div class="field" style="margin-bottom:0;">
               <label>Próximo lote</label>
               <input type="text" inputmode="numeric" pattern="[0-9]*" id="p-nextLotNumber" value="1">
-              <div class="hint">Número que será usado no próximo lote. Após o cadastro, avança automaticamente.</div>
+              <div class="hint">Após o cadastro, avança automaticamente. Ao excluir o lote mais recente, o número volta a ficar disponível.</div>
             </div>
             <div class="field next-lot-action">
               <label aria-hidden="true">&nbsp;</label>
@@ -12256,11 +12256,8 @@ function nextAvailableLotNumber(numero,lotes){
 function preservarSequenciaAoExcluirLote(lote,lotes){
   var excluido=parseInt(getNumeroLote(lote),10);
   if(!isFinite(excluido)||excluido<1)return;
-  updateGlobalLotSequence(excluido);
-  var configurado=parseInt(getConfiguredNextLotNumber(),10);
-  if(isFinite(configurado)&&configurado>excluido)return;
   var restantes=(lotes||[]).filter(function(item){return String(item.id)!==String(lote.id);});
-  setConfiguredNextLotNumber(nextAvailableLotNumber(excluido+1,restantes));
+  setConfiguredNextLotNumber(getHighestExistingLotNumber(restantes)+1);
 }
 function proximoNumeroLote(lotes){
   var configurado=getConfiguredNextLotNumber();
@@ -13650,8 +13647,8 @@ function calcular(opts){
   // Custo total
   const investAnim=investCapital+custoOp;
   const investAnimBoitel=investCapital+custoOpBoitel;
-  // Total exibido no bloco "Custos por animal": soma apenas as linhas visíveis ali.
-  const investAnimVisivel=investCapital+sanidade+extraCostPerAnim;
+  // Investimento exibido: compra, comissão, frete e adicionais; sanidade fica como custo operacional separado.
+  const investAnimVisivel=investCapital+extraCostPerAnim;
   const custoAtCompraVisivel=atCompra>0?investAnimVisivel/atCompra:0;
   // Custo por @ produzida (somente ração + operacional — sem frete e sanidade)
   const custoAtProd=atProd>0?(custoConf)/atProd:0;
