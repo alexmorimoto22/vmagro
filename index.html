@@ -374,6 +374,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .item-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(13,27,42,.04);}
 .item-card.active-edit{border-color:var(--accent);border-bottom-color:transparent;border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:0;box-shadow:0 -2px 0 2px rgba(13,27,42,.08);}
 .item-card.active-edit + #frig-form{border-top:0;border-top-left-radius:0;border-top-right-radius:0;margin-bottom:14px;box-shadow:0 6px 16px rgba(13,27,42,.08);}
+.item-card.active-edit + #boitel-form{border-top:0;border-top-left-radius:0;border-top-right-radius:0;margin-bottom:14px;box-shadow:0 6px 16px rgba(13,27,42,.08);}
 .ic-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
 .ic-name{font-size:14px;font-weight:700;color:var(--text);}
 .ic-sub{font-size:11px;color:var(--text-3);margin-top:2px;}
@@ -4821,10 +4822,20 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           <div><h2>Boitéis</h2><p>Custos e prazos usados na simulação de confinamento</p></div>
           <button class="btn-add" onclick="showBoitelForm()">+ Adicionar</button>
         </div>
+        <div id="boitel-form-anchor"></div>
         <div id="boitel-form" style="display:none" class="cfg-form">
           <div class="form-title" id="boitel-form-title">Novo Boitel</div>
           <input type="hidden" id="bf-id">
           <div class="field"><label>Nome do Boitel</label><input type="text" id="bf-nome" placeholder="Ex: Boitel Fazenda Modelo"></div>
+          <div class="field"><label>Razão Social</label><input type="text" id="bf-razaoSocial" placeholder="Razão social da empresa ou produtor"></div>
+          <div class="g2">
+            <div class="field"><label>CNPJ/CPF</label><input type="text" id="bf-documento" inputmode="numeric" placeholder="CNPJ ou CPF"></div>
+            <div class="field"><label>I.E.</label><input type="text" id="bf-inscricaoEstadual" placeholder="Inscrição estadual"></div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Cidade</label><input type="text" id="bf-cidade" placeholder="Cidade"></div>
+            <div class="field"><label>Estado</label><input type="text" id="bf-estado" maxlength="2" placeholder="UF" style="text-transform:uppercase"></div>
+          </div>
           <div class="g2">
             <div class="field"><label>Matéria Seca R$/kg</label><input type="text" inputmode="decimal" id="bf-msKG" value="1,30"></div>
             <div class="field"><label>Operacional R$/animal/dia</label><input type="text" inputmode="decimal" id="bf-opDia" value="2,00"></div>
@@ -5786,9 +5797,14 @@ function statusRealizadoLote(lote){
   var ajCandidate=lote.ajusteReal||lote.apuracao;
   var aj=ajCandidate&&typeof ajCandidate==='object'&&Object.keys(ajCandidate).length?ajCandidate:null;
   if(!aj)return {key:'none',label:'Sem realizado'};
-  var required=['dataEntradaReal','dataAbateReal','dataRecebimentoReal','qtdReal','pesoEntradaReal','pesoSaidaReal','receitaReal','custoReal'];
-  var complete=required.every(function(k){return aj[k]!==undefined&&aj[k]!==null&&String(aj[k]).trim()!=='';});
-  return complete?{key:'complete',label:'Realizado completo'}:{key:'partial',label:'Realizado parcial'};
+  function preenchido(k){
+    return aj[k]!==undefined&&aj[k]!==null&&String(aj[k]).trim()!=='';
+  }
+  // Somente os campos manuais visíveis definem o andamento; os demais são calculados.
+  var required=['gmdReal','diasReal','rendCarcacaReal','consumoMSPctReal','receitaFinalReal'];
+  var filled=required.filter(preenchido).length;
+  if(!filled)return {key:'none',label:'Sem realizado'};
+  return filled===required.length?{key:'complete',label:'Realizado total'}:{key:'partial',label:'Realizado parcial'};
 }
 function usarZootecnicoRealizado(lote){
   var status=statusRealizadoLote(lote).key;
@@ -7229,9 +7245,9 @@ var HOME_BAR_METRICS=[
   {key:'eficienciaChegada',label:'Efic. biológica chegada',format:'efic',color:'#B05D5D'}
 ];
 var HOME_PIE_GROUPS=[
-  {key:'status',label:'Status'},
   {key:'ano',label:'Ano'},
   {key:'confinamento',label:'Confinamento'},
+  {key:'status',label:'Status'},
   {key:'modalidade',label:'Modalidade'},
   {key:'raca',label:'Raça'},
   {key:'origem',label:'Origem'},
@@ -7243,7 +7259,7 @@ var HOME_PIE_GROUPS=[
   {key:'abate',label:'Abate'},
   {key:'recebimento',label:'Recebimento'}
 ];
-var homeChartState={inicio:'',fim:'',modo:'periodo',metricas:{faturamento:true,capital:true,lucro:true},barOptionsOpen:false,pieMetrics:['qtd'],pieOptionsOpen:false,pieGroup:'status'};
+var homeChartState={inicio:'',fim:'',modo:'periodo',metricas:{faturamento:true,capital:true,lucro:true},barOptionsOpen:false,pieMetrics:['qtd'],pieOptionsOpen:false,pieGroup:'ano'};
 var homePiePinnedSubtotal=null;
 function pieSubtotalChart(event){
   var panel=event&&event.currentTarget&&event.currentTarget.closest('.home-chart-panel');
@@ -7409,7 +7425,7 @@ function homeChartFilterStatus(encoded){
   renderHome();
 }
 function homeChartResetControls(){
-  homeChartState.inicio='';homeChartState.fim='';homeChartState.modo='periodo';homeChartState.metricas={faturamento:true,capital:true,lucro:true};homeChartState.barOptionsOpen=false;homeChartState.pieMetrics=['qtd'];homeChartState.pieOptionsOpen=false;homeChartState.pieGroup='status';
+  homeChartState.inicio='';homeChartState.fim='';homeChartState.modo='periodo';homeChartState.metricas={faturamento:true,capital:true,lucro:true};homeChartState.barOptionsOpen=false;homeChartState.pieMetrics=['qtd'];homeChartState.pieOptionsOpen=false;homeChartState.pieGroup='ano';
   renderHome();
 }
 function homeOverviewSetPeriod(campo,valor){
@@ -14324,10 +14340,14 @@ function renderBoitelList(){
   if(!items.length){el.innerHTML='<div class="empty-state">Nenhum boitel cadastrado.</div>';return;}
   var out='';
   items.forEach(function(b){
-    out+='<div class="item-card">'
+    var local=[b.cidade,b.estado].filter(Boolean).join('/');
+    var fiscal=[b.documento?('CNPJ/CPF: '+b.documento):'',b.inscricaoEstadual?('I.E.: '+b.inscricaoEstadual):''].filter(Boolean).join(' · ');
+    out+='<div class="item-card" data-boitel-id="'+escHtml(b.id)+'">'
       +'<div class="ic-header">'
-        +'<div><div class="ic-name">'+b.nome+'</div>'
-        +'<div class="ic-sub">Prazo receb.: '+(b.prazoPag||0)+' dias</div>'
+        +'<div><div class="ic-name">'+escHtml(b.nome)+'</div>'
+        +(b.razaoSocial?'<div class="ic-sub">'+escHtml(b.razaoSocial)+'</div>':'')
+        +(local?'<div class="ic-sub">'+escHtml(local)+'</div>':'')
+        +(fiscal?'<div class="ic-sub">'+escHtml(fiscal)+'</div>':'')
         +'<div class="ic-sub">Última atualização: '+escHtml(fmtLastUpdate(b.updatedAt))+'</div></div>'
         +'<div style="display:flex;gap:6px;">'
           +'<button class="btn-ic-edit" onclick="editarBoitel(\''+b.id+'\')">Editar</button>'
@@ -14339,6 +14359,7 @@ function renderBoitelList(){
         +'<div class="bonus-item"><div class="bonus-race">Operacional</div><div class="bonus-val neu">'+fmt(b.opDia)+'/animal/dia</div></div>'
         +'<div class="bonus-item"><div class="bonus-race">Sanidade</div><div class="bonus-val neu">'+fmt(b.sanidade)+'/animal</div></div>'
         +'<div class="bonus-item"><div class="bonus-race">@ produzida</div><div class="bonus-val neu">'+fmt(b.custoArrobaProd)+'/@</div></div>'
+        +'<div class="bonus-item"><div class="bonus-race">Prazo recebimento</div><div class="bonus-val neu">'+(b.prazoPag||0)+' dias</div></div>'
       +'</div>'
     +'</div>';
   });
@@ -14349,21 +14370,36 @@ function showBoitelForm(id){
   var form=document.getElementById('boitel-form');
   if(!form)return;
   var p=getParams();
+  var anchor=document.getElementById('boitel-form-anchor');
+  document.querySelectorAll('[data-boitel-id]').forEach(function(c){c.classList.remove('active-edit');});
   if(id){
     var b=getBoiteis().find(function(x){return x.id===id;});
     if(!b)return;
     document.getElementById('boitel-form-title').textContent='Editar Boitel';
     document.getElementById('bf-id').value=id;
     document.getElementById('bf-nome').value=b.nome||'';
+    document.getElementById('bf-razaoSocial').value=b.razaoSocial||'';
+    document.getElementById('bf-documento').value=b.documento||'';
+    document.getElementById('bf-inscricaoEstadual').value=b.inscricaoEstadual||'';
+    document.getElementById('bf-cidade').value=b.cidade||'';
+    document.getElementById('bf-estado').value=b.estado||'';
     document.getElementById('bf-msKG').value=brNum(b.msKG||0,2);
     document.getElementById('bf-opDia').value=brNum(b.opDia||0,2);
     document.getElementById('bf-sanidade').value=brNum(b.sanidade||0,2);
     document.getElementById('bf-custoArrobaProd').value=brNum(b.custoArrobaProd||0,2);
     document.getElementById('bf-prazoPag').value=b.prazoPag||0;
+    var card=Array.from(document.querySelectorAll('[data-boitel-id]')).find(function(c){return c.getAttribute('data-boitel-id')===id;});
+    if(card){card.classList.add('active-edit');card.insertAdjacentElement('afterend',form);}
   } else {
+    if(anchor&&anchor.parentNode)anchor.insertAdjacentElement('afterend',form);
     document.getElementById('boitel-form-title').textContent='Novo Boitel';
     document.getElementById('bf-id').value='';
     document.getElementById('bf-nome').value='';
+    document.getElementById('bf-razaoSocial').value='';
+    document.getElementById('bf-documento').value='';
+    document.getElementById('bf-inscricaoEstadual').value='';
+    document.getElementById('bf-cidade').value='';
+    document.getElementById('bf-estado').value='';
     document.getElementById('bf-msKG').value=brNum(p.msKG||0,2);
     document.getElementById('bf-opDia').value=brNum(p.opDia||0,2);
     document.getElementById('bf-sanidade').value=brNum(p.sanidade||0,2);
@@ -14371,10 +14407,16 @@ function showBoitelForm(id){
     document.getElementById('bf-prazoPag').value=p.prazoPag||7;
   }
   form.style.display='block';
-  document.getElementById('bf-nome').focus();
+  document.getElementById('bf-nome').focus({preventScroll:true});
 }
 function editarBoitel(id){showBoitelForm(id);}
-function hideBoitelForm(){document.getElementById('boitel-form').style.display='none';}
+function hideBoitelForm(){
+  var form=document.getElementById('boitel-form');
+  var anchor=document.getElementById('boitel-form-anchor');
+  if(form)form.style.display='none';
+  if(anchor&&form&&anchor.parentNode)anchor.insertAdjacentElement('afterend',form);
+  document.querySelectorAll('[data-boitel-id]').forEach(function(c){c.classList.remove('active-edit');});
+}
 function salvarBoitel(){
   if(!requirePermission('settings.operational'))return;
   var nome=document.getElementById('bf-nome').value.trim();
@@ -14385,6 +14427,11 @@ function salvarBoitel(){
   var entry={
     id:editId||'boitel_'+Date.now(),
     nome:nome,
+    razaoSocial:document.getElementById('bf-razaoSocial').value.trim(),
+    documento:document.getElementById('bf-documento').value.trim(),
+    inscricaoEstadual:document.getElementById('bf-inscricaoEstadual').value.trim(),
+    cidade:document.getElementById('bf-cidade').value.trim(),
+    estado:document.getElementById('bf-estado').value.trim().toUpperCase(),
     msKG:finInputNum('bf-msKG'),
     opDia:finInputNum('bf-opDia'),
     sanidade:finInputNum('bf-sanidade'),
@@ -14407,6 +14454,7 @@ function salvarBoitel(){
 function deletarBoitel(id){
   if(!requirePermission('settings.operational'))return;
   if(!confirm('Excluir este boitel?'))return;
+  hideBoitelForm();
   var cfg=loadConfig();
   cfg.boiteis=(cfg.boiteis||[]).filter(function(b){return b.id!==id;});
   saveConfig(cfg);
