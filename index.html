@@ -1105,7 +1105,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .status-total-sub{font-size:9px;color:var(--text-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .status-table-wrap{background:#fff;border:1px solid var(--border);border-radius:14px;overflow-x:auto;box-shadow:0 6px 22px rgba(13,27,42,.07);width:100%;}
   .status-table{width:100%;min-width:1420px;}
-.status-head,.status-filter-row,.status-row{display:grid;grid-template-columns:88px 48px 92px 112px 112px minmax(220px,1.35fr) 136px 58px 82px 82px 92px minmax(104px,.95fr) minmax(104px,.95fr) minmax(94px,.85fr) 68px 68px 96px 96px;align-items:center;}
+.status-head,.status-filter-row,.status-row,.status-total-row{display:grid;grid-template-columns:88px 48px 92px 112px 112px minmax(220px,1.35fr) 136px 58px 82px 82px 92px minmax(104px,.95fr) minmax(104px,.95fr) minmax(94px,.85fr) 68px 68px 96px 96px;align-items:center;}
   .status-head{background:#f6f9fb;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;}
   .status-head-cell{position:relative;padding:10px 9px;font-size:8.5px;font-weight:850;letter-spacing:.9px;text-transform:uppercase;color:var(--text-3);white-space:nowrap;cursor:pointer;user-select:none;}
   .status-head-cell:first-child{text-align:left;}
@@ -1161,6 +1161,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .status-filter-control input:focus,.status-filter-control select:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 2px rgba(201,162,78,.12);}
   .status-filter-control::after{content:'⌄';position:absolute;right:7px;top:50%;transform:translateY(-54%);font-size:13px;font-weight:900;color:var(--taupe);pointer-events:none;line-height:1;}
   .status-row{min-height:42px;border-bottom:1px solid var(--border);cursor:pointer;background:#fff;transition:background .15s,box-shadow .15s,transform .15s;}
+	.status-total-row{min-height:48px;border-top:2px solid var(--gold);background:#f4efe5;font-weight:850;color:var(--navy);}
+	.status-total-cell{height:48px;box-sizing:border-box;display:flex;align-items:center;padding:6px 9px;border-right:1px solid var(--border);font-size:13px;line-height:1.15;white-space:normal;overflow:hidden;text-overflow:ellipsis;}
+	.status-total-cell:last-child{border-right:0;}
+	.status-total-cell.money{font-size:11.7px;}
+	.status-total-cell.positive{color:var(--green);}
+	.status-total-cell.negative{color:var(--red);}
   .status-row:last-child{border-bottom:none;}
   .status-row:hover{background:#fbfdfe;box-shadow:inset 3px 0 0 var(--accent);}
   .status-row:active{cursor:grabbing;}
@@ -1383,7 +1389,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	  @media(max-width:1180px){
 	    #panel-lotes{width:calc(100vw - 28px);}
 	    .status-table{min-width:1420px;}
-	    .status-head,.status-filter-row,.status-row{grid-template-columns:86px 52px 112px 118px 112px 160px 118px 54px 84px 84px 96px 112px 112px 102px 70px 70px 104px 104px;}
+	    .status-head,.status-filter-row,.status-row,.status-total-row{grid-template-columns:86px 52px 112px 118px 112px 160px 118px 54px 84px 84px 96px 112px 112px 102px 70px 70px 104px 104px;}
 	    .status-head-cell{padding:9px 7px;font-size:8px;}
 	    .status-cell{padding:8px 7px;font-size:11.5px;}
 	  }
@@ -1449,7 +1455,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	    .status-total-value{font-size:14px;}
 	    .status-table-wrap{border-radius:12px;}
 	    .status-table{min-width:1440px;}
-	    .status-head,.status-filter-row,.status-row{grid-template-columns:86px 56px 132px 118px 112px 170px 118px 54px 86px 86px 98px 116px 116px 106px 72px 72px 106px 106px;}
+	    .status-head,.status-filter-row,.status-row,.status-total-row{grid-template-columns:86px 56px 132px 118px 112px 170px 118px 54px 86px 86px 98px 116px 116px 106px 72px 72px 106px 106px;}
 	    .status-head-cell{padding:9px 7px;font-size:8px;}
 	    .status-filter-cell{padding:5px;}
 	    .status-filter-control input,.status-filter-control select{height:28px;font-size:10px;}
@@ -1768,6 +1774,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 	    #panel-lotes .badge{font-size:9px;padding:4px 9px;}
 	    #panel-lotes .b3-lock-pill{font-size:8.5px;margin-bottom:3px;}
 	    #panel-lotes .status-table-note{padding:0 2px 10px;line-height:1.45;}
+	    #panel-lotes .status-total-row{display:none!important;}
 	    #panel-lotes #edit-panel{width:100%;min-width:0;overflow:hidden;}
 	    #panel-lotes .status-row.active-edit + #edit-panel{margin:-5px 0 12px!important;}
 	    #panel-lotes .status-row.active-edit + #edit-panel .ep{border-radius:0 0 14px 14px;border-top:none;margin:0;padding:14px 12px;}
@@ -2589,6 +2596,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 @container (min-width: 760px){
   #panel-calc .calc-form-column .calc-wide-grid-4{
     grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@container (min-width: 980px){
+  #panel-calc .calc-form-column .calc-transport-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr));
   }
 }
 
@@ -4283,9 +4296,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <!-- Transporte -->
       <div class="section-label">Transporte e Quebra</div>
       <div class="card">
-        <div class="g3 calc-wide-grid-4">
+        <div class="g3 calc-wide-grid-4 calc-transport-grid">
+          <div class="field"><label>Carretas</label><div class="unit-input"><span class="unit-input-prefix">un.</span><input type="number" id="freteCarretas" value="1" step="1" min="1" onchange="normalizarQuantidadeCarretas(this)"></div><div class="hint">Multiplica o custo total do transporte.</div></div>
           <div class="field"><label>Distância (km)</label><div class="unit-input"><span class="unit-input-prefix">km</span><input type="number" id="freteKm" value="150" step="1" min="0" oninput="recalcularQuebra()"></div></div>
-          <div class="field"><label>Custo R$/km</label><div class="unit-input"><span class="unit-input-prefix">R$</span><input type="number" id="freteCusto" value="4.50" step="0.01" min="0"></div><div class="hint">Frete = km × R$/km ÷ qtd animais</div></div>
+          <div class="field"><label>Custo R$/km</label><div class="unit-input"><span class="unit-input-prefix">R$</span><input type="number" id="freteCusto" value="4.50" step="0.01" min="0"></div><div class="hint">Frete = km × R$/km × carretas ÷ qtd animais</div></div>
           <div class="field"><label>Bônus Frete R$/animal</label><div class="unit-input"><span class="unit-input-prefix">R$</span><input type="number" id="bonusFrete" value="0" step="0.50" min="0"></div><div class="hint">Desconto/rebate no frete</div></div>
           <div class="field"><label>Quebra (%)</label><div class="unit-input"><span class="unit-input-prefix">%</span><input type="text" inputmode="decimal" data-decimal="1" id="quebra" value="4,00" step="0.01" min="0" max="20" placeholder="0,00"></div><div class="hint">Aceita quebra menor que 1%: ex. 0,45%.</div></div>
         </div>
@@ -4991,6 +5005,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           <div class="g2">
             <div class="field"><label>Bônus frete (R$/animal)</label><input type="text" inputmode="decimal" id="p-bonusFrete" value="60"></div>
             <div class="field"><label>Distância padrão (km)</label><input type="text" inputmode="numeric" id="p-freteKm" value="150"></div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Quantidade padrão de carretas</label><input type="text" inputmode="numeric" id="p-freteCarretas" value="1" onblur="normalizarQuantidadeCarretas(this)"></div>
+            <div class="field"></div>
           </div>
           <div class="cfg-row-lbl">Venda</div>
           <div class="g2">
@@ -7032,7 +7050,7 @@ function dfParams(){return{
   qtd:50,pesoCom:420,valorKG:12.50,precoCompraMode:'kg',comissao:1.0,comissaoMode:'pct',
   gmd:1.50,dias:100,rendE:50,rendA:55,consumoMS:2.4,quebra:8.0,
   msKG:1.30,opDia:2.00,custoArrobaProd:0,sanidade:12.00,
-  freteCusto:17.00,bonusFrete:60,freteKm:150,
+  freteCusto:17.00,bonusFrete:60,freteKm:150,freteCarretas:1,
   funrural:0.2,corretagemB3:0.15,valorAt:350.00,bonus:1.0,desconto:1.0,prazoPag:7,
   customCosts:[]
 };}
@@ -10084,8 +10102,9 @@ function calcularFreteUnitarioOrc(o){
   var qtd=numFreteRateio(o.qtd);
   var km=numFreteRateio(o.freteKm||o.distanciaKm);
   var custoKm=numFreteRateio(o.freteCusto);
+  var carretas=Math.max(1,Math.round(numFreteRateio(o.freteCarretas)||1));
   var bonusCalc=numFreteRateio(o.bonusFrete);
-  var brutoCalc=qtd>0?(km*custoKm)/qtd:0;
+  var brutoCalc=qtd>0?(km*custoKm*carretas)/qtd:0;
   return {fixo:false,bruto:brutoCalc,bonus:bonusCalc,liquido:Math.max(0,brutoCalc-bonusCalc)};
 }
 
@@ -11114,7 +11133,7 @@ function vincularSimAoLote(simId){
     data:sim.data,hora:sim.hora,user:sim.user,
     modeloConta:'msop',modeloLabel:calcModeloLabel('msop'),
     qtd:sim.qtd,dias:sim.dias,pesoCom:sim.pesoCom,gmd:sim.gmd,valorKG:sim.valorKG,
-    freteKm:sim.freteKm,quebra:sim.quebra,valorAt:sim.valorAt,
+    freteKm:sim.freteKm,freteCusto:sim.freteCusto,freteCarretas:Math.max(1,Math.round(sim.freteCarretas||1)),bonusFrete:sim.bonusFrete,quebra:sim.quebra,valorAt:sim.valorAt,
     lucroLote:sim.lucroLote,lucroAnimal:sim.lucroAnimal,
     rent:sim.rent,rentMes:sim.rentMes,fatLiqLote:sim.fatLiq,
     investLote:0,custoAtProd:0
@@ -11215,11 +11234,19 @@ function setStatusSub(id,value){
   var el=document.getElementById(id);
   if(el)el.textContent=value||'';
 }
+function setStatusFooterValue(key,value,cls){
+  var el=document.querySelector('#status-total-row [data-status-total-col="'+key+'"]');
+  if(!el)return;
+  el.textContent=value===undefined||value===null||value===''?'—':value;
+  el.title=el.textContent;
+  el.className='status-total-cell '+statusColClass(key)+' '+(cls||'');
+}
 function applyStatusColumnFilters(){
   var rows=document.querySelectorAll('#lote-list .status-row[data-lid]');
-  var qtd=0,faturamento=0,capital=0,lucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0;
+  var qtd=0,faturamento=0,capital=0,lucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0;
   var quebraPctPeso=0,quebraKgPeso=0,rcExpectativaPeso=0,rcExpectativaQtd=0,rcRealizadoPeso=0,rcRealizadoQtd=0,consumoExpectativaPeso=0,consumoExpectativaQtd=0,consumoRealizadoPeso=0,consumoRealizadoQtd=0;
-  var gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0;
+  var gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0,atProdChegadaPeso=0,atProdOrigemPeso=0,custoAtChegadaPeso=0,custoAtOrigemPeso=0;
+  var gmdOrigemQtd=0,gmdChegadaQtd=0,gmcOrigemQtd=0,gmcChegadaQtd=0,eficienciaQtd=0,eficienciaChegadaQtd=0,atProdChegadaQtd=0,atProdOrigemQtd=0,custoAtChegadaQtd=0,custoAtOrigemQtd=0;
   rows.forEach(function(row){
     var show=statusRowPassaFiltros(row);
     row.style.display=show?'':'none';
@@ -11230,6 +11257,8 @@ function applyStatusColumnFilters(){
     faturamento+=parseFloat(row.getAttribute('data-faturamento-raw'))||0;
     capital+=parseFloat(row.getAttribute('data-capital-raw'))||0;
     lucro+=parseFloat(row.getAttribute('data-lucro-raw'))||0;
+    b3Travados+=parseFloat(row.getAttribute('data-b3-locked-raw'))||0;
+    b3Total+=parseFloat(row.getAttribute('data-b3-total-raw'))||0;
     var prazoDias=parseFloat(row.getAttribute('data-prazo-dias-raw'))||0;
     var capRow=parseFloat(row.getAttribute('data-capital-raw'))||0;
     if(prazoDias>0){
@@ -11253,12 +11282,26 @@ function applyStatusColumnFilters(){
       if(rcRealizadoRow>0){rcRealizadoPeso+=rcRealizadoRow*qtdRow;rcRealizadoQtd+=qtdRow;}
       if(consumoExpectativaRow>0){consumoExpectativaPeso+=consumoExpectativaRow*qtdRow;consumoExpectativaQtd+=qtdRow;}
       if(consumoRealizadoRow>0){consumoRealizadoPeso+=consumoRealizadoRow*qtdRow;consumoRealizadoQtd+=qtdRow;}
-      gmdOrigemPeso+=(parseFloat(row.getAttribute('data-sort-gmdOrigem'))||0)*qtdRow;
-      gmdChegadaPeso+=(parseFloat(row.getAttribute('data-sort-gmdChegada'))||0)*qtdRow;
-      gmcOrigemPeso+=(parseFloat(row.getAttribute('data-sort-gmcOrigem'))||0)*qtdRow;
-      gmcChegadaPeso+=(parseFloat(row.getAttribute('data-sort-gmcChegada'))||0)*qtdRow;
-      eficienciaPeso+=(parseFloat(row.getAttribute('data-sort-eficiencia'))||0)*qtdRow;
-      eficienciaChegadaPeso+=(parseFloat(row.getAttribute('data-sort-eficienciaChegada'))||0)*qtdRow;
+      var gmdOrigemRow=parseFloat(row.getAttribute('data-sort-gmdOrigem'))||0;
+      var gmdChegadaRow=parseFloat(row.getAttribute('data-sort-gmdChegada'))||0;
+      var gmcOrigemRow=parseFloat(row.getAttribute('data-sort-gmcOrigem'))||0;
+      var gmcChegadaRow=parseFloat(row.getAttribute('data-sort-gmcChegada'))||0;
+      var eficienciaRow=parseFloat(row.getAttribute('data-sort-eficiencia'))||0;
+      var eficienciaChegadaRow=parseFloat(row.getAttribute('data-sort-eficienciaChegada'))||0;
+      var atProdChegadaRow=parseFloat(row.getAttribute('data-sort-atProdChegada'))||0;
+      var atProdOrigemRow=parseFloat(row.getAttribute('data-sort-atProdOrigem'))||0;
+      var custoAtChegadaRow=parseFloat(row.getAttribute('data-sort-custoAtChegada'))||0;
+      var custoAtOrigemRow=parseFloat(row.getAttribute('data-sort-custoAtOrigem'))||0;
+      if(gmdOrigemRow>0){gmdOrigemPeso+=gmdOrigemRow*qtdRow;gmdOrigemQtd+=qtdRow;}
+      if(gmdChegadaRow>0){gmdChegadaPeso+=gmdChegadaRow*qtdRow;gmdChegadaQtd+=qtdRow;}
+      if(gmcOrigemRow>0){gmcOrigemPeso+=gmcOrigemRow*qtdRow;gmcOrigemQtd+=qtdRow;}
+      if(gmcChegadaRow>0){gmcChegadaPeso+=gmcChegadaRow*qtdRow;gmcChegadaQtd+=qtdRow;}
+      if(eficienciaRow>0){eficienciaPeso+=eficienciaRow*qtdRow;eficienciaQtd+=qtdRow;}
+      if(eficienciaChegadaRow>0){eficienciaChegadaPeso+=eficienciaChegadaRow*qtdRow;eficienciaChegadaQtd+=qtdRow;}
+      if(atProdChegadaRow>0){atProdChegadaPeso+=atProdChegadaRow*qtdRow;atProdChegadaQtd+=qtdRow;}
+      if(atProdOrigemRow>0){atProdOrigemPeso+=atProdOrigemRow*qtdRow;atProdOrigemQtd+=qtdRow;}
+      if(custoAtChegadaRow>0){custoAtChegadaPeso+=custoAtChegadaRow*qtdRow;custoAtChegadaQtd+=qtdRow;}
+      if(custoAtOrigemRow>0){custoAtOrigemPeso+=custoAtOrigemRow*qtdRow;custoAtOrigemQtd+=qtdRow;}
     }
   });
   var rentOperacao=capital>0?lucro/capital:0;
@@ -11278,12 +11321,41 @@ function applyStatusColumnFilters(){
   setStatusTotal('status-total-rc-realizado',rcRealizadoQtd>0?fmtNum(rcRealizadoPeso/rcRealizadoQtd,2)+'%':'—');
   setStatusTotal('status-total-consumo-expectativa',consumoExpectativaQtd>0?fmtNum(consumoExpectativaPeso/consumoExpectativaQtd,2)+'%':'—');
   setStatusTotal('status-total-consumo-realizado',consumoRealizadoQtd>0?fmtNum(consumoRealizadoPeso/consumoRealizadoQtd,2)+'%':'—');
-  setStatusTotal('status-total-gmd-origem',qtd>0?fmtNum(gmdOrigemPeso/qtd,2)+' kg/dia':'—');
-  setStatusTotal('status-total-gmd-chegada',qtd>0?fmtNum(gmdChegadaPeso/qtd,2)+' kg/dia':'—');
-  setStatusTotal('status-total-gmc-origem',qtd>0?fmtNum(gmcOrigemPeso/qtd,3)+' kg/dia':'—');
-  setStatusTotal('status-total-gmc-chegada',qtd>0?fmtNum(gmcChegadaPeso/qtd,3)+' kg/dia':'—');
-  setStatusTotal('status-total-eficiencia',qtd>0?fmtNum(eficienciaPeso/qtd,2)+' kg MS/@':'—');
-  setStatusTotal('status-total-eficiencia-chegada',qtd>0?fmtNum(eficienciaChegadaPeso/qtd,2)+' kg MS/@':'—');
+  setStatusTotal('status-total-gmd-origem',gmdOrigemQtd>0?fmtNum(gmdOrigemPeso/gmdOrigemQtd,2)+' kg/dia':'—');
+  setStatusTotal('status-total-gmd-chegada',gmdChegadaQtd>0?fmtNum(gmdChegadaPeso/gmdChegadaQtd,2)+' kg/dia':'—');
+  setStatusTotal('status-total-gmc-origem',gmcOrigemQtd>0?fmtNum(gmcOrigemPeso/gmcOrigemQtd,3)+' kg/dia':'—');
+  setStatusTotal('status-total-gmc-chegada',gmcChegadaQtd>0?fmtNum(gmcChegadaPeso/gmcChegadaQtd,3)+' kg/dia':'—');
+  setStatusTotal('status-total-eficiencia',eficienciaQtd>0?fmtNum(eficienciaPeso/eficienciaQtd,2)+' kg MS/@':'—');
+  setStatusTotal('status-total-eficiencia-chegada',eficienciaChegadaQtd>0?fmtNum(eficienciaChegadaPeso/eficienciaChegadaQtd,2)+' kg MS/@':'—');
+  setStatusFooterValue('status','TOTAL');
+  setStatusFooterValue('numeroLote',visiveis+' lote(s)');
+  setStatusFooterValue('lote','—');
+  setStatusFooterValue('b3',fmtContratosB3(b3Travados)+'/'+fmtContratosLoteB3(b3Total)+' ctr');
+  setStatusFooterValue('qtd',qtd.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.');
+  setStatusFooterValue('entrada','Prazo médio');
+  setStatusFooterValue('abate','Entrada → receb.');
+  setStatusFooterValue('recebimento',prazoMedio>0?Math.round(prazoMedio)+' dias':'—');
+  setStatusFooterValue('faturamento',fmt(faturamento),'money');
+  setStatusFooterValue('capital',fmt(capital),'money');
+  setStatusFooterValue('lucro',fmt(lucro),'money '+(lucro>=0?'positive':'negative'));
+  setStatusFooterValue('rent',fmtPct(rentOperacao),rentOperacao>=0?'positive':'negative');
+  setStatusFooterValue('rentmes',fmtPct(rentMes),rentMes>=0?'positive':'negative');
+  setStatusFooterValue('quebraPct',qtd>0?fmtNum(quebraPctPeso/qtd,2)+'%':'—');
+  setStatusFooterValue('quebraKg',qtd>0?fmtNum(quebraKgPeso/qtd,1)+' kg':'—');
+  setStatusFooterValue('rcExpectativa',rcExpectativaQtd>0?fmtNum(rcExpectativaPeso/rcExpectativaQtd,2)+'%':'—');
+  setStatusFooterValue('rcRealizado',rcRealizadoQtd>0?fmtNum(rcRealizadoPeso/rcRealizadoQtd,2)+'%':'—');
+  setStatusFooterValue('consumoMedioExpectativa',consumoExpectativaQtd>0?fmtNum(consumoExpectativaPeso/consumoExpectativaQtd,2)+'%':'—');
+  setStatusFooterValue('consumoMedioRealizado',consumoRealizadoQtd>0?fmtNum(consumoRealizadoPeso/consumoRealizadoQtd,2)+'%':'—');
+  setStatusFooterValue('gmdOrigem',gmdOrigemQtd>0?fmtNum(gmdOrigemPeso/gmdOrigemQtd,2)+' kg/dia':'—');
+  setStatusFooterValue('gmdChegada',gmdChegadaQtd>0?fmtNum(gmdChegadaPeso/gmdChegadaQtd,2)+' kg/dia':'—');
+  setStatusFooterValue('gmcOrigem',gmcOrigemQtd>0?fmtNum(gmcOrigemPeso/gmcOrigemQtd,3)+' kg/dia':'—');
+  setStatusFooterValue('gmcChegada',gmcChegadaQtd>0?fmtNum(gmcChegadaPeso/gmcChegadaQtd,3)+' kg/dia':'—');
+  setStatusFooterValue('eficiencia',eficienciaQtd>0?fmtNum(eficienciaPeso/eficienciaQtd,2)+' kg MS/@':'—');
+  setStatusFooterValue('eficienciaChegada',eficienciaChegadaQtd>0?fmtNum(eficienciaChegadaPeso/eficienciaChegadaQtd,2)+' kg MS/@':'—');
+  setStatusFooterValue('atProdChegada',atProdChegadaQtd>0?fmtNum(atProdChegadaPeso/atProdChegadaQtd,3)+' @':'—');
+  setStatusFooterValue('atProdOrigem',atProdOrigemQtd>0?fmtNum(atProdOrigemPeso/atProdOrigemQtd,3)+' @':'—');
+  setStatusFooterValue('custoAtChegada',custoAtChegadaQtd>0?fmt(custoAtChegadaPeso/custoAtChegadaQtd)+'/@':'—','money');
+  setStatusFooterValue('custoAtOrigem',custoAtOrigemQtd>0?fmt(custoAtOrigemPeso/custoAtOrigemQtd)+'/@':'—','money');
   setStatusSub('status-total-prazo',prazoMedio>0?'Prazo médio: '+prazoMedio.toLocaleString('pt-BR',{maximumFractionDigits:0})+' dias':'Prazo médio: —');
   var note=document.getElementById('status-filter-count');
   if(note)note.textContent=visiveis+' lote(s) exibido(s)';
@@ -11361,7 +11433,7 @@ function statusGridWidth(){
 }
 function applyStatusGridTemplate(){
   var tpl=statusGridTemplate();
-  document.querySelectorAll('#panel-lotes .status-head,#panel-lotes .status-filter-row,#panel-lotes .status-row').forEach(function(el){
+  document.querySelectorAll('#panel-lotes .status-head,#panel-lotes .status-filter-row,#panel-lotes .status-row,#panel-lotes .status-total-row').forEach(function(el){
     el.style.gridTemplateColumns=tpl;
   });
   var table=document.querySelector('#panel-lotes .status-table');
@@ -11568,6 +11640,13 @@ function renderLotes(){
       +'</div>';
     }).join('');
   }
+  function statusTotalRowHtml(){
+    return '<div class="status-total-row" id="status-total-row" style="grid-template-columns:'+statusGridTemplate()+'">'
+      +STATUS_COLS.map(function(c){
+        return '<div class="status-total-cell '+statusColClass(c.key)+'" data-status-col="'+c.key+'" data-status-total-col="'+c.key+'" title="—">—</div>';
+      }).join('')
+    +'</div>';
+  }
   function statusFiltersHtml(){
     var placeholders={
       status:'Todos',ano:'Ano',confinamento:'Confinamento',modalidade:'Modalidade',raca:'Raça',origem:'Origem',vendedor:'Vendedor',lote:'Lote',b3:'B3',qtd:'Qtd',quebraPct:'%',quebraKg:'kg',
@@ -11695,11 +11774,15 @@ function renderLotes(){
     var recebSortDate=recebDate?recebDate.toISOString().slice(0,10):'';
     var b3Nec=necessidadeContratosB3(l,o);
     var b3Status=coberturaStatusB3(l,o,metric);
+    var b3ResumoAtivo=resumoB3NaoCanceladoLote(l.id);
+    var b3TotalNecessario=finNum(b3Nec&&b3Nec.necessarios)||finNum(b3ResumoAtivo.contratos)||0;
     var b3Cobertura=b3Status.cobertura;
     var b3Estado=b3Status.estado||'Aberto';
     var b3Val=b3Estado+' · '+b3Cobertura;
     var filtroLote='Lote '+numeroLote+(cardTitle?' '+cardTitle:'')+(vend?' '+vend.nome:'')+(useRealizedTechnical?' realizado':' simulado');
     var attrs=' data-qtd-raw="'+qtdRaw+'" data-faturamento-raw="'+(o?faturamento:0)+'" data-capital-raw="'+(o?capital:0)+'" data-lucro-raw="'+(o?lucro:0)+'" data-prazo-dias-raw="'+prazoDias+'"'
+      +' data-b3-open-raw="'+(b3ResumoAtivo.abertos||0)+'" data-b3-closed-raw="'+(b3ResumoAtivo.liquidados||0)+'"'
+      +' data-b3-locked-raw="'+(b3ResumoAtivo.contratos||0)+'" data-b3-total-raw="'+b3TotalNecessario+'"'
       +' data-filter-status="'+escHtml(sc.label)+'"'
       +' data-filter-ano="'+escHtml(anoVal)+'"'
       +' data-filter-confinamento="'+escHtml(confinamento)+'"'
@@ -11997,6 +12080,7 @@ function renderLotes(){
     +'<div class="status-table-body">'
       +lotes.map(function(l,idx){return buildStatusCard(l,idx);}).join('')
       +'</div>'
+    +statusTotalRowHtml()
     +'</div></div></div>';
   html+='<div class="status-mobile-hint"><span class="status-mobile-hint-icon">i</span><span>Arraste itens horizontalmente para ver mais detalhes.</span></div>';
   html+='<div class="status-table-note"><span id="status-filter-count"></span> · Clique em uma linha para editar. Para mudar o status, arraste a linha para um dos botões de status acima.</div>';
@@ -12327,7 +12411,8 @@ function renderDTabResumo(){
   if(b3Resumo.contratos)alertsHtml+='<div class="alert-tag info">B3: '+fmtContratosB3(b3Resumo.contratos)+' contrato(s) · '+b3Resumo.arrobas.toLocaleString('pt-BR',{maximumFractionDigits:0})+' @ · resultado '+fmt(b3Resumo.resultado)+'</div>';
   // Compra
   var compraTotal=lote.qtd*lote.pesoMedio*lote.precoKg;
-  var freteEst=lote.qtd*(lote.distanciaKm||0)*p.freteCusto;
+  var freteCarretasResumo=Math.max(1,Math.round((ult&&ult.freteCarretas)||p.freteCarretas||1));
+  var freteEst=(lote.distanciaKm||0)*p.freteCusto*freteCarretasResumo;
   var tipoLabel=lote.tipoAnimal?TIPO_LABEL[lote.tipoAnimal]:(lote.tipoCustom||'A definir');
   var vendNome=vend?vend.nome:'<em style="color:var(--text-3)">A definir</em>';
   // Ultima sim
@@ -12640,6 +12725,7 @@ function editarOrcamento(loteId,idx){
   _setCalcValue('consumoMS',_prefer(o.consPC_pct,a.ms));
   _setCalcValue('freteKm',_prefer(o.freteKm,lote.distanciaKm,p.freteKm));
   _setCalcValue('freteCusto',_prefer(o.freteCusto,p.freteCusto));
+  _setCalcValue('freteCarretas',_prefer(o.freteCarretas,p.freteCarretas,1));
   _setCalcValue('bonusFrete',_prefer(o.bonusFrete,p.bonusFrete,0));
   _setCalcValue('comissao',_prefer(o.comissao,p.comissao));
   _setCalcValue('sanidade',_prefer(snap.sanidade,o.sanidade,p.sanidade));
@@ -12878,7 +12964,8 @@ function renderDTabApuracao(){
   const ult=lote.orcamentos&&lote.orcamentos[0];
   // ── REAL COSTS ──
   const custoCom=lote.qtd*lote.pesoMedio*lote.precoKg;
-  const custoFrete=lote.qtd*lote.distanciaKm*p.freteCusto;
+  const freteCarretasReal=Math.max(1,Math.round((ult&&ult.freteCarretas)||p.freteCarretas||1));
+  const custoFrete=lote.distanciaKm*p.freteCusto*freteCarretasReal;
   const custoComissao=lote.qtd*p.comissao;
   const custoSanidade=lote.qtd*p.sanidade;
   const custoConf=cr.custoMSTotal+cr.custoOpTotal;
@@ -12967,7 +13054,7 @@ function simularLote(id){
   _setCalcValue('qtd',lote.qtd);_setCalcValue('pesoCom',lote.pesoMedio);
   _setCalcValue('gmd',a.gmd);_setCalcValue('rendEntrada',a.rendE);
   _setCalcValue('rendAbate',a.rendA);_setCalcValue('consumoMS',a.ms);
-  _setCalcValue('freteKm',lote.distanciaKm);_setCalcValue('freteCusto',p.freteCusto);
+  _setCalcValue('freteKm',lote.distanciaKm);_setCalcValue('freteCusto',p.freteCusto);_setCalcValue('freteCarretas',p.freteCarretas||1);
   _setCalcValue('valorKG',lote.precoKg);_setCalcValue('comissao',p.comissao);
   _setCalcValue('sanidade',p.sanidade);_setCalcValue('msKG',p.msKG);
   _setCalcValue('opDia',p.opDia);_setCalcValue('custoArrobaProd',p.custoArrobaProd||0);_setCalcValue('valorAt',p.valorAt);
@@ -13233,11 +13320,12 @@ function calcPreviewFrete(){
   var qtd=num('qtd');
   var km=num('freteKm');
   var custoKm=num('freteCusto');
+  var carretas=Math.max(1,Math.round(num('freteCarretas')||1));
   var bonus=num('bonusFrete');
   var pesoCom=num('pesoCom');
   var rendE=num('rendEntrada')/100;
   var freteFixo=calcularFreteUnitarioOrc(getOrcamentoAtualEmEdicao());
-  var freteBruto=freteFixo&&freteFixo.fixo?freteFixo.bruto:(qtd>0?(km*custoKm)/qtd:0);
+  var freteBruto=freteFixo&&freteFixo.fixo?freteFixo.bruto:(qtd>0?(km*custoKm*carretas)/qtd:0);
   var freteAnimal=freteFixo&&freteFixo.fixo?freteFixo.liquido:Math.max(0,freteBruto-bonus);
   var atCompra=pesoCom*rendE/15;
   return {
@@ -13245,6 +13333,12 @@ function calcPreviewFrete(){
     animal:freteAnimal,
     arroba:atCompra>0?freteAnimal/atCompra:0
   };
+}
+function normalizarQuantidadeCarretas(input){
+  if(!input)return 1;
+  var quantidade=Math.max(1,Math.round(finNum(input.value)||1));
+  input.value=quantidade;
+  return quantidade;
 }
 function atualizarFreteCalculado(){
   var data=calcPreviewFrete();
@@ -13269,7 +13363,7 @@ document.addEventListener('input',function(evt){
   if(['pesoCom','quebra','gmd','dias','rendEntrada','rendAbate','consumoMS','freteKm','msKG','opDia','custoArrobaProd'].indexOf(id)>=0){
     setTimeout(atualizarPreviewBiometria,0);
   }
-  if(['qtd','pesoCom','rendEntrada','freteKm','freteCusto','bonusFrete'].indexOf(id)>=0){
+  if(['qtd','pesoCom','rendEntrada','freteKm','freteCusto','freteCarretas','bonusFrete'].indexOf(id)>=0){
     setTimeout(atualizarFreteCalculado,0);
   }
   var panel=document.getElementById('panel-calc');
@@ -13385,7 +13479,7 @@ async function salvarResultadoNoLote(){
     dataEntradaPrev:(document.getElementById('dataEntradaPrev')||{value:''}).value||null,
     qtd:g('qtd'),pesoCom:g('pesoCom'),gmd:g('gmd'),dias:g('dias'),
     rendE_pct:g('rendEntrada'),rendA_pct:g('rendAbate'),consPC_pct:g('consumoMS'),
-    quebra_pct:g('quebra'),freteKm:g('freteKm'),freteCusto:g('freteCusto'),
+    quebra_pct:g('quebra'),freteKm:g('freteKm'),freteCusto:g('freteCusto'),freteCarretas:Math.max(1,Math.round(g('freteCarretas')||1)),
     bonusFrete:g('bonusFrete'),valorKG:valorKGCalc,valorAtCompra:g('valorAt_compra'),precoCompraMode:_precoModeAt?'at':'kg',sanidade:g('sanidade'),
     msKG:g('msKG'),opDia:g('opDia'),custoArrobaProd:g('custoArrobaProd'),valorAt:g('valorAt'),
     bonus:g('bonus'),desconto:g('desconto'),funrural_pct:g('funrural'),corretagemB3:g('corretagemB3'),
@@ -13666,7 +13760,7 @@ function abrirCalcStandalone(opts){
   var map={qtd:'qtd',pesoCom:'pesoCom',comissao:'comissao',gmd:'gmd',dias:'dias',
     rendE:'rendEntrada',rendA:'rendAbate',consumoMS:'consumoMS',quebra:'quebra',
     msKG:'msKG',opDia:'opDia',custoArrobaProd:'custoArrobaProd',sanidade:'sanidade',freteCusto:'freteCusto',
-    bonusFrete:'bonusFrete',freteKm:'freteKm',valorAt:'valorAt',funrural:'funrural',corretagemB3:'corretagemB3',
+    bonusFrete:'bonusFrete',freteKm:'freteKm',freteCarretas:'freteCarretas',valorAt:'valorAt',funrural:'funrural',corretagemB3:'corretagemB3',
     bonus:'bonus',desconto:'desconto',prazoPag:'prazoPag'};
   Object.keys(map).forEach(function(k){
     if(p[k]===undefined||p[k]===null)return;
@@ -13721,10 +13815,11 @@ function salvarSimulacaoComoPadrao(){
   var map={qtd:'qtd',pesoCom:'pesoCom',comissao:'comissao',gmd:'gmd',dias:'dias',
     rendE:'rendEntrada',rendA:'rendAbate',consumoMS:'consumoMS',quebra:'quebra',
     msKG:'msKG',opDia:'opDia',custoArrobaProd:'custoArrobaProd',sanidade:'sanidade',freteCusto:'freteCusto',
-    bonusFrete:'bonusFrete',freteKm:'freteKm',valorAt:'valorAt',funrural:'funrural',corretagemB3:'corretagemB3',
+    bonusFrete:'bonusFrete',freteKm:'freteKm',freteCarretas:'freteCarretas',valorAt:'valorAt',funrural:'funrural',corretagemB3:'corretagemB3',
     bonus:'bonus',desconto:'desconto',prazoPag:'prazoPag'};
   var cfg=loadConfig();if(!cfg.params)cfg.params={};
   Object.keys(map).forEach(function(k){var el=document.getElementById(map[k]);if(el&&el.value!=='')cfg.params[k]=finNum(el.value);});
+  cfg.params.freteCarretas=Math.max(1,Math.round(cfg.params.freteCarretas||1));
   cfg.params.precoCompraMode=_precoModeAt?'at':'kg';
   cfg.params.valorKG=parseFloat(document.getElementById(_precoModeAt?'valorAt_compra':'valorKG').value)||0;
   cfg.params.comissaoMode=getFieldMode('comissao');
@@ -13782,7 +13877,7 @@ function calcular(opts){
     ? (g('valorAt_compra')*(rendE_pct/100)/15)
     : g('valorKG');
   const rendE=rendE_pct/100, rendA=rendA_pct/100;  // convert % to fraction
-  const sanidade=g('sanidade'),freteKm=g('freteKm'),freteCusto=g('freteCusto'),quebra_pct=g('quebra');
+  const sanidade=g('sanidade'),freteKm=g('freteKm'),freteCusto=g('freteCusto'),freteCarretas=Math.max(1,Math.round(g('freteCarretas')||1)),quebra_pct=g('quebra');
   const quebra=quebra_pct/100;  // convert % to fraction
   const msKG=g('msKG'),consPC_pct=g('consumoMS'),opDia=g('opDia'),custoBoitelAt=g('custoArrobaProd'),prazoPag=g('prazoPag')||7;
   const consPC=consPC_pct/100;  // convert % to fraction
@@ -13826,7 +13921,7 @@ function calcular(opts){
   // Frete por animal (menos bônus de frete se houver)
   const freteFixoEdicao=calcularFreteUnitarioOrc(getOrcamentoAtualEmEdicao());
   const bonusFrete=freteFixoEdicao&&freteFixoEdicao.fixo?freteFixoEdicao.bonus:g('bonusFrete');          // desconto/rebate no frete
-  const freteBruto=freteFixoEdicao&&freteFixoEdicao.fixo?freteFixoEdicao.bruto:(qtd>0?(freteKm*freteCusto)/qtd:0);
+  const freteBruto=freteFixoEdicao&&freteFixoEdicao.fixo?freteFixoEdicao.bruto:(qtd>0?(freteKm*freteCusto*freteCarretas)/qtd:0);
   const freteAnim=freteFixoEdicao&&freteFixoEdicao.fixo?freteFixoEdicao.liquido:Math.max(0, freteBruto - bonusFrete);
 
   const valAnim=pesoCom*valorKG;
@@ -14064,8 +14159,8 @@ function calcular(opts){
   s('d-custoComAt', atCompra>0 ? fmt(valAnim/atCompra)+'/@' : '—');
   s('d-custoComBoitel',boi(fmt(valAnim)));
   s('d-freteBrutoAt',porAtCompra(freteBruto));
-  s('d-freteBruto',fmt(freteBruto)+' ('+freteKm+'km × R$'+freteCusto.toFixed(2)+')');
-  s('d-freteBrutoBoitel',boi(fmt(freteBruto)+' ('+freteKm+'km × R$'+freteCusto.toFixed(2)+')'));
+  s('d-freteBruto',fmt(freteBruto)+' ('+freteKm+'km × R$'+freteCusto.toFixed(2)+' × '+freteCarretas+' carr.)');
+  s('d-freteBrutoBoitel',boi(fmt(freteBruto)+' ('+freteKm+'km × R$'+freteCusto.toFixed(2)+' × '+freteCarretas+' carr.)'));
   s('d-bonusFreteAt',bonusFrete>0?('-'+porAtCompra(bonusFrete)):'—');
   s('d-bonusFrete',bonusFrete>0?('-'+fmt(bonusFrete)):'—');
   s('d-bonusFreteBoitel',boi(bonusFrete>0?('-'+fmt(bonusFrete)):'—'));
@@ -14292,7 +14387,7 @@ function deleteManagedUser(username){
 }
 function loadParamsForm(){
   var p=getParams();
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&p[k]!==undefined&&p[k]!==null)el.value=brNum(p[k],String(p[k]).indexOf('.')>=0?2:0);
   });
@@ -14323,10 +14418,11 @@ function salvarParams(){
   if(!requirePermission('settings.parameters','Apenas usuários autorizados podem alterar os parâmetros padrão.'))return;
   var cfg=loadConfig();
   if(!cfg.params)cfg.params={};
-  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
+  ['qtd','pesoCom','valorKG','comissao','gmd','dias','rendE','rendA','consumoMS','quebra','msKG','opDia','custoArrobaProd','sanidade','freteCusto','bonusFrete','freteKm','freteCarretas','valorAt','funrural','bonus','desconto','prazoPag'].forEach(function(k){
     var el=document.getElementById('p-'+k);
     if(el&&el.value!=='')cfg.params[k]=finNum(el.value);
   });
+  cfg.params.freteCarretas=Math.max(1,Math.round(cfg.params.freteCarretas||1));
   var nextLotEl=document.getElementById('p-nextLotNumber');
   var nextLotNumber=normalizarNumeroLote(nextLotEl&&nextLotEl.value);
   if(!nextLotNumber){
@@ -15412,7 +15508,8 @@ function buildCalculatorReportData(){
   var comissaoInput=calculatorReportInput('comissao')||0;
   var comissaoAnimal=getFieldMode('comissao')==='pct'&&compraAnimal!==null?compraAnimal*comissaoInput/100:comissaoInput;
   var freteFixoReport=calcularFreteUnitarioOrc(getOrcamentoAtualEmEdicao());
-  var freteBrutoAnimal=freteFixoReport&&freteFixoReport.fixo?freteFixoReport.bruto:(qty>0?(calculatorReportInput('freteKm')||0)*(calculatorReportInput('freteCusto')||0)/qty:0);
+  var freteCarretasReport=Math.max(1,Math.round(calculatorReportInput('freteCarretas')||1));
+  var freteBrutoAnimal=freteFixoReport&&freteFixoReport.fixo?freteFixoReport.bruto:(qty>0?(calculatorReportInput('freteKm')||0)*(calculatorReportInput('freteCusto')||0)*freteCarretasReport/qty:0);
   var bonusFreteAnimal=calculatorReportInput('bonusFrete');
   var freteLiquidoAnimal=calculatorReportNumber('d-freteAnim');
   var consumoAnimal=calculatorReportNumber('d-consumoTotal');
@@ -15470,7 +15567,7 @@ function buildCalculatorReportData(){
       arrobasEntryAnimal:atCompra,arrobasEntryTotal:atCompra!==null?atCompra*qty:null,priceArroba:precoCompraAt,priceKg:precoCompraKg,
       purchaseAnimal:compraAnimal,purchaseTotal:compraAnimal!==null?compraAnimal*qty:null,commissionValue:comissaoInput,
       commissionMode:getFieldMode('comissao'),commissionAnimal:comissaoAnimal,commissionTotal:comissaoAnimal!==null?comissaoAnimal*qty:null},
-    transport:{distanceKm:calculatorReportInput('freteKm'),costKm:calculatorReportInput('freteCusto'),grossTotal:freteBrutoAnimal!==null?freteBrutoAnimal*qty:null,
+    transport:{distanceKm:calculatorReportInput('freteKm'),costKm:calculatorReportInput('freteCusto'),truckCount:freteCarretasReport,grossTotal:freteBrutoAnimal!==null?freteBrutoAnimal*qty:null,
       grossAnimal:freteBrutoAnimal,bonusAnimal:bonusFreteAnimal,bonusTotal:bonusFreteAnimal!==null?bonusFreteAnimal*qty:null,
       netAnimal:freteLiquidoAnimal,netTotal:freteLiquidoAnimal!==null?freteLiquidoAnimal*qty:null,shrinkPct:quebra,
       shrinkKg:pesoCompra!==null&&pesoChegada!==null?pesoCompra-pesoChegada:null,originWeight:pesoCompra,arrivalWeight:pesoChegada},
@@ -15519,7 +15616,7 @@ function calculatorReportSectionItems(data){
       calculatorReportItem('Nome / referência',i.reference),calculatorReportItem('Número do lote',i.lotNumber),calculatorReportItem('Data da simulação',i.simulationAt),calculatorReportItem('Data da exportação',i.exportedAt),calculatorReportItem('Usuário',i.user),calculatorReportItem('Vendedor',i.seller),calculatorReportItem('Origem',i.origin),calculatorReportItem('Confinamento',i.confinement),calculatorReportItem('Raça / categoria',i.category),calculatorReportItem('Quantidade',i.quantity,'number','cab.'),calculatorReportItem('Modalidade',i.modality),calculatorReportItem('Situação',i.situation)
     ],
     'Compra e Transporte':[
-      calculatorReportItem('Peso médio de compra',p.weightAverage,'number','kg'),calculatorReportItem('Peso total de compra',p.weightTotal,'number','kg'),calculatorReportItem('Rendimento de entrada',p.yieldEntry,'percent','%'),calculatorReportItem('@ entrada / animal',p.arrobasEntryAnimal,'number','@'),calculatorReportItem('@ totais de entrada',p.arrobasEntryTotal,'number','@'),calculatorReportItem('Preço de compra / @',p.priceArroba,'money','R$/@'),calculatorReportItem('Preço de compra / kg',p.priceKg,'money','R$/kg'),calculatorReportItem('Compra / animal',p.purchaseAnimal,'money','R$'),calculatorReportItem('Compra total',p.purchaseTotal,'money','R$'),calculatorReportItem('Comissão / animal',p.commissionAnimal,'money','R$'),calculatorReportItem('Comissão total',p.commissionTotal,'money','R$'),calculatorReportItem('Distância',t.distanceKm,'number','km'),calculatorReportItem('Custo por km',t.costKm,'money','R$/km'),calculatorReportItem('Frete bruto / animal',t.grossAnimal,'money','R$'),calculatorReportItem('Frete bruto total',t.grossTotal,'money','R$'),calculatorReportItem('Bônus frete / animal',t.bonusAnimal,'money','R$'),calculatorReportItem('Bônus frete total',t.bonusTotal,'money','R$'),calculatorReportItem('Frete líquido / animal',t.netAnimal,'money','R$'),calculatorReportItem('Frete líquido total',t.netTotal,'money','R$'),calculatorReportItem('Quebra',t.shrinkPct,'percent','%'),calculatorReportItem('Quebra em kg',t.shrinkKg,'number','kg')
+      calculatorReportItem('Peso médio de compra',p.weightAverage,'number','kg'),calculatorReportItem('Peso total de compra',p.weightTotal,'number','kg'),calculatorReportItem('Rendimento de entrada',p.yieldEntry,'percent','%'),calculatorReportItem('@ entrada / animal',p.arrobasEntryAnimal,'number','@'),calculatorReportItem('@ totais de entrada',p.arrobasEntryTotal,'number','@'),calculatorReportItem('Preço de compra / @',p.priceArroba,'money','R$/@'),calculatorReportItem('Preço de compra / kg',p.priceKg,'money','R$/kg'),calculatorReportItem('Compra / animal',p.purchaseAnimal,'money','R$'),calculatorReportItem('Compra total',p.purchaseTotal,'money','R$'),calculatorReportItem('Comissão / animal',p.commissionAnimal,'money','R$'),calculatorReportItem('Comissão total',p.commissionTotal,'money','R$'),calculatorReportItem('Distância',t.distanceKm,'number','km'),calculatorReportItem('Custo por km',t.costKm,'money','R$/km'),calculatorReportItem('Quantidade de carretas',t.truckCount,'number','un.'),calculatorReportItem('Frete bruto / animal',t.grossAnimal,'money','R$'),calculatorReportItem('Frete bruto total',t.grossTotal,'money','R$'),calculatorReportItem('Bônus frete / animal',t.bonusAnimal,'money','R$'),calculatorReportItem('Bônus frete total',t.bonusTotal,'money','R$'),calculatorReportItem('Frete líquido / animal',t.netAnimal,'money','R$'),calculatorReportItem('Frete líquido total',t.netTotal,'money','R$'),calculatorReportItem('Quebra',t.shrinkPct,'percent','%'),calculatorReportItem('Quebra em kg',t.shrinkKg,'number','kg')
     ],
     'Confinamento':[
       calculatorReportItem('Modalidade',c.modality),calculatorReportItem('Boitel',c.boitel),calculatorReportItem('Dias',c.days,'number','dias'),calculatorReportItem('Data de entrada',c.entryDate),calculatorReportItem('Data de abate',c.slaughterDate),calculatorReportItem('Data de recebimento',c.receiptDate),calculatorReportItem('GMD',c.gmd,'number','kg/dia'),calculatorReportItem('MS diária',c.dryMatterDaily,'number','kg MS'),calculatorReportItem('MS total / animal',c.dryMatterAnimal,'number','kg MS'),calculatorReportItem('MS total do lote',c.dryMatterLot,'number','kg MS'),calculatorReportItem('Matéria seca',c.dryMatterPrice,'money','R$/kg'),calculatorReportItem('Operacional',c.operationalAnimalDay,'money','R$/animal/dia'),calculatorReportItem('Sanidade',c.healthAnimal,'money','R$/animal'),calculatorReportItem('Confinamento / animal',c.confinementAnimal,'money','R$'),calculatorReportItem('Confinamento total',c.confinementTotal,'money','R$')
