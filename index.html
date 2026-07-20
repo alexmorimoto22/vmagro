@@ -7268,6 +7268,17 @@ document.addEventListener('click',function(event){
     document.querySelectorAll('.fut-column-panel.open').forEach(function(panel){panel.classList.remove('open');});
   }
 });
+document.addEventListener('click',function(event){
+  if(!window.matchMedia||!window.matchMedia('(max-width: 768px)').matches)return;
+  var target=event.target;
+  if(target&&target.closest&&(target.closest('.home-pie-options')||target.closest('.home-bar-options')))return;
+  var shouldClose=homeChartState.pieOptionsOpen||homeChartState.barOptionsOpen||homeOverviewState.optionsOpen;
+  if(!shouldClose)return;
+  homeChartState.pieOptionsOpen=false;
+  homeChartState.barOptionsOpen=false;
+  homeOverviewState.optionsOpen=false;
+  renderHome();
+});
 function renderHome(){
   var now=new Date();
   var hour=now.getHours();
