@@ -8819,6 +8819,7 @@ function salvarFuturo(){
   var id=(document.getElementById('fut-id')||{}).value||'';
   var arr=getFuturos();
   var antigo=id?(arr.find(function(c){return c.id===id;})||null):null;
+  var reabrindoCancelado=!!(antigo&&antigo.status==='cancelado'&&liquidacoesFuturo(antigo).length===0);
   var norm=normalizarQtdContratoB3({
     qtdContratos:parseFloat((document.getElementById('fut-qtd')||{}).value)||0,
     arrobasPorContrato:330
@@ -8845,7 +8846,7 @@ function salvarFuturo(){
     custos:finNum((document.getElementById('fut-custos')||{}).value),
     obs:(document.getElementById('fut-obs')||{}).value.trim()||'',
     liquidacoes:antigo&&Array.isArray(antigo.liquidacoes)?antigo.liquidacoes:[],
-    status:antigo&&antigo.status==='cancelado'?'cancelado':undefined,
+    status:antigo&&antigo.status==='cancelado'&&!reabrindoCancelado?'cancelado':undefined,
     criadoPor:id?(antigo||{}).criadoPor||currentUser:currentUser,
     atualizadoEm:new Date().toISOString()
   };
@@ -8856,7 +8857,7 @@ function salvarFuturo(){
   renderFuturos();
   renderHome();
   if(document.getElementById('panel-lotes')&&document.getElementById('panel-lotes').style.display!=='none')renderLotes();
-  toast('✓ Contrato B3 salvo');
+  toast(reabrindoCancelado?'✓ Contrato reaberto e salvo':'✓ Contrato B3 salvo');
 }
 function editarFuturo(id){
   if(!requirePermission('b3.edit'))return;
