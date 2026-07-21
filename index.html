@@ -818,6 +818,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .fut-table td{border-bottom:1px solid var(--border);padding:12px 10px;font-size:11.5px;color:var(--text);font-weight:650;vertical-align:middle;white-space:nowrap;}
   .fut-table tr:last-child td{border-bottom:none;}
   .fut-table tbody tr:hover{background:rgba(201,162,78,.055);}
+  .fut-table tfoot td{height:54px;padding:7px 10px;border-top:2px solid var(--gold);border-right:1px solid var(--border);border-bottom:0;background:#F2EDE3;color:var(--navy);font-size:11px;font-weight:900;vertical-align:middle;white-space:normal;}
+  .fut-table tfoot td:last-child{border-right:0;}
+  .fut-total-main{display:block;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fut-total-sub{display:block;margin-top:3px;color:var(--text-3);font-size:8.5px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .fut-table .muted{color:var(--text-3);font-weight:600;}
   .fut-table .money{font-weight:850;}
   .fut-table .pos{color:var(--green);}
@@ -876,6 +880,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   #panel-futuros .column-frozen{position:sticky!important;z-index:4;background:#fff;box-shadow:1px 0 0 var(--border);}
   #panel-futuros th.column-frozen{z-index:7;background:#fffdf8;}
   #panel-futuros .fut-table tbody tr:nth-child(even)>.column-frozen{background:#faf8f3;}
+  #panel-futuros .fut-table tfoot .column-frozen{background:#F2EDE3;}
 .fut-action.success{background:rgba(107,112,86,.08);border-color:rgba(107,112,86,.22);color:var(--green);}
 .fut-action.warn{background:rgba(201,162,78,.12);border-color:rgba(201,162,78,.28);color:#8a4b05;}
 .fut-liq-history{margin-top:6px;font-size:10px;color:var(--text-3);line-height:1.35;white-space:normal;}
@@ -4756,6 +4761,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             <table class="fut-table">
               <thead><tr id="fut-table-head"></tr></thead>
               <tbody id="fut-list"></tbody>
+              <tfoot><tr id="fut-table-total"></tr></tfoot>
             </table>
           </div>
           <div class="fut-mobile-list" id="fut-mobile-list"></div>
@@ -5586,7 +5592,7 @@ function dashboardCardTouchEnd(event){
   dashboardTouchDrag=null;
 }
 var FUT_COLS=[
-  {key:'status',label:'Status',w:84},{key:'tipo',label:'Tipo',w:82},{key:'numeroLote',label:'Nº lote',w:76},{key:'lote',label:'Lote / operação',w:210},{key:'totalContratosLote',label:'Total ctr lote',w:112},{key:'momentoLote',label:'Momento lote',w:118},
+  {key:'status',label:'Status',w:84},{key:'tipo',label:'Tipo de operação',w:112},{key:'tipoTrava',label:'Tipo de trava',w:100},{key:'numeroLote',label:'Nº lote',w:76},{key:'lote',label:'Lote / operação',w:210},{key:'totalContratosLote',label:'Total ctr lote',w:112},{key:'momentoLote',label:'Momento lote',w:118},
   {key:'confinamento',label:'Confinamento',w:128},{key:'origem',label:'Origem',w:128},{key:'qtdLote',label:'Qtd lote',w:82},
   {key:'entradaLote',label:'Entrada',w:96},{key:'faturamentoLote',label:'Fat. lote',w:132},{key:'codigo',label:'Código',w:92},{key:'vencimento',label:'Mês',w:132},
   {key:'lado',label:'Lado',w:76},{key:'qtdOriginal',label:'Qtd original',w:92},{key:'aberto',label:'Aberto',w:82},
@@ -5594,7 +5600,7 @@ var FUT_COLS=[
   {key:'resultadoRealizado',label:'Resultado realizado',w:138},{key:'resultadoAberto',label:'Resultado aberto',w:122},{key:'acoes',label:'Ações',w:270,fixed:true}
 ];
 var FUT_COLUMN_GROUPS=[
-  {label:'Identificação',keys:['status','tipo','numeroLote','lote','totalContratosLote','momentoLote','confinamento','origem','qtdLote','entradaLote','faturamentoLote']},
+  {label:'Identificação',keys:['status','tipo','tipoTrava','numeroLote','lote','totalContratosLote','momentoLote','confinamento','origem','qtdLote','entradaLote','faturamentoLote']},
   {label:'Contrato',keys:['codigo','vencimento','lado','qtdOriginal']},
   {label:'Acompanhamento',keys:['aberto','liquidado','abertura','liquidacao']},
   {label:'Resultados',keys:['resultadoRealizado','resultadoAberto']}
@@ -5617,6 +5623,11 @@ try{
       var loteBaseColIndex=FUT_COLS.findIndex(function(c){return c.key==='lote';});
       if(totalLoteColIndex>=0&&loteBaseColIndex>=0){var totalLoteCol=FUT_COLS.splice(totalLoteColIndex,1)[0];loteBaseColIndex=FUT_COLS.findIndex(function(c){return c.key==='lote';});FUT_COLS.splice(loteBaseColIndex+1,0,totalLoteCol);}
     }
+    if(savedFutOrder.indexOf('tipoTrava')<0){
+      var tipoTravaColIndex=FUT_COLS.findIndex(function(c){return c.key==='tipoTrava';});
+      var tipoOperacaoColIndex=FUT_COLS.findIndex(function(c){return c.key==='tipo';});
+      if(tipoTravaColIndex>=0&&tipoOperacaoColIndex>=0){var tipoTravaCol=FUT_COLS.splice(tipoTravaColIndex,1)[0];tipoOperacaoColIndex=FUT_COLS.findIndex(function(c){return c.key==='tipo';});FUT_COLS.splice(tipoOperacaoColIndex+1,0,tipoTravaCol);}
+    }
   }
 }catch(e){}
 var FUT_SORT_KEY='vm_fut_sort_v1';
@@ -5624,7 +5635,7 @@ var futSortState=(function(){
   try{return JSON.parse(localStorage.getItem(FUT_SORT_KEY)||'{}')||{};}catch(e){return {};}
 })();
 if(!futSortState.key){futSortState={key:'abertura',dir:'desc'};}
-var futColumnFilters={status:'',tipo:'',numeroLote:'',lote:'',totalContratosLote:'',momentoLote:'',confinamento:'',origem:'',qtdLote:'',entradaLote:'',faturamentoLote:'',codigo:'',vencimento:'',lado:'',qtdOriginal:'',aberto:'',liquidado:'',abertura:'',liquidacao:'',resultadoRealizado:'',resultadoAberto:''};
+var futColumnFilters={status:'',tipo:'',tipoTrava:'',numeroLote:'',lote:'',totalContratosLote:'',momentoLote:'',confinamento:'',origem:'',qtdLote:'',entradaLote:'',faturamentoLote:'',codigo:'',vencimento:'',lado:'',qtdOriginal:'',aberto:'',liquidado:'',abertura:'',liquidacao:'',resultadoRealizado:'',resultadoAberto:''};
 
 const DEFAULT_RACAS={
   nelore:    {nome:'Nelore',                     rendE:50,rendA:56,gmd:1.30,ms:1.8,qExtra:0.0, desc:'Melhor rendimento de carcaça. Alta rusticidade. Carne magra. Ideal para acabamento rápido.'},
@@ -9199,7 +9210,7 @@ function setFutColumnVisible(key,checked){
 }
 function resetFutColumns(){
   try{localStorage.removeItem(FUT_COL_VISIBLE_KEY);localStorage.removeItem(FUT_COL_WIDTH_KEY);localStorage.removeItem(FUT_COL_ORDER_KEY);localStorage.removeItem(FUT_COL_FROZEN_KEY);}catch(e){}
-  var defaultFutOrder=['status','tipo','numeroLote','lote','momentoLote','confinamento','origem','qtdLote','entradaLote','faturamentoLote','codigo','vencimento','lado','qtdOriginal','aberto','liquidado','abertura','liquidacao','resultadoRealizado','resultadoAberto','acoes'];
+  var defaultFutOrder=['status','tipo','tipoTrava','numeroLote','lote','totalContratosLote','momentoLote','confinamento','origem','qtdLote','entradaLote','faturamentoLote','codigo','vencimento','lado','qtdOriginal','aberto','liquidado','abertura','liquidacao','resultadoRealizado','resultadoAberto','acoes'];
   FUT_COLS.sort(function(a,b){return defaultFutOrder.indexOf(a.key)-defaultFutOrder.indexOf(b.key);});
   renderFuturos();
 }
@@ -9299,6 +9310,7 @@ function futTableFilterHtml(key,options){
 function futColumnFilterValue(c,r,lote,dados,key){
   if(key==='status')return r.status||'';
   if(key==='tipo')return r.operacao||'';
+  if(key==='tipoTrava')return c.tipo||'bolsa';
   if(key==='numeroLote')return lote?getNumeroLote(lote):'';
   if(key==='lote')return lote?lote.id:'';
   if(key==='totalContratosLote')return lote?fmtContratosLoteB3(necessidadeContratosB3(lote,(lote.orcamentos&&lote.orcamentos[0])).necessarios||0):'';
@@ -9333,6 +9345,7 @@ function futHeaderFilterOptions(key,arr,loteMap){
     var label=String(value);
     if(key==='status')label=futuroStatusLabel(r.status);
     if(key==='tipo')label=r.operacao==='livre'?'Livre':'Hedge';
+    if(key==='tipoTrava')label=c.tipo==='direto'?'Direto':'Bolsa B3';
     if(key==='numeroLote')label='Lote '+getNumeroLote(lote);
     if(key==='lote')label=c.loteId?loteLabelB3(lote):'Operações livres';
     if(key==='lado')label=r.lado==='compra'?'Compra':'Venda';
@@ -9439,6 +9452,48 @@ function renderFutMonthDashboard(lotes,contratos){
   }).join('');
   host.innerHTML='<div class="fut-month-dashboard">'+head+'<div class="fut-month-dashboard-grid">'+(cards||'<div class="fut-month-dashboard-note">Nenhum lote ativo com necessidade de contratos.</div>')+'</div></div>';
 }
+function renderFutTableTotal(registros,visibleCols){
+  var row=document.getElementById('fut-table-total');
+  if(!row)return;
+  var lotesUnicos={},qtdLotes=0,totalCtrLotes=0;
+  (registros||[]).forEach(function(registro){
+    var lote=registro.lote;
+    if(!lote||lotesUnicos[lote.id])return;
+    lotesUnicos[lote.id]=true;
+    var orc=(lote.orcamentos&&lote.orcamentos[0])||{};
+    qtdLotes+=parseFloat(lote.qtd||orc.qtd)||0;
+    totalCtrLotes+=parseFloat(necessidadeContratosB3(lote,orc).necessarios)||0;
+  });
+  var totalOriginal=0,totalAberto=0,totalLiquidado=0,pesoOriginal=0,abertoPonderado=0,liquidadoPonderado=0;
+  var precoLiquidacaoPeso=0,pesoLiquidacao=0,resultadoTotal=0;
+  (registros||[]).forEach(function(registro){
+    var r=registro.r;
+    if(r.status==='cancelado')return;
+    var original=parseFloat(r.qtdContratos)||0;
+    var aberto=parseFloat(r.qtdAberta)||0;
+    var liquidado=parseFloat(r.qtdLiquidada)||0;
+    totalOriginal+=original;totalAberto+=aberto;totalLiquidado+=liquidado;
+    pesoOriginal+=original;abertoPonderado+=aberto*original;liquidadoPonderado+=liquidado*original;
+    if(liquidado>0&&isFinite(parseFloat(r.precoCompra))){precoLiquidacaoPeso+=parseFloat(r.precoCompra)*liquidado;pesoLiquidacao+=liquidado;}
+    resultadoTotal+=parseFloat(r.resultado)||0;
+  });
+  var totalLotes=Object.keys(lotesUnicos).length;
+  function main(valor,sub){return '<span class="fut-total-main">'+valor+'</span>'+(sub?'<span class="fut-total-sub">'+sub+'</span>':'');}
+  var values={
+    status:main('TOTAL','após os filtros'),
+    numeroLote:main(totalLotes+' lote(s)','quantidade de lotes'),
+    qtdLote:main(qtdLotes.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.'),
+    totalContratosLote:main(fmtContratosLoteB3(totalCtrLotes)+' ctr'),
+    qtdOriginal:main(fmtContratosB3(totalOriginal)+' ctr'),
+    aberto:main(fmtContratosB3(totalAberto)+' ctr',pesoOriginal?'média pond. '+fmtContratosLoteB3(abertoPonderado/pesoOriginal)+' ctr':'média pond. —'),
+    liquidado:main(fmtContratosB3(totalLiquidado)+' ctr',pesoOriginal?'média pond. '+fmtContratosLoteB3(liquidadoPonderado/pesoOriginal)+' ctr':'média pond. —'),
+    liquidacao:main(pesoLiquidacao?'R$ '+fmtNum(precoLiquidacaoPeso/pesoLiquidacao,2)+'/@':'—','média ponderada'),
+    resultadoRealizado:main(pesoLiquidacao?fmt(resultadoTotal):'—',pesoLiquidacao?'média '+fmt(resultadoTotal/pesoLiquidacao)+' / ctr':'média ponderada —')
+  };
+  row.innerHTML=(visibleCols||[]).map(function(col){
+    return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+(values[col.key]||'—')+'</td>';
+  }).join('');
+}
 function renderFuturos(){
   fillFuturoLoteSelects();
   var lotes=lotesDisponiveisB3();
@@ -9526,6 +9581,7 @@ function renderFuturos(){
     var av,bv;
     if(key==='status'){av=a.r.status;bv=b.r.status;}
     else if(key==='tipo'){av=a.r.operacao;bv=b.r.operacao;}
+    else if(key==='tipoTrava'){av=a.c.tipo||'bolsa';bv=b.c.tipo||'bolsa';}
     else if(key==='numeroLote'){av=a.lote?getNumeroLote(a.lote):'';bv=b.lote?getNumeroLote(b.lote):'';}
     else if(key==='lote'){av=a.lote?loteLabelB3(a.lote):(a.c.operacaoNome||'Operação livre');bv=b.lote?loteLabelB3(b.lote):(b.c.operacaoNome||'Operação livre');}
     else if(key==='totalContratosLote'){av=a.lote?necessidadeContratosB3(a.lote,(a.lote.orcamentos&&a.lote.orcamentos[0])).necessarios||0:0;bv=b.lote?necessidadeContratosB3(b.lote,(b.lote.orcamentos&&b.lote.orcamentos[0])).necessarios||0:0;}
@@ -9573,7 +9629,8 @@ function renderFuturos(){
       +'<button class="fut-action danger" onclick="deletarFuturo(\''+c.id+'\')">Excluir</button>';
     var cells={
       status:st,
-      tipo:'<span class="strong">'+(r.operacao==='livre'?'Livre':'Hedge')+'</span><div class="muted">'+escHtml(tipo)+'</div>',
+      tipo:'<span class="strong">'+(r.operacao==='livre'?'Livre':'Hedge')+'</span>',
+      tipoTrava:'<span class="strong">'+escHtml(tipo)+'</span>',
       numeroLote:lote?'<span class="status-seq-pc">'+escHtml(getNumeroLote(lote)||'—')+'</span>':'<span class="muted">—</span>',
       lote:'<span class="strong">'+loteNome+'</span><div class="muted">'+loteStatus+'</div>',
       totalContratosLote:lote?'<span class="strong">'+fmtContratosLoteB3(totalContratosLote)+' ctr</span>':'<span class="muted">—</span>',
@@ -9595,7 +9652,9 @@ function renderFuturos(){
         +'</div>'
       +'</summary>'
       +'<div class="fut-mobile-grid">'
-        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Tipo / lado</div><div class="fut-mobile-value">'+(r.operacao==='livre'?'Livre':'Hedge')+' · '+(r.lado==='compra'?'Compra':'Venda')+'</div></div>'
+        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Tipo de operação</div><div class="fut-mobile-value">'+(r.operacao==='livre'?'Livre':'Hedge')+'</div></div>'
+        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Tipo de trava</div><div class="fut-mobile-value">'+escHtml(tipo)+'</div></div>'
+        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Lado</div><div class="fut-mobile-value">'+(r.lado==='compra'?'Compra':'Venda')+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Momento do lote</div><div class="fut-mobile-value">'+loteStatus+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Cobertura</div><div class="fut-mobile-value">'+escHtml(cobertura)+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Total contratos do lote</div><div class="fut-mobile-value">'+(lote?fmtContratosLoteB3(totalContratosLote)+' ctr':'—')+'</div></div>'
@@ -9613,6 +9672,7 @@ function renderFuturos(){
   });
   list.innerHTML=rows.join('');
   if(mobileList)mobileList.innerHTML=cards.join('');
+  renderFutTableTotal(registros,visibleCols);
   applyFutTableLayout();
 }
 function abrirLoteNoStatus(loteId){
