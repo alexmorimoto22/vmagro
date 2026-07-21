@@ -9465,7 +9465,7 @@ function renderFutTableTotal(registros,visibleCols){
     totalCtrLotes+=parseFloat(necessidadeContratosB3(lote,orc).necessarios)||0;
   });
   var totalOriginal=0,totalAberto=0,totalLiquidado=0,pesoOriginal=0,abertoPonderado=0,liquidadoPonderado=0;
-  var precoLiquidacaoPeso=0,pesoLiquidacao=0,resultadoTotal=0;
+  var precoAberturaPeso=0,pesoAbertura=0,precoLiquidacaoPeso=0,pesoLiquidacao=0,resultadoTotal=0;
   (registros||[]).forEach(function(registro){
     var r=registro.r;
     if(r.status==='cancelado')return;
@@ -9474,6 +9474,7 @@ function renderFutTableTotal(registros,visibleCols){
     var liquidado=parseFloat(r.qtdLiquidada)||0;
     totalOriginal+=original;totalAberto+=aberto;totalLiquidado+=liquidado;
     pesoOriginal+=original;abertoPonderado+=aberto*original;liquidadoPonderado+=liquidado*original;
+    if(original>0&&isFinite(parseFloat(r.precoVenda))){precoAberturaPeso+=parseFloat(r.precoVenda)*original;pesoAbertura+=original;}
     if(liquidado>0&&isFinite(parseFloat(r.precoCompra))){precoLiquidacaoPeso+=parseFloat(r.precoCompra)*liquidado;pesoLiquidacao+=liquidado;}
     resultadoTotal+=parseFloat(r.resultado)||0;
   });
@@ -9487,6 +9488,7 @@ function renderFutTableTotal(registros,visibleCols){
     qtdOriginal:main(fmtContratosB3(totalOriginal)+' ctr'),
     aberto:main(fmtContratosB3(totalAberto)+' ctr',pesoOriginal?'média pond. '+fmtContratosLoteB3(abertoPonderado/pesoOriginal)+' ctr':'média pond. —'),
     liquidado:main(fmtContratosB3(totalLiquidado)+' ctr',pesoOriginal?'média pond. '+fmtContratosLoteB3(liquidadoPonderado/pesoOriginal)+' ctr':'média pond. —'),
+    abertura:main(pesoAbertura?'R$ '+fmtNum(precoAberturaPeso/pesoAbertura,2)+'/@':'—','média ponderada'),
     liquidacao:main(pesoLiquidacao?'R$ '+fmtNum(precoLiquidacaoPeso/pesoLiquidacao,2)+'/@':'—','média ponderada'),
     resultadoRealizado:main(pesoLiquidacao?fmt(resultadoTotal):'—',pesoLiquidacao?'média '+fmt(resultadoTotal/pesoLiquidacao)+' / ctr':'média ponderada —')
   };
