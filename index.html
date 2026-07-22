@@ -4594,6 +4594,21 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     .lote-caixa-field.description{grid-column:1;}
   }
 </style>
+<style id="b3-growing-table-viewport-20260722">
+  #panel-futuros .fut-table-wrap{
+    height:var(--fut-table-viewport-height,clamp(300px,48vh,620px))!important;
+    max-height:var(--fut-table-viewport-height,clamp(300px,48vh,620px))!important;
+    min-height:260px;
+    transition:height .1s ease-out,max-height .1s ease-out;
+  }
+  @media(max-width:768px){
+    #panel-futuros .fut-table-wrap{
+      height:var(--fut-table-viewport-height,min(62dvh,540px))!important;
+      max-height:var(--fut-table-viewport-height,min(62dvh,540px))!important;
+      min-height:240px;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -9881,6 +9896,32 @@ function renderFuturosPreservingViewport(){
   renderFuturos();
   restoreFutViewport(state);
 }
+var _futTableViewportFrame=0;
+function scheduleFutTableViewport(){
+  if(_futTableViewportFrame)cancelAnimationFrame(_futTableViewportFrame);
+  _futTableViewportFrame=requestAnimationFrame(function(){
+    _futTableViewportFrame=0;
+    var panel=document.getElementById('panel-futuros');
+    var wrap=panel&&panel.querySelector('.fut-table-wrap');
+    if(!panel||!wrap||panel.classList.contains('hidden')||getComputedStyle(panel).display==='none')return;
+    var viewport=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    var rect=wrap.getBoundingClientRect();
+    var mobile=window.innerWidth<=768;
+    var bottomGap=mobile?82:16;
+    var topLimit=mobile?64:76;
+    var visibleTop=Math.max(rect.top,topLimit);
+    var available=Math.floor(viewport-visibleTop-bottomGap);
+    var minimum=mobile?240:300;
+    var maximum=Math.max(minimum,Math.floor(viewport-topLimit-bottomGap));
+    wrap.style.setProperty('--fut-table-viewport-height',Math.max(minimum,Math.min(maximum,available))+'px');
+  });
+}
+window.addEventListener('scroll',scheduleFutTableViewport,{passive:true});
+window.addEventListener('resize',scheduleFutTableViewport,{passive:true});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',scheduleFutTableViewport,{passive:true});
+  window.visualViewport.addEventListener('scroll',scheduleFutTableViewport,{passive:true});
+}
 function setFutColumnVisible(key,checked){
   var visible=getFutColVisible();
   visible[key]=!!checked;
@@ -10254,6 +10295,7 @@ function renderFuturos(){
     list.innerHTML='<tr><td colspan="'+visibleCols.length+'" style="text-align:center;color:var(--text-3);padding:24px;">Nenhum contrato encontrado.</td></tr>';
     if(mobileList)mobileList.innerHTML='<div class="home-empty-small">Nenhum contrato encontrado.</div>';
     applyFutTableLayout();
+    scheduleFutTableViewport();
     return;
   }
   var registros=filtrados.map(function(c){
@@ -10359,6 +10401,7 @@ function renderFuturos(){
   if(mobileList)mobileList.innerHTML=cards.join('');
   renderFutTableTotal(registros,visibleCols);
   applyFutTableLayout();
+  scheduleFutTableViewport();
 }
 function abrirLoteNoStatus(loteId){
   if(!loteId)return;
