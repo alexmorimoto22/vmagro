@@ -4684,6 +4684,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     }
   }
 </style>
+<style id="hostinger-sync-ui-20260722">
+.sync-status{display:flex;align-items:center;gap:7px;min-width:0;padding:5px 9px;border:1px solid rgba(201,162,78,.38);border-radius:8px;background:transparent;color:rgba(242,237,227,.82);font-family:inherit;font-size:9px;font-weight:750;line-height:1.15;cursor:pointer}
+.sync-status-dot{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:var(--gold)}
+.sync-status[data-state="synced"] .sync-status-dot{background:var(--olive)}
+.sync-status[data-state="offline"] .sync-status-dot,.sync-status[data-state="error"] .sync-status-dot,.sync-status[data-state="expired"] .sync-status-dot{background:#9A3B30}
+.sync-status[data-state="pending"] .sync-status-dot,.sync-status[data-state="syncing"] .sync-status-dot{background:#D97706}
+.sync-status-copy{display:flex;flex-direction:column;min-width:0}.sync-status-label{white-space:nowrap}.sync-status-meta{font-size:8px;font-weight:500;color:rgba(242,237,227,.56);white-space:nowrap}
+.migration-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.migration-stat{padding:10px;border:1px solid var(--border);border-radius:7px;background:var(--ivory)}.migration-stat small{display:block;font-size:8px;font-weight:800;text-transform:uppercase;color:var(--text-3)}.migration-stat strong{display:block;margin-top:5px;color:var(--navy);font-size:15px}.migration-actions{display:flex;gap:8px;flex-wrap:wrap}.migration-state{margin-top:10px;font-size:11px;color:var(--text-2)}
+@media(max-width:768px){.sync-status{padding:5px 6px}.sync-status-meta{display:none}.sync-status-label{max-width:82px;overflow:hidden;text-overflow:ellipsis}.migration-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 
@@ -4731,6 +4741,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       </div>
     </div>
     <div class="topbar-right">
+      <button type="button" class="sync-status" id="sync-status" data-state="connecting" title="Status da sincronização com o banco Hostinger" onclick="mostrarDetalhesSincronizacao()">
+        <span class="sync-status-dot" aria-hidden="true"></span>
+        <span class="sync-status-copy"><span class="sync-status-label" id="sync-status-label">Conectando…</span><span class="sync-status-meta" id="sync-status-meta"></span></span>
+      </button>
       <div class="export-wrap header-report" id="export-wrap-current">
         <button type="button" class="export-btn" onclick="toggleExportMenu('current',event)" title="Relatórios">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
@@ -5613,13 +5627,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           <input type="hidden" id="uf-original-username">
           <div class="g2">
             <div class="field"><label>Nome</label><input type="text" id="uf-name" placeholder="Nome do usuário"></div>
-            <div class="field"><label>Usuário / e-mail</label><input type="email" id="uf-username" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="usuario@empresa.com"></div>
+            <div class="field"><label>Usuário</label><input type="text" id="uf-username" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="nome.usuario"></div>
           </div>
           <div class="g2">
-            <div class="field"><label>Senha</label><input type="password" id="uf-password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"><div class="hint" id="uf-password-hint">Obrigatória para novos usuários.</div></div>
-            <div class="field"><label>Perfil</label><select id="uf-role"><option value="user">Usuário</option><option value="master">Master</option></select><div class="hint">Master pode administrar configurações e usuários.</div></div>
+            <div class="field"><label>E-mail <span style="font-size:9px;color:var(--text-3);font-weight:400;">(opcional)</span></label><input type="email" id="uf-email" autocomplete="off" placeholder="usuario@empresa.com"></div>
+            <div class="field"><label>Perfil</label><select id="uf-role"><option value="viewer">Viewer</option><option value="editor">Editor</option><option value="master">Master</option></select><div class="hint">As permissões também são validadas pela API.</div></div>
           </div>
-          <div class="field"><label>Status</label><select id="uf-status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></div>
+          <div class="g2">
+            <div class="field"><label>Senha</label><input type="password" id="uf-password" autocomplete="new-password" placeholder="Mínimo de 10 caracteres"><div class="hint" id="uf-password-hint">Obrigatória para novos usuários; use letras e números.</div></div>
+            <div class="field"><label>Status</label><select id="uf-status"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></div>
+          </div>
           <div class="form-btns">
             <button class="btn-save" onclick="saveManagedUser()">Salvar usuário</button>
             <button class="btn-cancel" onclick="hideUserForm()">Cancelar</button>
@@ -5628,10 +5645,14 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <div id="users-stats" class="users-stats"></div>
         <div class="users-toolbar">
           <label class="users-filter"><span>Buscar</span><input type="search" id="users-search" placeholder="Nome ou usuário" oninput="renderUsersList()"></label>
-          <label class="users-filter"><span>Perfil</span><select id="users-role-filter" onchange="renderUsersList()"><option value="">Todos os perfis</option><option value="master">Master</option><option value="user">Usuário</option></select></label>
+          <label class="users-filter"><span>Perfil</span><select id="users-role-filter" onchange="renderUsersList()"><option value="">Todos os perfis</option><option value="viewer">Viewer</option><option value="editor">Editor</option><option value="master">Master</option></select></label>
           <label class="users-filter"><span>Status</span><select id="users-status-filter" onchange="renderUsersList()"><option value="">Todos os status</option><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></label>
         </div>
         <div id="users-list"></div>
+        <div class="card" style="margin-top:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;"><div><div style="font-size:13px;font-weight:700;color:var(--text);">Auditoria recente</div><div style="font-size:11px;color:var(--text-3);">Ações registradas no servidor, sem senhas ou credenciais.</div></div><button type="button" class="btn-cancel" onclick="refreshAuditLog()">Atualizar</button></div>
+          <div id="audit-list" class="users-table-wrap"><div class="users-empty">Carregando auditoria…</div></div>
+        </div>
       </div>
 
       <!-- PARÂMETROS (admin only) -->
@@ -5754,6 +5775,19 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           </div>
         </div>
 
+        <!-- Migração Hostinger -->
+        <div class="card" id="hostinger-migration-card" style="margin-top:16px;display:none;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Migração para o banco Hostinger</div>
+          <div style="font-size:11px;color:var(--text-3);">Envio inicial e explícito da cópia deste aparelho. O banco online precisa estar vazio.</div>
+          <div class="migration-summary" id="hostinger-migration-summary"></div>
+          <div class="migration-actions">
+            <button type="button" class="btn-save" onclick="migrarDadosDesteAparelho()">Migrar dados deste aparelho</button>
+            <button type="button" class="btn-cancel" onclick="baixarBackupMigracaoHostinger()">Exportar backup JSON</button>
+            <button type="button" class="btn-cancel" onclick="recarregarDadosServidor()">Recarregar banco online</button>
+          </div>
+          <div class="migration-state" id="hostinger-migration-state">Verificando o banco online…</div>
+        </div>
+
         <!-- Backup -->
         <div class="card" style="margin-top:16px;">
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Dados — Backup</div>
@@ -5808,105 +5842,55 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="supabase-config.js"></script>
 <script>
 /* ── DADOS ─────────────────────────────────────── */
-const USERS={
-  hastagro:'hasta2024',
-  caroline:'csilva@2025',
-  alexmorimoto:'alex@2025',
-  vitormorimoto:'vitor@2025',
-  'alex.morimoto22@gmail.com':'alex@2025',
-  'vitormorimoto@gmail.com':'vitor@2025',
-  'marianamariano2006@gmail.com':'mariana@2025'
-};
-const ADMINS=['hastagro','caroline','alexmorimoto','alex.morimoto22@gmail.com','vitormorimoto@gmail.com','marianamariano2006@gmail.com'];
-const PARAM_ADMINS=['hastagro','alexmorimoto','alex.morimoto22@gmail.com','vitormorimoto@gmail.com','marianamariano2006@gmail.com'];
-const FULL_ACCESS=['hastagro','caroline','alexmorimoto','alex.morimoto22@gmail.com','vitormorimoto@gmail.com','marianamariano2006@gmail.com'];
-const MANAGED_USERS_KEY='vm_agro_managed_users_v1';
-const BUILTIN_USERS=Object.assign({},USERS);
-const BUILTIN_ADMINS=ADMINS.slice();
-const BUILTIN_PARAM_ADMINS=PARAM_ADMINS.slice();
-const BUILTIN_FULL_ACCESS=FULL_ACCESS.slice();
 var managedUsers=[];
+const TEMP_LOCAL_SESSION_KEY='vm_agro_temp_local_session_v1';
+const TEMP_LOCAL_USERS=[
+  {id:1,name:'Alex Morimoto',username:'alex.morimoto22@gmail.com',email:'alex.morimoto22@gmail.com',password:'alex@2025',role:'master',status:'active',organization_id:'local'},
+  {id:2,name:'Mariana Mariano',username:'marianamariano2006@gmail.com',email:'marianamariano2006@gmail.com',password:'mariana@2025',role:'master',status:'active',organization_id:'local'},
+  {id:3,name:'Vitor Morimoto',username:'vitormorimoto@gmail.com',email:'vitormorimoto@gmail.com',password:'vitor@2025',role:'master',status:'active',organization_id:'local'}
+];
+var temporaryLocalAuth=false;
+function temporaryLocalAuthEnabled(){return location.protocol==='file:';}
+function temporaryLocalUser(username,password){
+  username=String(username||'').trim().toLowerCase();
+  return TEMP_LOCAL_USERS.find(function(user){return user.username===username&&user.password===password;})||null;
+}
+function safeTemporaryLocalUsers(){return TEMP_LOCAL_USERS.map(function(user){var safe=Object.assign({},user);delete safe.password;return safe;});}
 function normalizeManagedUsername(value){return String(value||'').trim().toLowerCase();}
-function setUserArrayMembership(list,username,enabled){
-  var index=list.indexOf(username);
-  if(enabled&&index<0)list.push(username);
-  if(!enabled&&index>=0)list.splice(index,1);
-}
-function applyManagedUsers(){
-  Object.keys(USERS).forEach(function(username){delete USERS[username];});
-  Object.keys(BUILTIN_USERS).forEach(function(username){USERS[username]=BUILTIN_USERS[username];});
-  ADMINS.splice.apply(ADMINS,[0,ADMINS.length].concat(BUILTIN_ADMINS));
-  PARAM_ADMINS.splice.apply(PARAM_ADMINS,[0,PARAM_ADMINS.length].concat(BUILTIN_PARAM_ADMINS));
-  FULL_ACCESS.splice.apply(FULL_ACCESS,[0,FULL_ACCESS.length].concat(BUILTIN_FULL_ACCESS));
-  managedUsers.forEach(function(record){
-    var username=normalizeManagedUsername(record.username);
-    if(!username||!record.password)return;
-    USERS[username]=record.password;
-    var master=record.role==='master';
-    setUserArrayMembership(ADMINS,username,master);
-    setUserArrayMembership(PARAM_ADMINS,username,master);
-    setUserArrayMembership(FULL_ACCESS,username,master);
-  });
-}
-function loadManagedUsers(){
-  try{
-    var saved=JSON.parse(localStorage.getItem(MANAGED_USERS_KEY)||'[]');
-    managedUsers=Array.isArray(saved)?saved.filter(function(record){return record&&normalizeManagedUsername(record.username);}):[];
-  }catch(e){managedUsers=[];}
-  applyManagedUsers();
-}
-function persistManagedUsers(){
-  localStorage.setItem(MANAGED_USERS_KEY,JSON.stringify(managedUsers));
-  applyManagedUsers();
-}
 function getManagedUserRecord(username){
   username=normalizeManagedUsername(username);
-  var custom=managedUsers.find(function(record){return normalizeManagedUsername(record.username)===username;});
-  if(custom)return Object.assign({},custom,{username:username,builtin:Object.prototype.hasOwnProperty.call(BUILTIN_USERS,username)});
-  if(!Object.prototype.hasOwnProperty.call(BUILTIN_USERS,username))return null;
-  return {username:username,name:'',role:BUILTIN_ADMINS.indexOf(username)>=0?'master':'user',status:'active',password:BUILTIN_USERS[username],builtin:true,createdAt:''};
+  return managedUsers.find(function(record){return normalizeManagedUsername(record.username)===username;})||null;
 }
 function getAllManagedUserRecords(){
-  var usernames=Object.keys(BUILTIN_USERS);
-  managedUsers.forEach(function(record){var username=normalizeManagedUsername(record.username);if(username&&usernames.indexOf(username)<0)usernames.push(username);});
-  return usernames.map(getManagedUserRecord).filter(Boolean).sort(function(a,b){return String(a.name||a.username).localeCompare(String(b.name||b.username),'pt-BR');});
+  return managedUsers.slice().sort(function(a,b){return String(a.name||a.username).localeCompare(String(b.name||b.username),'pt-BR');});
 }
-loadManagedUsers();
-const SESSION_KEY='vm_agro_session';
 let currentUser='';
-/* Mantidos como compatibilidade dos dados antigos; o login básico não usa perfis do Supabase. */
 var currentAuthUser=null,currentProfile=null,currentMembership=null,currentOrganizationId='',currentSpecialPermissions=[];
-function isAdminUser(username){return ADMINS.indexOf(username===undefined?currentUser:username)>=0;}
-function isParameterAdmin(username){return PARAM_ADMINS.indexOf(username===undefined?currentUser:username)>=0;}
-function hasFullAccess(username){return FULL_ACCESS.indexOf(username===undefined?currentUser:username)>=0;}
-function getCurrentProfile(){return currentUser?{full_name:currentUser,status:'active'}:null;}
-function getCurrentRole(){return isAdminUser()?'admin':'user';}
+function isAdminUser(){return !!currentAuthUser&&currentAuthUser.role==='master';}
+function isParameterAdmin(){return isAdminUser();}
+function hasFullAccess(){return !!currentAuthUser;}
+function getCurrentProfile(){return currentAuthUser?{full_name:currentAuthUser.name||currentAuthUser.username,status:currentAuthUser.status||'active'}:null;}
+function getCurrentRole(){return currentAuthUser&&currentAuthUser.role||'viewer';}
 function hasPermission(permission){
-  if(!currentUser)return false;
-  if(permission==='settings.parameters')return isParameterAdmin();
-  if(String(permission||'').indexOf('users.')===0)return isAdminUser();
-  if(permission==='audit.view')return false;
-  if(isAdminUser())return true;
-  return [
-    'home.view','lots.view_allowed','lots.view_assigned','lots.create','lots.edit_assigned',
-    'calculator.use','calculator.view','realized.edit_assigned',
-    'b3.view','reports.export_assigned','settings.view_operational'
-  ].indexOf(permission)>=0;
+  if(!currentAuthUser)return false;
+  var role=getCurrentRole();
+  if(role==='master')return true;
+  var reads=['home.view','lots.view_allowed','lots.view_assigned','calculator.view','b3.view','finance.view','reports.export_assigned','settings.view_operational'];
+  if(reads.indexOf(permission)>=0)return true;
+  if(role==='editor')return ['lots.create','lots.edit_assigned','lots.edit_all','lots.change_status','calculator.use','realized.edit_assigned','b3.edit','b3.liquidate','finance.edit'].indexOf(permission)>=0;
+  return false;
 }
 function requirePermission(permission,message){if(hasPermission(permission))return true;toast(typeof message==='string'?message:'Você não possui permissão para realizar esta ação.');return false;}
 function canAccessTab(tab){
-  if(tab==='financeiro')return false;
-  return ['home','lotes','calc','futuros','caixa','config','lote-detail'].indexOf(tab)>=0;
+  return !!currentAuthUser&&['home','lotes','calc','futuros','financeiro','caixa','config','lote-detail'].indexOf(tab)>=0;
 }
-function canViewLot(lot){return hasFullAccess()||!!lot&&(!lot.criadoPor||lot.criadoPor===currentUser);}
-function canEditLot(lot){return isAdminUser()||!!lot&&(!lot.criadoPor||lot.criadoPor===currentUser);}
+function canViewLot(){return !!currentAuthUser;}
+function canEditLot(){return ['editor','master'].indexOf(getCurrentRole())>=0;}
 function applyPermissionToElement(selector,permission){document.querySelectorAll(selector).forEach(function(el){var allowed=hasPermission(permission);el.hidden=!allowed;el.disabled=!allowed;});}
 let calcMode='standalone';
 let activeLoteId=null;
@@ -6574,205 +6558,258 @@ const FUTUROS_KEY='hasta_futuros_b3_v1';
 const FIN_TX_KEY='vmagro_financeiro_lancamentos_v1';
 const FIN_DOC_KEY='vmagro_financeiro_notas_v1';
 const FIN_FREIGHT_KEY='vmagro_financeiro_fretes_v1';
-const SUPABASE_APP_ID='vm-agro';
-const SUPABASE_TABLE='vm_agro_data';
-const SUPABASE_LOCAL_KEYS={};
-SUPABASE_LOCAL_KEYS[CONFIG_KEY]='config';
-SUPABASE_LOCAL_KEYS[LOTES_KEY]='lotes';
-SUPABASE_LOCAL_KEYS[LOT_SEQUENCE_KEY]='lot_sequence';
-SUPABASE_LOCAL_KEYS[FUTUROS_KEY]='futuros';
-SUPABASE_LOCAL_KEYS[FIN_TX_KEY]='financeiro_lancamentos';
-SUPABASE_LOCAL_KEYS[FIN_DOC_KEY]='financeiro_notas';
-SUPABASE_LOCAL_KEYS[FIN_FREIGHT_KEY]='financeiro_fretes';
-SUPABASE_LOCAL_KEYS[MANAGED_USERS_KEY]='managed_users';
-const SUPABASE_REMOTE_KEYS=Object.keys(SUPABASE_LOCAL_KEYS).reduce(function(acc,localKey){
-  acc[SUPABASE_LOCAL_KEYS[localKey]]=localKey;
-  return acc;
-},{});
-var supabaseClient=null;
-var supabaseHydrating=false;
-var supabasePendingWrites={};
-var supabaseWriteTimer=null;
-var supabaseLastLoadUser='';
+const API_BASE='./api';
+const HOSTINGER_QUEUE_KEY='vm_agro_hostinger_queue_v1';
+const HOSTINGER_VERSIONS_KEY='vm_agro_hostinger_versions_v1';
+const HOSTINGER_LAST_SYNC_KEY='vm_agro_hostinger_last_sync_v1';
+const HOSTINGER_LOCAL_UPDATED_KEY='vm_agro_local_data_updated_v1';
+const HOSTINGER_LOCAL_KEYS={};
+HOSTINGER_LOCAL_KEYS[CONFIG_KEY]='config';
+HOSTINGER_LOCAL_KEYS[LOTES_KEY]='lotes';
+HOSTINGER_LOCAL_KEYS[LOT_SEQUENCE_KEY]='lot_sequence';
+HOSTINGER_LOCAL_KEYS[FUTUROS_KEY]='futuros';
+HOSTINGER_LOCAL_KEYS[FIN_TX_KEY]='financeiro_lancamentos';
+HOSTINGER_LOCAL_KEYS[FIN_DOC_KEY]='financeiro_notas';
+HOSTINGER_LOCAL_KEYS[FIN_FREIGHT_KEY]='financeiro_fretes';
+HOSTINGER_LOCAL_KEYS.vmagro_caixa_lancamentos_v1='caixa_lancamentos';
+HOSTINGER_LOCAL_KEYS.vmagro_caixa_manual_v1='caixa_saldo_manual';
+HOSTINGER_LOCAL_KEYS.vmagro_caixa_manual_updated_v1='caixa_saldo_atualizado';
+const HOSTINGER_REMOTE_KEYS=Object.keys(HOSTINGER_LOCAL_KEYS).reduce(function(acc,localKey){acc[HOSTINGER_LOCAL_KEYS[localKey]]=localKey;return acc;},{});
+var hostingerCsrfToken='';
+var hostingerHydrating=false;
+var hostingerWriteTimer=null;
+var hostingerSyncRunning=false;
+var hostingerConflictKeys={};
+var hostingerLastRefreshAt=0;
+var hostingerMigrationBlocked=false;
+var hostingerDatabaseEmpty=false;
+var hostingerLastServerSummary=null;
 
-function supabaseCfg(){
-  var cfg=window.VM_AGRO_SUPABASE_CONFIG||{};
-  return {
-    url:(cfg.url||window.VITE_SUPABASE_URL||'').trim(),
-    anonKey:(cfg.anonKey||window.VITE_SUPABASE_ANON_KEY||'').trim()
-  };
-}
-function supabaseIsConfigured(){
-  var cfg=supabaseCfg();
-  return !!(cfg.url&&cfg.anonKey&&window.supabase&&typeof window.supabase.createClient==='function');
-}
-function getSupabaseClient(){
-  if(!supabaseIsConfigured())return null;
-  if(!supabaseClient){
-    var cfg=supabaseCfg();
-    supabaseClient=window.supabase.createClient(cfg.url,cfg.anonKey);
-  }
-  return supabaseClient;
-}
-async function refreshManagedUsersFromCloud(){
-  if(!supabaseIsConfigured())return false;
-  try{
-    var onlineUsers=await buscarDadosBanco(MANAGED_USERS_KEY);
-    if(!Array.isArray(onlineUsers))return false;
-    supabaseHydrating=true;
-    localStorage.setItem(MANAGED_USERS_KEY,JSON.stringify(onlineUsers));
-    supabaseHydrating=false;
-    managedUsers=onlineUsers;
-    applyManagedUsers();
-    return true;
-  }catch(err){
-    supabaseHydrating=false;
-    console.warn('Falha ao carregar usuários online',err);
-    return false;
-  }
-}
-function supabaseUserKey(){
-  return currentOrganizationId||'sem_organizacao';
-}
 function safeJsonParse(raw,fallback){
   try{return JSON.parse(raw);}catch(e){return fallback;}
 }
 function localKeyFromRemoteKey(key){
-  return SUPABASE_REMOTE_KEYS[key]||'';
+  return HOSTINGER_REMOTE_KEYS[key]||'';
 }
 function remoteKeyFromLocalKey(key){
-  return SUPABASE_LOCAL_KEYS[key]||'';
+  return HOSTINGER_LOCAL_KEYS[key]||'';
 }
-async function buscarDadosBanco(key){
-  var client=getSupabaseClient();
-  if(!client)return null;
-  var remoteKey=remoteKeyFromLocalKey(key)||key;
-  var res=await client.from(SUPABASE_TABLE)
-    .select('value')
-    .eq('app_id',SUPABASE_APP_ID)
-    .eq('user_key',supabaseUserKey())
-    .eq('key',remoteKey)
-    .maybeSingle();
-  if(res.error)throw res.error;
-  return res.data?res.data.value:null;
+function getHostingerVersions(){return safeJsonParse(localStorage.getItem(HOSTINGER_VERSIONS_KEY)||'{}',{});}
+function saveHostingerVersions(value){localStorage.setItem(HOSTINGER_VERSIONS_KEY,JSON.stringify(value||{}));}
+function getHostingerQueue(){return safeJsonParse(localStorage.getItem(HOSTINGER_QUEUE_KEY)||'{}',{});}
+function saveHostingerQueue(value){localStorage.setItem(HOSTINGER_QUEUE_KEY,JSON.stringify(value||{}));}
+function frontendCanWriteRemoteKey(remoteKey){var role=getCurrentRole();return role==='master'||(role==='editor'&&remoteKey!=='config');}
+function formatSyncDate(value){if(!value)return '';var d=new Date(value);return isNaN(d.getTime())?'':d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
+function atualizarStatusSincronizacao(state,detail){
+  var root=document.getElementById('sync-status'),label=document.getElementById('sync-status-label'),meta=document.getElementById('sync-status-meta');
+  var labels={connecting:'Conectando…',syncing:'Sincronizando…',synced:'Dados sincronizados',pending:'Alterações pendentes',offline:'Usando dados locais',expired:'Sessão expirada',error:'Erro de sincronização'};
+  if(root)root.dataset.state=state||'connecting';
+  if(label)label.textContent=labels[state]||labels.connecting;
+  var pending=Object.keys(getHostingerQueue()).length,last=localStorage.getItem(HOSTINGER_LAST_SYNC_KEY)||'';
+  if(meta)meta.textContent=detail||(pending?pending+' pendente(s)':(last?'Última: '+formatSyncDate(last):''));
+  if(root)root.title=(labels[state]||labels.connecting)+(meta&&meta.textContent?' · '+meta.textContent:'');
 }
-async function salvarDadosBanco(key,value){
-  var client=getSupabaseClient();
-  if(!client)return false;
-  var remoteKey=remoteKeyFromLocalKey(key)||key;
-  var payload={
-    app_id:SUPABASE_APP_ID,
-    user_key:supabaseUserKey(),
-    user_id:currentAuthUser&&currentAuthUser.id||null,
-    organization_id:currentOrganizationId||null,
-    key:remoteKey,
-    value:value===undefined?null:value
-  };
-  var res=await client.from(SUPABASE_TABLE).upsert(payload,{onConflict:'app_id,user_key,key'});
-  if(res.error)throw res.error;
-  return true;
+function encerrarSessaoExpirada(){
+  currentUser='';currentAuthUser=null;currentProfile=null;currentMembership=null;currentOrganizationId='';currentSpecialPermissions=[];hostingerCsrfToken='';managedUsers=[];hostingerLastRefreshAt=0;hostingerLastServerSummary=null;
+  var app=document.getElementById('app'),login=document.getElementById('login-screen'),err=document.getElementById('login-err');
+  if(app)app.style.display='none';if(login)login.style.display='flex';if(err)err.textContent='Sua sessão expirou. Entre novamente.';
+  atualizarStatusSincronizacao('expired');
 }
-async function editarDadosBanco(key,value){
-  return salvarDadosBanco(key,value);
+function mostrarDetalhesSincronizacao(){
+  var conflicts=Object.keys(hostingerConflictKeys),pending=Object.keys(getHostingerQueue()).length;
+  if(conflicts.length){if(confirm('Há conflito em: '+conflicts.join(', ')+'.\n\nRecarregar os dados online e descartar essas alterações locais pendentes?'))recarregarDadosServidor(true);return;}
+  if(hostingerMigrationBlocked){toast('Abra Configurações > Parâmetros para executar a migração inicial.');return;}
+  if(pending){toast(pending+' alteração(ões) aguardando sincronização.');executarFilaHostinger();return;}
+  var last=localStorage.getItem(HOSTINGER_LAST_SYNC_KEY)||'';toast(last?'Última sincronização: '+formatSyncDate(last):'Conexão ainda não confirmada.');
 }
-async function excluirDadosBanco(key){
-  var client=getSupabaseClient();
-  if(!client)return false;
-  var remoteKey=remoteKeyFromLocalKey(key)||key;
-  var res=await client.from(SUPABASE_TABLE)
-    .delete()
-    .eq('app_id',SUPABASE_APP_ID)
-    .eq('user_key',supabaseUserKey())
-    .eq('key',remoteKey);
-  if(res.error)throw res.error;
-  return true;
-}
-function agendarSyncSupabase(localKey,rawValue){
-  if(supabaseHydrating)return;
-  if(!remoteKeyFromLocalKey(localKey))return;
-  if(!supabaseIsConfigured())return;
-  supabasePendingWrites[localKey]=rawValue;
-  clearTimeout(supabaseWriteTimer);
-  supabaseWriteTimer=setTimeout(flushSupabaseWrites,350);
-}
-async function flushSupabaseWrites(){
-  if(!supabaseIsConfigured())return;
-  var entries=Object.entries(supabasePendingWrites);
-  supabasePendingWrites={};
-  for(var i=0;i<entries.length;i++){
-    var localKey=entries[i][0];
-    var rawValue=entries[i][1];
-    try{
-      await salvarDadosBanco(localKey,safeJsonParse(rawValue,rawValue));
-    }catch(err){
-      console.warn('Falha ao salvar no Supabase',localKey,err);
-      toast('⚠ Dados salvos neste aparelho. Verifique o Supabase.');
-      supabasePendingWrites[localKey]=rawValue;
-    }
+async function apiRequest(path,options){
+  options=options||{};
+  var method=String(options.method||'GET').toUpperCase();
+  var headers=Object.assign({'Accept':'application/json'},options.headers||{});
+  var request={method:method,credentials:'same-origin',headers:headers,cache:'no-store'};
+  if(options.body!==undefined){headers['Content-Type']='application/json';request.body=typeof options.body==='string'?options.body:JSON.stringify(options.body);}
+  if(['POST','PUT','PATCH','DELETE'].indexOf(method)>=0&&hostingerCsrfToken&&!options.skipCsrf)headers['X-CSRF-Token']=hostingerCsrfToken;
+  var response;
+  try{response=await fetch(API_BASE+path,request);}catch(networkError){networkError.code='NETWORK_ERROR';throw networkError;}
+  var payload=null;
+  try{payload=await response.json();}catch(e){payload=null;}
+  if(!response.ok||!payload||payload.success!==true){
+    var info=payload&&payload.error||{};
+    var error=new Error(info.message||'Não foi possível concluir a solicitação.');
+    error.code=info.code||'API_ERROR';error.status=response.status;error.data=payload&&payload.data;
+    if(response.status===401&&!options.allowUnauthenticated)setTimeout(encerrarSessaoExpirada,0);
+    throw error;
   }
+  return payload.data;
 }
-async function sincronizarCacheLocalComSupabase(){
-  if(!supabaseIsConfigured())return false;
-  var localKeys=Object.keys(SUPABASE_LOCAL_KEYS);
-  for(var i=0;i<localKeys.length;i++){
-    var localKey=localKeys[i];
-    var raw=localStorage.getItem(localKey);
-    if(raw===null)continue;
-    await salvarDadosBanco(localKey,safeJsonParse(raw,raw));
-  }
-  return true;
+async function hostingerApiIsAvailable(){try{await apiRequest('/health.php',{allowUnauthenticated:true});return true;}catch(e){return false;}}
+async function refreshManagedUsersFromCloud(){
+  if(!isAdminUser()){managedUsers=[];return true;}
+  try{var data=await apiRequest('/users/list.php');managedUsers=data&&data.items||[];return true;}
+  catch(err){console.warn('Falha ao carregar usuários autorizados.',err);managedUsers=[];return false;}
 }
-async function carregarDadosSupabase(){
-  if(!supabaseIsConfigured())return false;
-  var userKey=supabaseUserKey();
-  if(supabaseLastLoadUser===userKey)return true;
-  var client=getSupabaseClient();
-  try{
-    var res=await client.from(SUPABASE_TABLE)
-      .select('key,value')
-      .eq('app_id',SUPABASE_APP_ID)
-      .eq('user_key',supabaseUserKey());
-    if(res.error)throw res.error;
-    var rows=res.data||[];
-    if(!rows.length){
-      await sincronizarCacheLocalComSupabase();
-      supabaseLastLoadUser=userKey;
-      return true;
+function hidratarCacheComDadosDoServidor(items){
+  var queue=getHostingerQueue(),versions=getHostingerVersions();
+  var changedKeys=[];
+  hostingerHydrating=true;
+  (items||[]).forEach(function(item){
+    var localKey=localKeyFromRemoteKey(item.data_key);
+    if(!localKey)return;
+    versions[item.data_key]=Number(item.version)||0;
+    if(!queue[item.data_key]){
+      var serverValue=JSON.stringify(item.value);
+      if(localStorage.getItem(localKey)!==serverValue){
+        localStorage.setItem(localKey,serverValue);
+        changedKeys.push(item.data_key);
+      }
     }
-    supabaseHydrating=true;
-    rows.forEach(function(row){
-      var localKey=localKeyFromRemoteKey(row.key);
-      if(!localKey)return;
-      localStorage.setItem(localKey,JSON.stringify(row.value));
+  });
+  saveHostingerVersions(versions);
+  hostingerHydrating=false;
+  return changedKeys;
+}
+function renderCurrentTab(){
+  var panelKeys=['home','lotes','lote-detail','futuros','caixa','financeiro','calc','config'];
+  var active=panelKeys.find(function(key){
+    var panel=document.getElementById('panel-'+key);
+    return panel&&panel.style.display!=='none'&&getComputedStyle(panel).display!=='none';
+  });
+  if(!active)return;
+  var scrollY=window.scrollY||0;
+  var activePanel=document.getElementById('panel-'+active);
+  var scrollState=[];
+  if(activePanel){
+    activePanel.querySelectorAll('.status-table-wrap,.fut-table-wrap,.home-table-wrap,.fin-table-wrap').forEach(function(el){
+      scrollState.push({className:el.className,left:el.scrollLeft,top:el.scrollTop});
     });
-    supabaseHydrating=false;
-    supabaseLastLoadUser=userKey;
-    return true;
+  }
+  if(active==='home')renderHome();
+  else if(active==='lotes')renderLotes();
+  else if(active==='futuros')renderFuturos();
+  else if(active==='caixa')renderCaixa();
+  else if(active==='financeiro')renderFinanceiro();
+  else if(active==='lote-detail'&&activeLoteDetailId){
+    var detailSections=['resumo','orcamentos','confinamento','abate','apuracao','b3'];
+    var detailTab=detailSections.find(function(key){var el=document.getElementById('dtab-'+key);return el&&el.style.display!=='none';})||'resumo';
+    renderLoteDetailHeader();showDTab(detailTab);
+  }else if(active==='config'){
+    var cfgSections=['vends','frigs','boiteis','transportadoras','users','params'];
+    var cfg=cfgSections.find(function(key){var el=document.getElementById('cfg-'+key);return el&&el.style.display!=='none';})||'vends';
+    showCfg(cfg);
+  }
+  requestAnimationFrame(function(){
+    window.scrollTo(0,scrollY);
+    var refreshed=document.getElementById('panel-'+active);
+    if(!refreshed)return;
+    var candidates=refreshed.querySelectorAll('.status-table-wrap,.fut-table-wrap,.home-table-wrap,.fin-table-wrap');
+    scrollState.forEach(function(state,index){if(candidates[index]){candidates[index].scrollLeft=state.left;candidates[index].scrollTop=state.top;}});
+  });
+}
+async function carregarDadosHostinger(){
+  atualizarStatusSincronizacao('connecting');
+  try{
+    var wasPreviouslyLoaded=hostingerLastRefreshAt>0;
+    var data=await apiRequest('/data/list.php');
+    hostingerLastServerSummary=data;
+    var hadLocalData=Object.keys(HOSTINGER_LOCAL_KEYS).some(function(localKey){return localStorage.getItem(localKey)!==null;});
+    hostingerDatabaseEmpty=!!(data&&data.empty);
+    hostingerMigrationBlocked=hostingerDatabaseEmpty&&hadLocalData;
+    var changedKeys=hidratarCacheComDadosDoServidor(data&&data.items||[]);
+    hostingerLastRefreshAt=Date.now();
+    localStorage.setItem(HOSTINGER_LAST_SYNC_KEY,new Date().toISOString());
+    atualizarStatusSincronizacao(hostingerMigrationBlocked?'pending':(Object.keys(getHostingerQueue()).length?'pending':'synced'),hostingerMigrationBlocked?'Migração inicial necessária':'');
+    atualizarResumoMigracaoHostinger(data);
+    if(wasPreviouslyLoaded&&changedKeys.length){sanitizarLotes();renderCurrentTab();}
+    return data;
   }catch(err){
-    supabaseHydrating=false;
-    console.warn('Falha ao carregar Supabase',err);
-    toast('⚠ Não foi possível carregar o banco online. Usando dados locais.');
-    return false;
+    hostingerHydrating=false;
+    if(err.code==='NETWORK_ERROR'){atualizarStatusSincronizacao('offline');return null;}
+    atualizarStatusSincronizacao(err.status===401?'expired':'error');
+    console.warn('Falha ao carregar dados Hostinger.',err);
+    return null;
   }
 }
-function instalarSyncSupabaseLocalStorage(){
-  if(window.__vmAgroSupabaseStorageBridge)return;
+async function salvarDadoHostinger(key,value,expectedVersion){
+  return apiRequest('/data/upsert.php',{method:'POST',body:{data_key:key,value:value,expected_version:Number(expectedVersion)||0}});
+}
+async function excluirDadoHostinger(key){return apiRequest('/data/delete.php',{method:'DELETE',body:{data_key:key}});}
+function agendarSyncHostinger(localKey,rawValue){
+  if(hostingerHydrating||!currentAuthUser)return;
+  var remoteKey=remoteKeyFromLocalKey(localKey);
+  if(!remoteKey||!frontendCanWriteRemoteKey(remoteKey))return;
+  try{
+    localStorage.setItem(HOSTINGER_LOCAL_UPDATED_KEY,new Date().toISOString());
+    var queue=getHostingerQueue(),versions=getHostingerVersions();
+    queue[remoteKey]={localKey:localKey,expectedVersion:Number(versions[remoteKey])||0,queuedAt:new Date().toISOString()};
+    saveHostingerQueue(queue);
+    atualizarStatusSincronizacao(navigator.onLine?'pending':'offline');
+    clearTimeout(hostingerWriteTimer);hostingerWriteTimer=setTimeout(executarFilaHostinger,500);
+  }catch(err){console.warn('Não foi possível registrar a fila local.',err);atualizarStatusSincronizacao('error','Fila local indisponível');}
+}
+async function executarFilaHostinger(){
+  if(hostingerSyncRunning||!currentAuthUser)return false;
+  if(hostingerMigrationBlocked){atualizarStatusSincronizacao('pending','Migração inicial necessária');return false;}
+  if(!navigator.onLine){atualizarStatusSincronizacao('offline');return false;}
+  hostingerSyncRunning=true;atualizarStatusSincronizacao('syncing');
+  var queue=getHostingerQueue(),keys=Object.keys(queue),versions=getHostingerVersions();
+  for(var i=0;i<keys.length;i++){
+    var remoteKey=keys[i],entry=queue[remoteKey];
+    if(!entry||hostingerConflictKeys[remoteKey]||!frontendCanWriteRemoteKey(remoteKey))continue;
+    try{
+      var currentRaw=localStorage.getItem(entry.localKey);
+      if(currentRaw===null){delete queue[remoteKey];saveHostingerQueue(queue);continue;}
+      var result=await salvarDadoHostinger(remoteKey,safeJsonParse(currentRaw,currentRaw),entry.expectedVersion);
+      versions[remoteKey]=Number(result.version)||0;delete hostingerConflictKeys[remoteKey];
+      var latestQueue=getHostingerQueue(),latestEntry=latestQueue[remoteKey];
+      if(latestEntry&&latestEntry.queuedAt===entry.queuedAt)delete latestQueue[remoteKey];
+      else if(latestEntry)latestEntry.expectedVersion=versions[remoteKey];
+      queue=latestQueue;saveHostingerVersions(versions);saveHostingerQueue(queue);
+    }catch(err){
+      if(err.status===409){hostingerConflictKeys[remoteKey]=true;toast('Conflito em '+remoteKey+'. Sua cópia local foi mantida; recarregue os dados do servidor para revisar.');}
+      else if(err.code==='NETWORK_ERROR'){atualizarStatusSincronizacao('offline');break;}
+      else{console.warn('Falha ao sincronizar '+remoteKey+'.',err);atualizarStatusSincronizacao(err.status===401?'expired':'error');break;}
+    }
+  }
+  hostingerSyncRunning=false;
+  queue=getHostingerQueue();
+  if(!Object.keys(queue).length){localStorage.setItem(HOSTINGER_LAST_SYNC_KEY,new Date().toISOString());atualizarStatusSincronizacao('synced');}
+  else{atualizarStatusSincronizacao(navigator.onLine?'pending':'offline');clearTimeout(hostingerWriteTimer);hostingerWriteTimer=setTimeout(executarFilaHostinger,500);}
+  return !Object.keys(queue).length;
+}
+async function recarregarDadosServidor(force){
+  var queue=getHostingerQueue();
+  if(!force&&Object.keys(queue).length&&!confirm('Existem alterações locais pendentes. Deseja descartá-las e recarregar o banco online?'))return false;
+  saveHostingerQueue({});hostingerConflictKeys={};await carregarDadosHostinger();
+  sanitizarLotes();return true;
+}
+async function retomarSincronizacaoHostinger(){
+  if(!currentAuthUser)return;
+  if(!navigator.onLine){atualizarStatusSincronizacao('offline');return;}
+  if(!(await hostingerApiIsAvailable())){atualizarStatusSincronizacao('offline');return;}
+  if(!hostingerLastRefreshAt||Date.now()-hostingerLastRefreshAt>3000)await carregarDadosHostinger();
+  if(hostingerMigrationBlocked)return;
+  await executarFilaHostinger();
+  if(!Object.keys(getHostingerQueue()).length&&Date.now()-hostingerLastRefreshAt>3000)await carregarDadosHostinger();
+}
+function instalarSyncHostingerLocalStorage(){
+  if(window.__vmAgroHostingerStorageBridge)return;
   if(!window.Storage||!Storage.prototype)return;
-  window.__vmAgroSupabaseStorageBridge=true;
+  window.__vmAgroHostingerStorageBridge=true;
   var nativeSetItem=Storage.prototype.setItem;
-  var nativeRemoveItem=Storage.prototype.removeItem;
   Storage.prototype.setItem=function(key,value){
     nativeSetItem.call(this,key,value);
-    if(this===localStorage)agendarSyncSupabase(key,value);
-  };
-  Storage.prototype.removeItem=function(key){
-    nativeRemoveItem.call(this,key);
-    if(this===localStorage&&remoteKeyFromLocalKey(key))excluirDadosBanco(key).catch(function(err){
-      console.warn('Falha ao excluir no Supabase',key,err);
-    });
+    if(this===localStorage)agendarSyncHostinger(key,value);
   };
 }
-instalarSyncSupabaseLocalStorage();
+function instalarListenersHostinger(){
+  if(window.__vmAgroHostingerListeners)return;window.__vmAgroHostingerListeners=true;
+  window.addEventListener('online',retomarSincronizacaoHostinger);
+  window.addEventListener('offline',function(){atualizarStatusSincronizacao('offline');});
+  window.addEventListener('focus',retomarSincronizacaoHostinger);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')retomarSincronizacaoHostinger();});
+}
+instalarSyncHostingerLocalStorage();
+instalarListenersHostinger();
 function loadConfig(){
   var c=null;
   try{c=JSON.parse(localStorage.getItem(CONFIG_KEY));}catch(e){c=null;}
@@ -7978,7 +8015,6 @@ function bioRows(id,rows){
 }
 
 /* ── LOGIN / LOGOUT ────────────────────────────── */
-function writeAudit(){return Promise.resolve();}
 function applyCurrentUserPermissions(){
   document.querySelectorAll('[data-tab-target]').forEach(function(el){var tab=el.getAttribute('data-tab-target');el.style.display=canAccessTab(tab)?'':'none';});
   var tabCfg=document.getElementById('tab-config'),sideCfg=document.getElementById('side-config');if(tabCfg)tabCfg.style.display='';if(sideCfg)sideCfg.style.display='';
@@ -7989,55 +8025,87 @@ function applyCurrentUserPermissions(){
   document.querySelectorAll('#cfg-users input,#cfg-users select,#cfg-users button').forEach(function(el){el.disabled=!canManage;});
   var canParams=isParameterAdmin();
   document.querySelectorAll('#cfg-params input,#cfg-params select,#cfg-params textarea,#cfg-params .btn-save,#cfg-params .btn-add,#cfg-params .btn-ic-del').forEach(function(el){el.disabled=!canParams;});
+  atualizarResumoMigracaoHostinger();
 }
-async function entrarApp(username,tab){
-  currentUser=String(username||'').trim().toLowerCase();
+async function entrarApp(authUser,tab){
+  currentAuthUser=authUser||null;
+  currentUser=normalizeManagedUsername(currentAuthUser&&currentAuthUser.username);
+  currentOrganizationId=String(currentAuthUser&&currentAuthUser.organization_id||'');
+  currentProfile=getCurrentProfile();
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  document.getElementById('user-display').textContent=currentUser;
+  document.getElementById('user-display').textContent=currentAuthUser&&currentAuthUser.name||currentUser;
   var err=document.getElementById('login-err');if(err)err.textContent='';
-  await carregarDadosSupabase();
-  loadManagedUsers();
+  if(temporaryLocalAuth){
+    managedUsers=safeTemporaryLocalUsers();
+    atualizarStatusSincronizacao('offline','Acesso Master local');
+  }else{
+    await carregarDadosHostinger();
+    await refreshManagedUsersFromCloud();
+  }
   applyCurrentUserPermissions();
   sanitizarLotes();populateTipoSelects();populateFrigSelect();populateBoitelSelect();populateVendSelect();populateFilterVend();populateFilterFrig();populateCalcVendSelect();
   switchTab(canAccessTab(tab||'home')?(tab||'home'):'home');
+  if(!temporaryLocalAuth)executarFilaHostinger();
   return true;
 }
 async function doLogin(){
-  await refreshManagedUsersFromCloud();
   var username=String((document.getElementById('inp-user')||{}).value||'').trim().toLowerCase();
   var password=String((document.getElementById('inp-pass')||{}).value||'');
   var err=document.getElementById('login-err');if(err)err.textContent='';
-  var account=getManagedUserRecord(username);
-  if(!account||account.status==='blocked'||!Object.prototype.hasOwnProperty.call(USERS,username)||USERS[username]!==password){
-    if(err)err.textContent='Usuário ou senha inválidos.';
+  var button=document.getElementById('btn-auth-login');if(button)button.disabled=true;
+  atualizarStatusSincronizacao('connecting');
+  try{
+    if(temporaryLocalAuthEnabled()){
+      var localUser=temporaryLocalUser(username,password);
+      if(!localUser)throw new Error('Usuário ou senha inválidos.');
+      temporaryLocalAuth=true;
+      var safeLocalUser=Object.assign({},localUser);delete safeLocalUser.password;
+      sessionStorage.setItem(TEMP_LOCAL_SESSION_KEY,JSON.stringify({username:safeLocalUser.username}));
+      await entrarApp(safeLocalUser,'home');
+      return;
+    }
+    var data=await apiRequest('/auth/login.php',{method:'POST',body:{username:username,password:password},skipCsrf:true,allowUnauthenticated:true});
+    hostingerCsrfToken=String(data&&data.csrf_token||'');
+    await entrarApp(data.user,'home');
+  }catch(loginError){
+    if(err)err.textContent=loginError.message||'Usuário ou senha inválidos.';
     var pass=document.getElementById('inp-pass');if(pass){pass.value='';pass.focus();}
-    return;
-  }
-  currentUser=username;
-  try{localStorage.setItem(SESSION_KEY,JSON.stringify({username:username,createdAt:Date.now()}));}catch(e){}
-  entrarApp(username,'home');
+    atualizarStatusSincronizacao(loginError.code==='NETWORK_ERROR'?'offline':'error');
+  }finally{if(button)button.disabled=false;}
 }
-function doLogout(){currentUser='';currentAuthUser=null;currentProfile=null;currentMembership=null;currentOrganizationId='';currentSpecialPermissions=[];supabaseLastLoadUser='';
-  try{localStorage.removeItem(SESSION_KEY);}catch(e){}
+async function doLogout(){
+  try{if(currentAuthUser&&!temporaryLocalAuth)await apiRequest('/auth/logout.php',{method:'POST',body:{}});}catch(e){console.warn('Não foi possível confirmar o logout no servidor.',e);}
+  try{sessionStorage.removeItem(TEMP_LOCAL_SESSION_KEY);}catch(e){}
+  temporaryLocalAuth=false;
+  currentUser='';currentAuthUser=null;currentProfile=null;currentMembership=null;currentOrganizationId='';currentSpecialPermissions=[];hostingerCsrfToken='';managedUsers=[];hostingerLastRefreshAt=0;hostingerLastServerSummary=null;
   document.body.classList.remove('mobile-header-hidden','calc-tab-active');
   document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';
   var user=document.getElementById('inp-user'),pass=document.getElementById('inp-pass');if(user)user.value='';if(pass)pass.value='';
+  atualizarStatusSincronizacao('connecting','Aguardando login');
 }
 async function restoreBasicSession(){
   try{
-    await refreshManagedUsersFromCloud();
-    var saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
-    var username=String(saved&&saved.username||'').trim().toLowerCase();
-    var account=getManagedUserRecord(username);
-    if(username&&account&&account.status!=='blocked'&&Object.prototype.hasOwnProperty.call(USERS,username)){
-      currentUser=username;
-      var inp=document.getElementById('inp-user');if(inp)inp.value=username;
-      entrarApp(username,'home');
-      return true;
+    if(temporaryLocalAuthEnabled()){
+      var localSession=JSON.parse(sessionStorage.getItem(TEMP_LOCAL_SESSION_KEY)||'null');
+      var localUser=TEMP_LOCAL_USERS.find(function(user){return user.username===String(localSession&&localSession.username||'').toLowerCase();});
+      if(localUser){
+        temporaryLocalAuth=true;
+        var safeLocalUser=Object.assign({},localUser);delete safeLocalUser.password;
+        await entrarApp(safeLocalUser,'home');
+        return true;
+      }
     }
-  }catch(e){console.warn('Não foi possível restaurar a sessão.',e);}
-  try{localStorage.removeItem(SESSION_KEY);}catch(e){}
+    atualizarStatusSincronizacao('connecting');
+    var data=await apiRequest('/auth/me.php',{allowUnauthenticated:true});
+    hostingerCsrfToken=String(data&&data.csrf_token||'');
+    await entrarApp(data.user,'home');
+    return true;
+  }catch(e){
+    if(e.code==='NETWORK_ERROR')atualizarStatusSincronizacao('offline','API indisponível');
+    else atualizarStatusSincronizacao('connecting','Faça login');
+  }
+  document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';
   return false;
 }
 
@@ -13848,19 +13916,16 @@ async function reserveGlobalLotNumber(lotes){
     return reservado;
   }
   var minimo=Math.max(getHighestExistingLotNumber(lotes),getLastIssuedLotNumber());
-  if(supabaseIsConfigured()){
+  if(currentAuthUser&&navigator.onLine){
     try{
-      var resposta=await getSupabaseClient().rpc('get_next_vm_agro_lot_number',{
-        p_app_id:SUPABASE_APP_ID,
-        p_user_key:supabaseUserKey(),
-        p_minimum:minimo
-      });
-      if(!resposta.error&&resposta.data!==undefined&&resposta.data!==null){
-        var remoto=parseInt(Array.isArray(resposta.data)?resposta.data[0]:resposta.data,10);
-        if(isFinite(remoto)&&remoto>minimo){updateGlobalLotSequence(remoto);return String(remoto);}
+      var resposta=await apiRequest('/data/next-lot.php',{method:'POST',body:{minimum:minimo}});
+      var remoto=parseInt(resposta&&resposta.number,10);
+      if(isFinite(remoto)&&remoto>minimo){
+        var versions=getHostingerVersions();versions.lot_sequence=Number(resposta.version)||0;saveHostingerVersions(versions);
+        hostingerHydrating=true;updateGlobalLotSequence(remoto);hostingerHydrating=false;
+        return String(remoto);
       }
-      if(resposta.error)console.warn('Contador central indisponível; usando sequência local reconciliada.',resposta.error);
-    }catch(err){console.warn('Falha ao reservar número global no Supabase; usando fallback local.',err);}
+    }catch(err){console.warn('Contador central indisponível; usando sequência local reconciliada.',err);}
   }
   var proximo=minimo+1;
   updateGlobalLotSequence(proximo);
@@ -15525,7 +15590,7 @@ function showCfg(sec){
   if(sec==='frigs')renderFrigList();
   if(sec==='boiteis')renderBoitelList();
   if(sec==='transportadoras')renderTransportadoraList();
-  if(sec==='users')renderUsersList();
+  if(sec==='users'){renderUsersList();refreshAuditLog();}
   if(sec==='params'){loadParamsForm();renderCustomCostList();renderRacasList();}
   applyCurrentUserPermissions();
 }
@@ -15559,27 +15624,37 @@ function renderUsersList(){
     +rows.map(function(record){
       var encoded=encodeURIComponent(record.username);
       var isCurrent=record.username===currentUser;
+      var roleLabel=record.role==='master'?'Master':(record.role==='editor'?'Editor':'Viewer');
       return '<tr><td data-label="Nome"><strong>'+escHtml(userDisplayName(record))+'</strong></td>'
-        +'<td data-label="Usuário / e-mail">'+escHtml(record.username)+(isCurrent?' <small>(você)</small>':'')+'</td>'
-        +'<td data-label="Perfil"><span class="role-badge">'+(record.role==='master'?'Master':'Usuário')+'</span></td>'
+        +'<td data-label="Usuário / e-mail">'+escHtml(record.username)+(isCurrent?' <small>(você)</small>':'')+(record.email?'<br><small>'+escHtml(record.email)+'</small>':'')+'</td>'
+        +'<td data-label="Perfil"><span class="role-badge">'+roleLabel+'</span></td>'
         +'<td data-label="Status"><span class="profile-status '+(record.status==='blocked'?'blocked':'active')+'">'+(record.status==='blocked'?'Bloqueado':'Ativo')+'</span></td>'
         +'<td data-label="Ações"><div class="user-actions"><button class="primary" onclick="showUserForm(decodeURIComponent(\''+encoded+'\'))">Editar</button>'
         +(!isCurrent?'<button onclick="toggleManagedUserStatus(decodeURIComponent(\''+encoded+'\'))">'+(record.status==='blocked'?'Ativar':'Bloquear')+'</button>':'')
-        +(!record.builtin&&!isCurrent?'<button onclick="deleteManagedUser(decodeURIComponent(\''+encoded+'\'))">Excluir</button>':'')
         +'</div></td></tr>';
     }).join('')+'</tbody></table></div>';
 }
+async function refreshAuditLog(){
+  var root=document.getElementById('audit-list');if(!root||!isAdminUser())return;
+  try{
+    var data=await apiRequest('/audit/list.php?limit=100'),items=data&&data.items||[];
+    if(!items.length){root.innerHTML='<div class="users-empty">Nenhuma ação registrada.</div>';return;}
+    root.innerHTML='<table class="users-table"><thead><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Entidade</th><th>Chave</th></tr></thead><tbody>'+items.map(function(item){return '<tr><td data-label="Data">'+escHtml(formatDateTime(item.created_at))+'</td><td data-label="Usuário">'+escHtml(item.username||'Sistema')+'</td><td data-label="Ação"><strong>'+escHtml(item.action)+'</strong></td><td data-label="Entidade">'+escHtml(item.entity_type)+'</td><td data-label="Chave">'+escHtml(item.entity_key||'—')+'</td></tr>';}).join('')+'</tbody></table>';
+  }catch(err){root.innerHTML='<div class="users-empty">Não foi possível carregar a auditoria.</div>';}
+}
+function formatDateTime(value){var d=new Date(String(value||'').replace(' ','T')+'Z');return isNaN(d.getTime())?String(value||'—'):d.toLocaleString('pt-BR');}
 function showUserForm(username){
   if(!requirePermission('users.manage'))return;
   var record=username?getManagedUserRecord(username):null;
   document.getElementById('user-form-title').textContent=record?'Editar usuário':'Novo usuário';
-  document.getElementById('uf-original-username').value=record?record.username:'';
+  document.getElementById('uf-original-username').value=record?record.id:'';
   document.getElementById('uf-name').value=record?userDisplayName(record):'';
   document.getElementById('uf-username').value=record?record.username:'';
   document.getElementById('uf-username').disabled=!!record;
+  document.getElementById('uf-email').value=record&&record.email||'';
   document.getElementById('uf-password').value='';
-  document.getElementById('uf-password-hint').textContent=record?'Deixe em branco para manter a senha atual.':'Obrigatória para novos usuários.';
-  document.getElementById('uf-role').value=record&&record.role==='master'?'master':'user';
+  document.getElementById('uf-password-hint').textContent=record?'Deixe em branco para manter a senha atual.':'Obrigatória; mínimo de 10 caracteres, com letras e números.';
+  document.getElementById('uf-role').value=record&&['viewer','editor','master'].indexOf(record.role)>=0?record.role:'viewer';
   document.getElementById('uf-status').value=record&&record.status==='blocked'?'blocked':'active';
   document.getElementById('user-form').style.display='block';
   (record?document.getElementById('uf-name'):document.getElementById('uf-username')).focus();
@@ -15588,49 +15663,39 @@ function hideUserForm(){
   var form=document.getElementById('user-form');if(form)form.style.display='none';
   var username=document.getElementById('uf-username');if(username)username.disabled=false;
 }
-function saveManagedUser(){
+async function saveManagedUser(){
   if(!requirePermission('users.manage'))return;
-  var original=normalizeManagedUsername(document.getElementById('uf-original-username').value);
+  var originalId=parseInt(document.getElementById('uf-original-username').value||'0',10)||0;
   var username=normalizeManagedUsername(document.getElementById('uf-username').value);
   var name=String(document.getElementById('uf-name').value||'').trim();
+  var email=String(document.getElementById('uf-email').value||'').trim().toLowerCase();
   var password=String(document.getElementById('uf-password').value||'');
-  var role=document.getElementById('uf-role').value==='master'?'master':'user';
+  var role=document.getElementById('uf-role').value;
   var status=document.getElementById('uf-status').value==='blocked'?'blocked':'active';
-  var previous=original?getManagedUserRecord(original):null;
   if(!name){toast('Informe o nome do usuário.');document.getElementById('uf-name').focus();return;}
   if(!username||username.length<3){toast('Informe um usuário ou e-mail válido.');document.getElementById('uf-username').focus();return;}
-  if(!original&&getManagedUserRecord(username)){toast('Este usuário já está cadastrado.');return;}
-  if(!original&&password.length<6){toast('A senha deve ter pelo menos 6 caracteres.');document.getElementById('uf-password').focus();return;}
-  if(original&&password&&password.length<6){toast('A nova senha deve ter pelo menos 6 caracteres.');return;}
-  if(original===currentUser&&(role!=='master'||status==='blocked')){toast('Você não pode remover ou bloquear o próprio acesso master.');return;}
-  var otherActiveMasters=getAllManagedUserRecords().filter(function(record){return record.username!==original&&record.role==='master'&&record.status!=='blocked';}).length;
-  if(previous&&previous.role==='master'&&previous.status!=='blocked'&&(role!=='master'||status==='blocked')&&!otherActiveMasters){toast('Mantenha pelo menos um usuário master ativo.');return;}
-  var entry={username:username,name:name,role:role,status:status,password:password||(previous&&previous.password)||'',createdAt:(previous&&previous.createdAt)||new Date().toISOString(),updatedAt:new Date().toISOString()};
-  var index=managedUsers.findIndex(function(record){return normalizeManagedUsername(record.username)===(original||username);});
-  if(index>=0)managedUsers[index]=entry;else managedUsers.push(entry);
-  persistManagedUsers();
-  hideUserForm();renderUsersList();applyCurrentUserPermissions();toast('Usuário salvo com sucesso.');
+  if(['viewer','editor','master'].indexOf(role)<0){toast('Selecione um perfil válido.');return;}
+  if(!originalId&&password.length<10){toast('A senha deve ter pelo menos 10 caracteres.');document.getElementById('uf-password').focus();return;}
+  if(originalId&&password&&password.length<10){toast('A nova senha deve ter pelo menos 10 caracteres.');return;}
+  try{
+    if(originalId){
+      await apiRequest('/users/update.php',{method:'PUT',body:{id:originalId,name:name,email:email,role:role,status:status}});
+      if(password)await apiRequest('/users/change-password.php',{method:'POST',body:{id:originalId,password:password}});
+      if(currentAuthUser&&Number(currentAuthUser.id)===originalId){currentAuthUser.name=name;currentAuthUser.email=email;currentAuthUser.role=role;currentAuthUser.status=status;document.getElementById('user-display').textContent=name||currentUser;}
+    }else{
+      await apiRequest('/users/create.php',{method:'POST',body:{name:name,username:username,email:email,password:password,role:role,status:status}});
+    }
+    await refreshManagedUsersFromCloud();hideUserForm();renderUsersList();applyCurrentUserPermissions();if(!isAdminUser())showCfg('vends');toast('Usuário salvo com sucesso.');
+  }catch(err){toast(err.message||'Não foi possível salvar o usuário.');}
 }
-function toggleManagedUserStatus(username){
+async function toggleManagedUserStatus(username){
   if(!requirePermission('users.manage'))return;
   username=normalizeManagedUsername(username);
   if(username===currentUser){toast('Você não pode bloquear o próprio usuário.');return;}
   var record=getManagedUserRecord(username);if(!record)return;
   var next=record.status==='blocked'?'active':'blocked';
-  var originalIndex=managedUsers.findIndex(function(item){return normalizeManagedUsername(item.username)===username;});
-  var entry=Object.assign({},record,{status:next,password:record.password,updatedAt:new Date().toISOString()});delete entry.builtin;
-  if(record.role==='master'&&next==='blocked'&&!getAllManagedUserRecords().some(function(item){return item.username!==username&&item.role==='master'&&item.status!=='blocked';})){toast('Mantenha pelo menos um usuário master ativo.');return;}
-  if(originalIndex>=0)managedUsers[originalIndex]=entry;else managedUsers.push(entry);
-  persistManagedUsers();renderUsersList();toast(next==='active'?'Usuário ativado.':'Usuário bloqueado.');
-}
-function deleteManagedUser(username){
-  if(!requirePermission('users.manage'))return;
-  username=normalizeManagedUsername(username);
-  var record=getManagedUserRecord(username);if(!record||record.builtin)return;
-  if(username===currentUser){toast('Você não pode excluir o próprio usuário.');return;}
-  if(!confirm('Excluir o usuário '+username+'?'))return;
-  managedUsers=managedUsers.filter(function(item){return normalizeManagedUsername(item.username)!==username;});
-  persistManagedUsers();renderUsersList();toast('Usuário excluído.');
+  try{await apiRequest('/users/block.php',{method:'POST',body:{id:record.id,status:next}});await refreshManagedUsersFromCloud();renderUsersList();toast(next==='active'?'Usuário ativado.':'Usuário bloqueado.');}
+  catch(err){toast(err.message||'Não foi possível alterar o usuário.');}
 }
 function loadParamsForm(){
   var p=getParams();
@@ -17350,6 +17415,83 @@ function crc32(bytes){
 }
 
 /* ── BACKUP / RESTORE ──────────────────────────── */
+function dadosLocaisParaMigracaoHostinger(){
+  var items=[];
+  Object.keys(HOSTINGER_LOCAL_KEYS).forEach(function(localKey){
+    var raw=localStorage.getItem(localKey);
+    if(raw===null)return;
+    items.push({data_key:HOSTINGER_LOCAL_KEYS[localKey],value:safeJsonParse(raw,raw),local_key:localKey});
+  });
+  var legacyUsers=safeJsonParse(localStorage.getItem('vm_agro_managed_users_v1')||'[]',[]);
+  var byKey={};items.forEach(function(item){byKey[item.data_key]=item.value;});
+  return {
+    generated_at:new Date().toISOString(),
+    local_updated_at:localStorage.getItem(HOSTINGER_LOCAL_UPDATED_KEY)||'',
+    items:items,
+    legacy_users:Array.isArray(legacyUsers)?legacyUsers:[],
+    counts:{
+      keys:items.length,
+      lotes:Array.isArray(byKey.lotes)?byKey.lotes.length:0,
+      futuros:Array.isArray(byKey.futuros)?byKey.futuros.length:0,
+      financeiro:(Array.isArray(byKey.financeiro_lancamentos)?byKey.financeiro_lancamentos.length:0)+(Array.isArray(byKey.financeiro_notas)?byKey.financeiro_notas.length:0)+(Array.isArray(byKey.financeiro_fretes)?byKey.financeiro_fretes.length:0)
+    }
+  };
+}
+function baixarJsonHostinger(data,name){
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+function backupSeguroMigracaoHostinger(data){
+  var safe=JSON.parse(JSON.stringify(data||{}));
+  if(Array.isArray(safe.legacy_users))safe.legacy_users=safe.legacy_users.map(function(user){
+    var record=Object.assign({},user);delete record.password;return record;
+  });
+  return safe;
+}
+function baixarBackupMigracaoHostinger(){
+  baixarJsonHostinger(backupSeguroMigracaoHostinger(dadosLocaisParaMigracaoHostinger()),'vm-agro-backup-pre-migracao-'+new Date().toISOString().slice(0,10)+'.json');
+  toast('✓ Backup local exportado');
+}
+function atualizarResumoMigracaoHostinger(serverData){
+  var card=document.getElementById('hostinger-migration-card'),summary=document.getElementById('hostinger-migration-summary'),state=document.getElementById('hostinger-migration-state');
+  if(!card)return;
+  serverData=serverData||hostingerLastServerSummary;
+  card.style.display=isAdminUser()?'':'none';
+  if(!isAdminUser())return;
+  var local=dadosLocaisParaMigracaoHostinger(),c=local.counts;
+  if(summary)summary.innerHTML='<div class="migration-stat"><small>Chaves locais</small><strong>'+c.keys+'</strong></div><div class="migration-stat"><small>Lotes</small><strong>'+c.lotes+'</strong></div><div class="migration-stat"><small>Operações B3</small><strong>'+c.futuros+'</strong></div><div class="migration-stat"><small>Financeiro</small><strong>'+c.financeiro+'</strong></div>';
+  if(state){
+    var onlineCount=serverData&&Number(serverData.count);
+    state.textContent=(serverData?(onlineCount===0?'Banco online vazio: pronto para migração inicial.':'Banco online com '+onlineCount+' chave(s): migração comum bloqueada.'):'Situação do banco indisponível.')+(local.local_updated_at?' · Cópia local: '+formatSyncDate(local.local_updated_at):'');
+  }
+}
+async function migrarDadosDesteAparelho(){
+  if(!isAdminUser()){toast('Apenas Master pode executar a migração.');return;}
+  var local=dadosLocaisParaMigracaoHostinger();
+  if(!local.items.length){toast('Não há dados locais para migrar.');return;}
+  try{
+    var server=await apiRequest('/data/list.php');
+    atualizarResumoMigracaoHostinger(server);
+    if(Number(server.count)!==0){baixarBackupMigracaoHostinger();toast('O banco já possui dados. Foi gerado apenas o backup; use migração assistida.');return;}
+    var resumo=local.counts.lotes+' lote(s), '+local.counts.futuros+' operação(ões) B3 e '+local.counts.financeiro+' lançamento(s) financeiro(s).';
+    if(!confirm('Migrar os dados deste aparelho para o banco Hostinger?\n\n'+resumo+'\n\nUm backup JSON será baixado antes do envio.'))return;
+    baixarBackupMigracaoHostinger();
+    atualizarStatusSincronizacao('syncing','Migração inicial');
+    var migrated=await apiRequest('/data/upsert.php',{method:'POST',body:{migration:true,items:local.items.map(function(item){return {data_key:item.data_key,value:item.value};})}});
+    hostingerMigrationBlocked=false;hostingerDatabaseEmpty=false;
+    var versions=getHostingerVersions(),queue=getHostingerQueue();
+    (migrated.items||[]).forEach(function(item){versions[item.data_key]=Number(item.version)||1;delete queue[item.data_key];});
+    saveHostingerVersions(versions);saveHostingerQueue(queue);
+    if(local.legacy_users.length){
+      await apiRequest('/users/migrate.php',{method:'POST',body:{users:local.legacy_users}});
+      localStorage.removeItem('vm_agro_managed_users_v1');
+      await refreshManagedUsersFromCloud();
+    }
+    await carregarDadosHostinger();
+    atualizarResumoMigracaoHostinger(hostingerLastServerSummary);
+    toast('✓ Migração concluída no banco Hostinger');
+  }catch(err){atualizarStatusSincronizacao(err.code==='NETWORK_ERROR'?'offline':'error');toast(err.message||'Não foi possível concluir a migração.');}
+}
 function exportarDados(){
   var data={
     versao:1,exportadoEm:new Date().toISOString(),
