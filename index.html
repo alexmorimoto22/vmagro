@@ -4633,14 +4633,26 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   #panel-lotes .status-row>.status-cell{min-width:0;box-sizing:border-box;}
 </style>
 <style id="b3-sticky-header-layer-fix-20260722">
+  #panel-futuros .fut-table{
+    isolation:isolate!important;
+  }
+  #panel-futuros .fut-table thead{
+    position:sticky!important;
+    top:0!important;
+    z-index:40!important;
+  }
+  #panel-futuros .fut-table thead tr{
+    position:relative!important;
+    z-index:41!important;
+  }
   #panel-futuros .fut-table thead th{
     position:sticky!important;
     top:0!important;
-    z-index:20!important;
+    z-index:42!important;
     background:#fffdf8!important;
   }
   #panel-futuros .fut-table thead th.column-frozen{
-    z-index:24!important;
+    z-index:46!important;
     background:#fffdf8!important;
   }
   #panel-futuros .fut-table tbody td.column-frozen{
@@ -4651,6 +4663,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
   #panel-futuros .fut-table tfoot td.column-frozen{
     z-index:18!important;
+  }
+</style>
+<style id="status-total-frozen-sync-20260722">
+  #panel-lotes .status-total-row>.status-total-cell.column-frozen{
+    position:relative!important;
+    left:auto!important;
+    transform:translateX(var(--status-total-scroll-x,0px))!important;
+    z-index:14!important;
+    background:#f2ede3!important;
+    box-shadow:1px 0 0 var(--border),4px 0 9px rgba(13,27,42,.07)!important;
   }
 </style>
 </head>
@@ -12606,6 +12628,20 @@ function applyStatusGridTemplate(){
     document.querySelectorAll('#panel-lotes [data-status-col="'+col.key+'"]').forEach(function(el){el.classList.add('column-frozen');el.style.left=left+'px';});
     left+=statusComputedColWidth(col,widths);
   });
+  bindStatusTotalScrollSync();
+  syncStatusTotalScroll();
+}
+function syncStatusTotalScroll(){
+  var wrap=document.querySelector('#panel-lotes .status-table-wrap');
+  var total=document.getElementById('status-total-row');
+  if(!wrap||!total)return;
+  total.style.setProperty('--status-total-scroll-x',(wrap.scrollLeft||0)+'px');
+}
+function bindStatusTotalScrollSync(){
+  var wrap=document.querySelector('#panel-lotes .status-table-wrap');
+  if(!wrap||wrap._statusTotalScrollSync)return;
+  wrap._statusTotalScrollSync=true;
+  wrap.addEventListener('scroll',syncStatusTotalScroll,{passive:true});
 }
 var statusGridResizeTimer=null;
 window.addEventListener('resize',function(){
