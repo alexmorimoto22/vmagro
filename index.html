@@ -12542,17 +12542,20 @@ function statusGridTemplate(){
   var widths=getStatusColWidths();
   return STATUS_COLS.map(function(c){
     if(visible[c.key]===false)return '0px';
-    var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w)+'px';
+    return statusComputedColWidth(c,widths)+'px';
   }).join(' ');
+}
+function statusComputedColWidth(c,widths){
+  widths=widths||getStatusColWidths();
+  var w=parseFloat(widths[c.key]||c.w)||c.w;
+  return Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w);
 }
 function statusGridWidth(){
   var visible=getStatusColVisible();
   var widths=getStatusColWidths();
   return STATUS_COLS.reduce(function(total,c){
     if(visible[c.key]===false)return total;
-    var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return total+Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w);
+    return total+statusComputedColWidth(c,widths);
   },0);
 }
 function applyStatusGridTemplate(){
@@ -12576,7 +12579,7 @@ function applyStatusGridTemplate(){
   var visible=statusVisibleCols(),frozen=Math.min(getStatusFrozenCount(),visible.length),left=0,widths=getStatusColWidths();
   visible.slice(0,frozen).forEach(function(col){
     document.querySelectorAll('#panel-lotes [data-status-col="'+col.key+'"]').forEach(function(el){el.classList.add('column-frozen');el.style.left=left+'px';});
-    left+=Math.max(78,parseFloat(widths[col.key]||col.w)||col.w);
+    left+=statusComputedColWidth(col,widths);
   });
 }
 var statusGridResizeTimer=null;
