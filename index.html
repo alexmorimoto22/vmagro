@@ -4632,6 +4632,27 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   #panel-lotes .status-cash-tag{width:15px!important;height:15px!important;border-radius:4px!important;font-size:7px!important;}
   #panel-lotes .status-row>.status-cell{min-width:0;box-sizing:border-box;}
 </style>
+<style id="b3-sticky-header-layer-fix-20260722">
+  #panel-futuros .fut-table thead th{
+    position:sticky!important;
+    top:0!important;
+    z-index:20!important;
+    background:#fffdf8!important;
+  }
+  #panel-futuros .fut-table thead th.column-frozen{
+    z-index:24!important;
+    background:#fffdf8!important;
+  }
+  #panel-futuros .fut-table tbody td.column-frozen{
+    z-index:8!important;
+  }
+  #panel-futuros .fut-table tfoot td{
+    z-index:16!important;
+  }
+  #panel-futuros .fut-table tfoot td.column-frozen{
+    z-index:18!important;
+  }
+</style>
 </head>
 <body>
 
@@ -12356,9 +12377,11 @@ function setStatusSub(id,value){
 function setStatusFooterValue(key,value,cls){
   var el=document.querySelector('#status-total-row [data-status-total-col="'+key+'"]');
   if(!el)return;
+  var frozen=el.classList.contains('column-frozen');
   el.textContent=value===undefined||value===null||value===''?'—':value;
   el.title=el.textContent;
   el.className='status-total-cell '+statusColClass(key)+' '+(cls||'');
+  if(frozen)el.classList.add('column-frozen');
 }
 function applyStatusColumnFilters(){
   var performanceParams=getParams();
@@ -12487,6 +12510,8 @@ function applyStatusColumnFilters(){
   if(sheetCount)sheetCount.textContent=visiveis+' de '+rows.length+' lançamento(s)';
   var mobileCount=document.getElementById('status-mobile-count');
   if(mobileCount)mobileCount.textContent=visiveis+' lotes exibidos';
+  // Reaplica o layout depois dos totais, como no rodape da B3.
+  applyStatusGridTemplate();
 }
 
 function toggleStatusMobileFilters(){
