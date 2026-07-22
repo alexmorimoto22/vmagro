@@ -4609,6 +4609,29 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     }
   }
 </style>
+<style id="status-lot-column-fit-20260722">
+  #panel-lotes .status-lot-number-cell{
+    display:grid!important;
+    grid-template-columns:minmax(38px,1fr) 33px!important;
+    align-items:center!important;
+    gap:5px!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  #panel-lotes .status-lot-number-cell .status-seq-pc{
+    width:100%!important;
+    min-width:0!important;
+    max-width:58px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  #panel-lotes .status-cash-tags{gap:2px!important;min-width:0!important;}
+  #panel-lotes .status-cash-tag{width:15px!important;height:15px!important;border-radius:4px!important;font-size:7px!important;}
+  #panel-lotes .status-row>.status-cell{min-width:0;box-sizing:border-box;}
+</style>
 </head>
 <body>
 
@@ -5843,7 +5866,7 @@ let pillFilter='';
 var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rent:'',rentmes:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
 var STATUS_COLS=[
   {key:'status',label:'Status',w:126},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
-  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:112},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
+  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:128},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
   {key:'entrada',label:'Entrada',w:92},{key:'abate',label:'Abate',w:92},{key:'recebimento',label:'Recebimento',w:104},
   {key:'faturamento',label:'Fat. lote',w:126},{key:'capital',label:'Capital',w:126},{key:'lucro',label:'Lucro',w:116},
   {key:'rent',label:'% Oper.',w:76},{key:'rentmes',label:'% Mês',w:76},{key:'rcExpectativa',label:'RC expectativa',w:108},{key:'rcRealizado',label:'RC realizado',w:100},{key:'consumoMedioExpectativa',label:'Consumo méd. expectativa',w:138},{key:'consumoMedioRealizado',label:'Consumo méd. realizado',w:130},{key:'gmdOrigem',label:'GMD Origem',w:108},{key:'gmdChegada',label:'GMD Chegada',w:108},{key:'gmcOrigem',label:'GMC Origem',w:116},{key:'gmcChegada',label:'GMC Chegada',w:116},{key:'eficiencia',label:'Efic. Origem',w:116},{key:'eficienciaChegada',label:'Efic. Cheg.',w:116},{key:'atProdChegada',label:'@ produzida - chegada',w:132},{key:'atProdOrigem',label:'@ produzida - origem',w:126},{key:'custoAtChegada',label:'Custo @ prod. chegada',w:142},{key:'custoAtOrigem',label:'Custo @ prod. origem',w:136}
@@ -12520,7 +12543,7 @@ function statusGridTemplate(){
   return STATUS_COLS.map(function(c){
     if(visible[c.key]===false)return '0px';
     var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return Math.max(c.key==='status'?126:(c.key==='numeroLote'?112:78),w)+'px';
+    return Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w)+'px';
   }).join(' ');
 }
 function statusGridWidth(){
@@ -12529,7 +12552,7 @@ function statusGridWidth(){
   return STATUS_COLS.reduce(function(total,c){
     if(visible[c.key]===false)return total;
     var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return total+Math.max(c.key==='status'?126:(c.key==='numeroLote'?112:78),w);
+    return total+Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w);
   },0);
 }
 function applyStatusGridTemplate(){
