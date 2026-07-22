@@ -4675,6 +4675,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     box-shadow:1px 0 0 var(--border),4px 0 9px rgba(13,27,42,.07)!important;
   }
 </style>
+<style id="status-mobile-extra-actions-hidden-20260722">
+  @media(max-width:768px){
+    #panel-lotes .status-mobile-columns-trigger-wrap,
+    #panel-lotes #status-mobile-columns-trigger-v2,
+    #panel-lotes #status-mobile-sort-trigger-v1{
+      display:none!important;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -5561,7 +5570,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           </div>
           <div class="g2">
             <div class="field"><label>Prazo de Recebimento (dias)</label><input type="number" id="bf-prazoPag" value="7" step="1"></div>
-            <div class="field"></div>
+            <div class="field"><label>Frigorífico padrão <span style="font-size:9px;color:var(--text-3);font-weight:400;">(opcional)</span></label><select id="bf-frigId"><option value="">Nenhum</option></select><div class="hint">Preenche ao selecionar este boitel na calculadora.</div></div>
           </div>
           <div class="form-btns">
             <button class="btn-save" onclick="salvarBoitel()">Salvar</button>
@@ -14948,6 +14957,10 @@ function aplicarBoitel(){
   _setCalcValue('sanidade',b.sanidade);
   _setCalcValue('custoArrobaProd',b.custoArrobaProd);
   _setCalcValue('prazoPag',b.prazoPag);
+  if(b.frigId&&getFrigs().some(function(f){return f.id===b.frigId;})){
+    populateFrigSelect(b.frigId);
+    aplicarFrigorifico();
+  }
   atualizarDatas();
   agendarCalculoAutomatico();
   toast('✓ Parâmetros do boitel aplicados');
@@ -15884,6 +15897,7 @@ function renderBoitelList(){
   items.forEach(function(b){
     var local=[b.cidade,b.estado].filter(Boolean).join('/');
     var fiscal=[b.documento?('CNPJ/CPF: '+b.documento):'',b.inscricaoEstadual?('I.E.: '+b.inscricaoEstadual):''].filter(Boolean).join(' · ');
+    var frigorifico=(b.frigId?(getFrigs().find(function(f){return f.id===b.frigId;})||{}).nome:'')||'';
     out+='<div class="item-card" data-boitel-id="'+escHtml(b.id)+'">'
       +'<div class="ic-header">'
         +'<div><div class="ic-name">'+escHtml(b.nome)+'</div>'
@@ -15902,10 +15916,24 @@ function renderBoitelList(){
         +'<div class="bonus-item"><div class="bonus-race">Sanidade</div><div class="bonus-val neu">'+fmt(b.sanidade)+'/animal</div></div>'
         +'<div class="bonus-item"><div class="bonus-race">@ produzida</div><div class="bonus-val neu">'+fmt(b.custoArrobaProd)+'/@</div></div>'
         +'<div class="bonus-item"><div class="bonus-race">Prazo recebimento</div><div class="bonus-val neu">'+(b.prazoPag||0)+' dias</div></div>'
+        +(frigorifico?'<div class="bonus-item"><div class="bonus-race">Frigorífico padrão</div><div class="bonus-val neu">'+escHtml(frigorifico)+'</div></div>':'')
       +'</div>'
     +'</div>';
   });
   el.innerHTML=out;
+}
+function populateBoitelFrigSelect(selectedId){
+  var sel=document.getElementById('bf-frigId');
+  if(!sel)return;
+  var current=selectedId!==undefined&&selectedId!==null?selectedId:sel.value;
+  sel.innerHTML='<option value="">Nenhum</option>';
+  getFrigs().forEach(function(f){
+    var option=document.createElement('option');
+    option.value=f.id;
+    option.textContent=f.nome;
+    option.selected=f.id===current;
+    sel.appendChild(option);
+  });
 }
 function showBoitelForm(id){
   if(!requirePermission('settings.operational'))return;
@@ -15930,6 +15958,7 @@ function showBoitelForm(id){
     document.getElementById('bf-sanidade').value=brNum(b.sanidade||0,2);
     document.getElementById('bf-custoArrobaProd').value=brNum(b.custoArrobaProd||0,2);
     document.getElementById('bf-prazoPag').value=b.prazoPag||0;
+    populateBoitelFrigSelect(b.frigId||'');
     var card=Array.from(document.querySelectorAll('[data-boitel-id]')).find(function(c){return c.getAttribute('data-boitel-id')===id;});
     if(card){card.classList.add('active-edit');card.insertAdjacentElement('afterend',form);}
   } else {
@@ -15947,6 +15976,7 @@ function showBoitelForm(id){
     document.getElementById('bf-sanidade').value=brNum(p.sanidade||0,2);
     document.getElementById('bf-custoArrobaProd').value=brNum(p.custoArrobaProd||0,2);
     document.getElementById('bf-prazoPag').value=p.prazoPag||7;
+    populateBoitelFrigSelect('');
   }
   form.style.display='block';
   document.getElementById('bf-nome').focus({preventScroll:true});
@@ -15979,6 +16009,7 @@ function salvarBoitel(){
     sanidade:finInputNum('bf-sanidade'),
     custoArrobaProd:finInputNum('bf-custoArrobaProd'),
     prazoPag:Math.round(finInputNum('bf-prazoPag')),
+    frigId:(document.getElementById('bf-frigId')||{value:''}).value||null,
     updatedAt:new Date().toISOString()
   };
   if(editId){
