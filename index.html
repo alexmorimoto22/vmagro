@@ -4666,13 +4666,28 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 </style>
 <style id="status-total-frozen-sync-20260722">
-  #panel-lotes .status-total-row>.status-total-cell.column-frozen{
-    position:relative!important;
-    left:auto!important;
-    transform:translateX(var(--status-total-scroll-x,0px))!important;
-    z-index:14!important;
+  #panel-lotes .status-total-row{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:20!important;
+    isolation:isolate;
     background:#f2ede3!important;
-    box-shadow:1px 0 0 var(--border),4px 0 9px rgba(13,27,42,.07)!important;
+    border-top:2px solid var(--gold)!important;
+    box-shadow:0 -5px 14px rgba(13,27,42,.10)!important;
+  }
+  #panel-lotes .status-total-row>.status-total-cell{
+    min-height:46px!important;
+    display:flex!important;
+    align-items:center!important;
+    background:#f2ede3!important;
+    border-right:1px solid rgba(211,194,164,.78)!important;
+  }
+  #panel-lotes .status-total-row>.status-total-cell.column-frozen{
+    position:sticky!important;
+    transform:none!important;
+    z-index:24!important;
+    background:#f2ede3!important;
+    box-shadow:1px 0 0 var(--border),6px 0 12px rgba(13,27,42,.11)!important;
   }
 </style>
 <style id="status-mobile-extra-actions-hidden-20260722">
@@ -6080,14 +6095,21 @@ var DASHBOARD_CARD_DEFS={
   ],
   status:[
     {key:'lotes',label:'Lotes'},{key:'qtd',label:'Quantidade total'},{key:'faturamento',label:'Faturamento lote'},{key:'capital',label:'Capital total'},
-    {key:'lucro',label:'Lucro total'},{key:'rent',label:'% lucro operação'},{key:'rentmes',label:'% lucro ao mês'},{key:'prazo',label:'Prazo médio'},{key:'quebraPct',label:'Quebra média %'},{key:'quebraKg',label:'Quebra média kg'},
+    {key:'lucro',label:'Lucro total'},{key:'rent',label:'% lucro operação atual'},{key:'rentmes',label:'% lucro ao mês atual'},
+    {key:'rentProj',label:'% operação projetada'},{key:'rentmesProj',label:'% mês projetada'},{key:'rentReal',label:'% operação realizada'},{key:'rentmesReal',label:'% mês realizada'},
+    {key:'prazo',label:'Prazo médio'},{key:'kmRodados',label:'KM rodados'},{key:'quebraPct',label:'Quebra média %'},{key:'quebraKg',label:'Quebra média kg'},
+    {key:'b3Necessario',label:'B3 total necessário'},{key:'b3Aberto',label:'B3 em aberto'},{key:'b3Liquidado',label:'B3 liquidado'},
     {key:'rcExpectativa',label:'RC expectativa'},{key:'rcRealizado',label:'RC realizado'},{key:'consumoMedioExpectativa',label:'Consumo médio expectativa'},{key:'consumoMedioRealizado',label:'Consumo médio realizado'},
     {key:'gmdOrigem',label:'GMD origem'},{key:'gmdChegada',label:'GMD chegada'},{key:'gmcOrigem',label:'GMC origem'},{key:'gmcChegada',label:'GMC chegada'},
-    {key:'eficiencia',label:'Eficiência biológica origem'},{key:'eficienciaChegada',label:'Eficiência biológica chegada'}
+    {key:'eficiencia',label:'Eficiência biológica origem'},{key:'eficienciaChegada',label:'Eficiência biológica chegada'},
+    {key:'atProdOrigem',label:'@ produzida - origem'},{key:'atProdChegada',label:'@ produzida - chegada'},{key:'custoAtOrigem',label:'Custo por @ produzida - origem'},{key:'custoAtChegada',label:'Custo por @ produzida - chegada'}
   ],
   futuros:[
     {key:'resultado',label:'Resultado B3'},{key:'lancamentos',label:'Lançamentos'},{key:'abertos',label:'Contratos em aberto'},
-    {key:'travados',label:'Contratos travados'},{key:'totalContratos',label:'Total de contratos'},{key:'liquidados',label:'Contratos liquidados'},{key:'filtro',label:'Filtro atual'}
+    {key:'travados',label:'Contratos travados'},{key:'totalContratos',label:'Total de contratos'},{key:'liquidados',label:'Contratos liquidados'},{key:'filtro',label:'Filtro atual'},
+    {key:'lotesVinculados',label:'Lotes vinculados'},{key:'qtdLotes',label:'Quantidade dos lotes'},{key:'necessidadeLotes',label:'Necessidade total dos lotes'},
+    {key:'faturamentoLotes',label:'Faturamento dos lotes'},{key:'precoAbertura',label:'Preço médio de abertura'},{key:'precoLiquidacao',label:'Preço médio de liquidação'},
+    {key:'resultadoRealizado',label:'Resultado realizado'}
   ]
 };
 var DASHBOARD_CARD_DEFAULTS={
@@ -6159,7 +6181,15 @@ function statusSummaryCardsHtml(){
     lucro:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'lucro\')">×</button><div class="status-total-label">Lucro total</div><div class="status-total-value" id="status-total-lucro">—</div></div>',
     rent:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rent\')">×</button><div class="status-total-label">% lucro operação</div><div class="status-total-value" id="status-total-rent">—</div></div>',
     rentmes:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rentmes\')">×</button><div class="status-total-label">% lucro ao mês</div><div class="status-total-value" id="status-total-rentmes">—</div><div class="status-total-sub" id="status-total-prazo">Prazo médio: —</div></div>',
+    rentProj:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rentProj\')">×</button><div class="status-total-label">% operação projetada</div><div class="status-total-value" id="status-total-rent-proj">—</div><div class="status-total-sub">Simulação original</div></div>',
+    rentmesProj:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rentmesProj\')">×</button><div class="status-total-label">% mês projetada</div><div class="status-total-value" id="status-total-rentmes-proj">—</div><div class="status-total-sub">Simulação original</div></div>',
+    rentReal:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rentReal\')">×</button><div class="status-total-label">% operação realizada</div><div class="status-total-value" id="status-total-rent-real">—</div><div class="status-total-sub">Somente lotes com realizado</div></div>',
+    rentmesReal:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rentmesReal\')">×</button><div class="status-total-label">% mês realizada</div><div class="status-total-value" id="status-total-rentmes-real">—</div><div class="status-total-sub">Somente lotes com realizado</div></div>',
     prazo:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'prazo\')">×</button><div class="status-total-label">Prazo médio</div><div class="status-total-value" id="status-total-prazo-card">—</div><div class="status-total-sub">Baseado no capital investido</div></div>',
+    kmRodados:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'kmRodados\')">×</button><div class="status-total-label">KM rodados</div><div class="status-total-value" id="status-total-km">—</div><div class="status-total-sub">Soma dos lotes filtrados</div></div>',
+    b3Necessario:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'b3Necessario\')">×</button><div class="status-total-label">B3 total necessário</div><div class="status-total-value" id="status-total-b3-necessario">—</div><div class="status-total-sub">Necessidade dos lotes</div></div>',
+    b3Aberto:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'b3Aberto\')">×</button><div class="status-total-label">B3 em aberto</div><div class="status-total-value" id="status-total-b3-aberto">—</div><div class="status-total-sub">Ainda não liquidado</div></div>',
+    b3Liquidado:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'b3Liquidado\')">×</button><div class="status-total-label">B3 liquidado</div><div class="status-total-value" id="status-total-b3-liquidado">—</div><div class="status-total-sub">Contratos já liquidados</div></div>',
     quebraPct:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'quebraPct\')">×</button><div class="status-total-label">Quebra média %</div><div class="status-total-value" id="status-total-quebra-pct">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
     quebraKg:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'quebraKg\')">×</button><div class="status-total-label">Quebra média kg</div><div class="status-total-value" id="status-total-quebra-kg">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
     rcExpectativa:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'rcExpectativa\')">×</button><div class="status-total-label">RC expectativa</div><div class="status-total-value" id="status-total-rc-expectativa">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
@@ -6171,7 +6201,11 @@ function statusSummaryCardsHtml(){
     gmcOrigem:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'gmcOrigem\')">×</button><div class="status-total-label">GMC origem</div><div class="status-total-value" id="status-total-gmc-origem">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
     gmcChegada:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'gmcChegada\')">×</button><div class="status-total-label">GMC chegada</div><div class="status-total-value" id="status-total-gmc-chegada">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
     eficiencia:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'eficiencia\')">×</button><div class="status-total-label">Efic. biológica origem</div><div class="status-total-value" id="status-total-eficiencia">—</div><div class="status-total-sub">Projetado ou realizado</div></div>',
-    eficienciaChegada:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'eficienciaChegada\')">×</button><div class="status-total-label">Efic. biológica chegada</div><div class="status-total-value" id="status-total-eficiencia-chegada">—</div><div class="status-total-sub">Projetado ou realizado</div></div>'
+    eficienciaChegada:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'eficienciaChegada\')">×</button><div class="status-total-label">Efic. biológica chegada</div><div class="status-total-value" id="status-total-eficiencia-chegada">—</div><div class="status-total-sub">Projetado ou realizado</div></div>',
+    atProdOrigem:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'atProdOrigem\')">×</button><div class="status-total-label">@ produzida - origem</div><div class="status-total-value" id="status-total-at-prod-origem">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
+    atProdChegada:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'atProdChegada\')">×</button><div class="status-total-label">@ produzida - chegada</div><div class="status-total-value" id="status-total-at-prod-chegada">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
+    custoAtOrigem:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'custoAtOrigem\')">×</button><div class="status-total-label">Custo por @ - origem</div><div class="status-total-value" id="status-total-custo-at-origem">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>',
+    custoAtChegada:'<div class="status-total-card"><button type="button" class="dashboard-card-remove" title="Ocultar quadro" onclick="removeDashboardCard(\'status\',\'custoAtChegada\')">×</button><div class="status-total-label">Custo por @ - chegada</div><div class="status-total-value" id="status-total-custo-at-chegada">—</div><div class="status-total-sub">Média ponderada por qtd</div></div>'
   };
   return getDashboardCards('status').map(function(key){return dashboardDraggableCardHtml('status',key,cards[key]||'');}).join('')+dashboardAddCardHtml('status');
 }
@@ -10335,6 +10369,25 @@ function renderFuturos(){
     total.liquidados+=r.qtdLiquidada||0;
     total.resultado+=r.resultado||0;
   });
+  var futLotesUnicos={},futQtdLotes=0,futNecessidadeLotes=0,futFaturamentoLotes=0;
+  var futAberturaPeso=0,futAberturaQtd=0,futLiquidacaoPeso=0,futLiquidacaoQtd=0;
+  filtrados.forEach(function(c){
+    var r=futuroResultado(c);
+    var qtdContrato=parseFloat(r.qtdContratos)||0;
+    var qtdLiquidada=parseFloat(r.qtdLiquidada)||0;
+    if(qtdContrato>0){futAberturaPeso+=(parseFloat(r.precoVenda)||0)*qtdContrato;futAberturaQtd+=qtdContrato;}
+    if(qtdLiquidada>0&&r.precoCompra!==null){futLiquidacaoPeso+=(parseFloat(r.precoCompra)||0)*qtdLiquidada;futLiquidacaoQtd+=qtdLiquidada;}
+    var lote=c.loteId&&(loteMap[c.loteId]||getLotes().find(function(item){return item.id===c.loteId;}));
+    if(!lote||futLotesUnicos[lote.id])return;
+    futLotesUnicos[lote.id]=true;
+    var orc=(lote.orcamentos&&lote.orcamentos[0])||{};
+    futQtdLotes+=parseFloat(lote.qtd||orc.qtd)||0;
+    futNecessidadeLotes+=parseFloat(necessidadeContratosB3(lote,orc).necessarios)||0;
+    futFaturamentoLotes+=parseFloat(resultadoStatusLote(lote,orc).faturamento)||0;
+  });
+  var futTotalLotes=Object.keys(futLotesUnicos).length;
+  var futPrecoAbertura=futAberturaQtd>0?futAberturaPeso/futAberturaQtd:0;
+  var futPrecoLiquidacao=futLiquidacaoQtd>0?futLiquidacaoPeso/futLiquidacaoQtd:0;
   var sum=document.getElementById('fut-summary');
   if(sum){
     function futCard(key,label,value,sub,primary){
@@ -10347,7 +10400,14 @@ function renderFuturos(){
       travados:futCard('travados','Contratos travados',fmtContratosB3(total.liquidados)+' ctr','Contratos já travados/liquidados'),
       totalContratos:futCard('totalContratos','Total de contratos',fmtContratosB3(total.abertos+total.liquidados)+' ctr','Em aberto + travados'),
       liquidados:futCard('liquidados','Contratos liquidados',fmtContratosB3(total.liquidados)+' ctr',total.arrobas.toLocaleString('pt-BR',{maximumFractionDigits:0})+' @ totais cadastradas'),
-      filtro:futCard('filtro','Filtro atual',filtrados.length,'lançamento(s) na lista')
+      filtro:futCard('filtro','Filtro atual',filtrados.length,'lançamento(s) na lista'),
+      lotesVinculados:futCard('lotesVinculados','Lotes vinculados',futTotalLotes,futQtdLotes.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.'),
+      qtdLotes:futCard('qtdLotes','Quantidade dos lotes',futQtdLotes.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.',futTotalLotes+' lote(s) sem duplicidade'),
+      necessidadeLotes:futCard('necessidadeLotes','Necessidade total dos lotes',fmtContratosLoteB3(futNecessidadeLotes)+' ctr','Cobertura necessária dos lotes filtrados'),
+      faturamentoLotes:futCard('faturamentoLotes','Faturamento dos lotes',fmt(futFaturamentoLotes),'Soma dos lotes vinculados'),
+      precoAbertura:futCard('precoAbertura','Preço médio de abertura',futAberturaQtd>0?'R$ '+fmtNum(futPrecoAbertura,2)+'/@':'—','Média ponderada por contratos'),
+      precoLiquidacao:futCard('precoLiquidacao','Preço médio de liquidação',futLiquidacaoQtd>0?'R$ '+fmtNum(futPrecoLiquidacao,2)+'/@':'—','Média ponderada pelos liquidados'),
+      resultadoRealizado:futCard('resultadoRealizado','Resultado realizado',fmt(total.resultado),fmtContratosB3(total.liquidados)+' contrato(s) liquidado(s)')
     };
     var futCardKeys=getDashboardCards('futuros');
     sum.innerHTML=dashboardCardsShellHtml('futuros','fut-summary',futCardKeys.map(function(key){return dashboardDraggableCardHtml('futuros',key,futCards[key]||'');}).join('')+dashboardAddCardHtml('futuros'));
@@ -12423,7 +12483,7 @@ function applyStatusColumnFilters(){
   var performanceParams=getParams();
   applyPerformanceTheme(performanceParams);
   var rows=document.querySelectorAll('#lote-list .status-row[data-lid]');
-  var qtd=0,kmRodados=0,faturamento=0,capital=0,lucro=0,projCapital=0,projLucro=0,realCapital=0,realLucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0;
+  var qtd=0,kmRodados=0,faturamento=0,capital=0,lucro=0,projCapital=0,projLucro=0,realCapital=0,realLucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0,b3Abertos=0,b3Liquidados=0;
   var quebraPctPeso=0,quebraKgPeso=0,rcExpectativaPeso=0,rcExpectativaQtd=0,rcRealizadoPeso=0,rcRealizadoQtd=0,consumoExpectativaPeso=0,consumoExpectativaQtd=0,consumoRealizadoPeso=0,consumoRealizadoQtd=0;
   var gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0,atProdChegadaPeso=0,atProdOrigemPeso=0,custoAtChegadaPeso=0,custoAtOrigemPeso=0;
   var gmdOrigemQtd=0,gmdChegadaQtd=0,gmcOrigemQtd=0,gmcChegadaQtd=0,eficienciaQtd=0,eficienciaChegadaQtd=0,atProdChegadaQtd=0,atProdOrigemQtd=0,custoAtChegadaQtd=0,custoAtOrigemQtd=0;
@@ -12444,6 +12504,8 @@ function applyStatusColumnFilters(){
     realLucro+=parseFloat(row.getAttribute('data-real-lucro-raw'))||0;
     b3Travados+=parseFloat(row.getAttribute('data-b3-locked-raw'))||0;
     b3Total+=parseFloat(row.getAttribute('data-b3-total-raw'))||0;
+    b3Abertos+=parseFloat(row.getAttribute('data-b3-open-raw'))||0;
+    b3Liquidados+=parseFloat(row.getAttribute('data-b3-closed-raw'))||0;
     var prazoDias=parseFloat(row.getAttribute('data-prazo-dias-raw'))||0;
     var capRow=parseFloat(row.getAttribute('data-capital-raw'))||0;
     if(prazoDias>0){
@@ -12503,8 +12565,16 @@ function applyStatusColumnFilters(){
   setStatusTotal('status-total-lucro',fmt(lucro),lucro>=0?'pos':'neg');
   setStatusTotal('status-total-rent',fmtPct(rentOperacao),rentOperacao>=0?'pos':'neg');
   setStatusTotal('status-total-rentmes',fmtPct(rentMes),rentMes>=0?'pos':'neg');
+  setStatusTotal('status-total-rent-proj',fmtPct(rentProjTotal));
+  setStatusTotal('status-total-rentmes-proj',fmtPct(rentMesProjTotal));
+  setStatusTotal('status-total-rent-real',realCapital>0?fmtPct(rentRealTotal):'—');
+  setStatusTotal('status-total-rentmes-real',realCapital>0?fmtPct(rentMesRealTotal):'—');
   setStatusTotal('status-total-lotes',visiveis+' lote(s)');
   setStatusTotal('status-total-prazo-card',prazoMedio>0?Math.round(prazoMedio)+' dias':'—');
+  setStatusTotal('status-total-km',kmRodados.toLocaleString('pt-BR',{maximumFractionDigits:1})+' km');
+  setStatusTotal('status-total-b3-necessario',fmtContratosLoteB3(b3Total)+' ctr');
+  setStatusTotal('status-total-b3-aberto',fmtContratosB3(b3Abertos)+' ctr');
+  setStatusTotal('status-total-b3-liquidado',fmtContratosB3(b3Liquidados)+' ctr');
   setStatusTotal('status-total-quebra-pct',qtd>0?fmtNum(quebraPctPeso/qtd,2)+'%':'—');
   setStatusTotal('status-total-quebra-kg',qtd>0?fmtNum(quebraKgPeso/qtd,1)+' kg':'—');
   setStatusTotal('status-total-rc-expectativa',rcExpectativaQtd>0?fmtNum(rcExpectativaPeso/rcExpectativaQtd,2)+'%':'—');
@@ -12517,6 +12587,10 @@ function applyStatusColumnFilters(){
   setStatusTotal('status-total-gmc-chegada',gmcChegadaQtd>0?fmtNum(gmcChegadaPeso/gmcChegadaQtd,3)+' kg/dia':'—');
   setStatusTotal('status-total-eficiencia',eficienciaQtd>0?fmtNum(eficienciaPeso/eficienciaQtd,2)+' kg MS/@':'—');
   setStatusTotal('status-total-eficiencia-chegada',eficienciaChegadaQtd>0?fmtNum(eficienciaChegadaPeso/eficienciaChegadaQtd,2)+' kg MS/@':'—');
+  setStatusTotal('status-total-at-prod-origem',atProdOrigemQtd>0?fmtNum(atProdOrigemPeso/atProdOrigemQtd,3)+' @':'—');
+  setStatusTotal('status-total-at-prod-chegada',atProdChegadaQtd>0?fmtNum(atProdChegadaPeso/atProdChegadaQtd,3)+' @':'—');
+  setStatusTotal('status-total-custo-at-origem',custoAtOrigemQtd>0?fmt(custoAtOrigemPeso/custoAtOrigemQtd)+'/@':'—');
+  setStatusTotal('status-total-custo-at-chegada',custoAtChegadaQtd>0?fmt(custoAtChegadaPeso/custoAtChegadaQtd)+'/@':'—');
   setStatusFooterValue('status','TOTAL');
   setStatusFooterValue('numeroLote',visiveis+' lote(s)');
   setStatusFooterValue('lote','—');
@@ -12640,7 +12714,7 @@ function applyStatusGridTemplate(){
   table.style.width=width+'px';
   table.style.minWidth=width+'px';
   document.querySelectorAll('#panel-lotes [data-status-col]').forEach(function(el){
-    el.classList.remove('column-frozen');el.style.left='';
+    el.classList.remove('column-frozen');el.style.removeProperty('left');
     var index=STATUS_COLS.findIndex(function(c){return c.key===el.getAttribute('data-status-col');});
     if(index>=0){
       el.style.setProperty('grid-column',String(index+1),'important');
@@ -12649,7 +12723,7 @@ function applyStatusGridTemplate(){
   });
   var visible=statusVisibleCols(),frozen=Math.min(getStatusFrozenCount(),visible.length),left=0,widths=getStatusColWidths();
   visible.slice(0,frozen).forEach(function(col){
-    document.querySelectorAll('#panel-lotes [data-status-col="'+col.key+'"]').forEach(function(el){el.classList.add('column-frozen');el.style.left=left+'px';});
+    document.querySelectorAll('#panel-lotes [data-status-col="'+col.key+'"]').forEach(function(el){el.classList.add('column-frozen');el.style.setProperty('left',left+'px','important');});
     left+=statusComputedColWidth(col,widths);
   });
   bindStatusTotalScrollSync();
