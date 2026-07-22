@@ -4289,6 +4289,311 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   #panel-lotes .status-table-note{font-size:9px!important;line-height:1.25!important;}
 }
 </style>
+<style id="b3-responsive-table-final-20260722">
+@media (max-width:1024px){
+  #panel-futuros{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    transform:none!important;
+    overflow-x:hidden!important;
+  }
+  #panel-futuros .fut-list-card{min-width:0!important;overflow:visible!important;}
+  #panel-futuros .fut-table-wrap{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:auto!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+  }
+  #panel-futuros .fut-table{display:table!important;width:max-content;}
+  #panel-futuros .fut-table thead{display:table-header-group!important;}
+  #panel-futuros .fut-table tbody{display:table-row-group!important;}
+  #panel-futuros .fut-table tfoot{display:table-footer-group!important;}
+}
+@media (max-width:768px){
+  #panel-futuros .fut-list-card{padding:9px!important;border-radius:10px!important;}
+  #panel-futuros .fut-toolbar{margin-bottom:6px!important;}
+  #panel-futuros .fut-table-controls{display:block!important;margin-bottom:7px!important;}
+  #panel-futuros .fut-table-hint{display:none!important;}
+  #panel-futuros .fut-table-actions{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:1fr 1.25fr .85fr!important;
+    gap:6px!important;
+    width:100%!important;
+  }
+  #panel-futuros .fut-table-actions>.status-view-btn{
+    width:100%!important;
+    min-width:0!important;
+    height:36px!important;
+    justify-content:center!important;
+    padding:0 6px!important;
+    font-size:9px!important;
+    white-space:nowrap!important;
+  }
+  #panel-futuros .fut-column-panel{
+    position:fixed!important;
+    top:auto!important;
+    right:12px!important;
+    bottom:calc(68px + env(safe-area-inset-bottom))!important;
+    left:12px!important;
+    z-index:10045!important;
+    width:auto!important;
+    max-height:min(72dvh,580px)!important;
+    padding:12px!important;
+    overflow:auto!important;
+    border-radius:10px!important;
+  }
+  #panel-futuros .fut-table-wrap{
+    max-height:min(62dvh,540px)!important;
+    border-radius:8px!important;
+  }
+  #panel-futuros .fut-table-head-line{
+    height:38px!important;
+    min-height:38px!important;
+    padding:0 38px 0 7px!important;
+  }
+  #panel-futuros .fut-table-head-line>.table-column-drag,
+  #panel-futuros .fut-col-resizer{display:none!important;}
+  #panel-futuros .fut-table-head-line>.table-multi{
+    right:4px!important;
+    top:4px!important;
+    width:28px!important;
+  }
+  #panel-futuros .fut-table-head-line .table-multi-trigger{
+    width:28px!important;
+    height:30px!important;
+    border:1px solid rgba(211,194,164,.72)!important;
+    background:#f4efe5!important;
+    color:var(--navy)!important;
+  }
+  #panel-futuros .fut-table-head-line .table-multi.active .table-multi-trigger{
+    border-color:var(--navy)!important;
+    background:var(--navy)!important;
+    color:#fff!important;
+  }
+  #panel-futuros .fut-table-sort{
+    min-height:36px!important;
+    overflow:hidden!important;
+    font-size:8px!important;
+    line-height:1.12!important;
+    text-align:left!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  #panel-futuros .fut-table td{
+    height:40px!important;
+    max-height:40px!important;
+    padding:6px 8px!important;
+    overflow:hidden!important;
+    font-size:10.5px!important;
+    line-height:1.15!important;
+    text-overflow:ellipsis!important;
+  }
+  #panel-futuros .fut-table thead th{
+    position:sticky!important;
+    top:0!important;
+    z-index:9!important;
+    height:38px!important;
+    background:#fffdf8!important;
+  }
+  #panel-futuros .fut-table tfoot td{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:8!important;
+    background:#f2ede3!important;
+  }
+  #panel-futuros .column-frozen{
+    position:sticky!important;
+    z-index:10!important;
+    box-shadow:1px 0 0 var(--border),4px 0 9px rgba(13,27,42,.07)!important;
+  }
+  #panel-futuros thead .column-frozen{z-index:13!important;background:#fffdf8!important;}
+  #panel-futuros tfoot .column-frozen{z-index:12!important;background:#f2ede3!important;}
+  #panel-futuros .fut-mobile-list{display:none!important;}
+}
+@media (max-width:380px){
+  #panel-futuros .fut-table-actions{grid-template-columns:1fr 1.2fr .8fr!important;gap:4px!important;}
+  #panel-futuros .fut-table-actions>.status-view-btn{padding:0 4px!important;font-size:8px!important;}
+  #panel-futuros .fut-list-card{padding:7px!important;}
+}
+</style>
+<style id="lote-editor-dedicated-page-20260722">
+  body.lote-editor-page-open{overflow:hidden!important;}
+  body>#edit-panel-home.lote-editor-page-open{
+    display:block!important;
+    position:fixed;
+    inset:0;
+    z-index:30000;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    box-sizing:border-box;
+    padding:18px clamp(16px,3vw,48px) 36px;
+    background:#f5f1e9;
+  }
+  body>#edit-panel-home.lote-editor-page-open>#edit-panel{
+    display:block!important;
+    width:min(1480px,100%)!important;
+    max-width:1480px!important;
+    margin:0 auto!important;
+    box-sizing:border-box;
+  }
+  body>#edit-panel-home.lote-editor-page-open .ep{
+    width:100%;
+    min-width:0;
+    min-height:calc(100vh - 54px);
+    box-sizing:border-box;
+    margin:0;
+    padding:0 20px 22px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:#fff;
+    box-shadow:0 10px 32px rgba(13,27,42,.12);
+    overflow:visible;
+  }
+  body>#edit-panel-home.lote-editor-page-open .ep-header{
+    position:sticky;
+    top:-18px;
+    z-index:20;
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto auto;
+    gap:14px;
+    align-items:center;
+    min-height:66px;
+    margin:0 -20px 16px;
+    padding:10px 20px;
+    box-sizing:border-box;
+    border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.97);
+    box-shadow:0 4px 12px rgba(13,27,42,.05);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  .lote-editor-back{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:38px;
+    padding:0 13px;
+    border:1px solid var(--accent);
+    border-radius:7px;
+    background:#fff;
+    color:var(--accent);
+    font:750 12px 'Inter',sans-serif;
+    cursor:pointer;
+  }
+  .lote-editor-back:hover{background:var(--accent);color:#fff;}
+  .lote-editor-back span[aria-hidden="true"]{font-size:18px;line-height:1;}
+  .lote-editor-heading{min-width:0;text-align:center;}
+  .lote-editor-heading>span{
+    display:block;
+    margin-bottom:2px;
+    color:var(--text-3);
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+  }
+  body>#edit-panel-home.lote-editor-page-open .lote-editor-heading .ep-title{
+    overflow:hidden;
+    color:var(--text);
+    font-size:17px;
+    line-height:1.25;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .ep-caixa-launch{position:relative;display:flex;justify-content:flex-end;margin:-3px 0 10px;}
+  .ep-caixa-launch-header{margin:0;}
+  .ep-caixa-launch-header .ep-caixa-trigger{white-space:nowrap;}
+  .ep-caixa-trigger{
+    display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 11px;
+    border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);
+    font:800 11px 'Inter',sans-serif;cursor:pointer;
+  }
+  .ep-caixa-trigger:hover{border-color:var(--accent);background:var(--surface2);}
+  .ep-caixa-trigger-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--accent);color:#fff;font-size:11px;}
+  .ep-caixa-menu{
+    position:absolute;right:0;top:40px;z-index:30;width:250px;padding:6px;border:1px solid var(--border);
+    border-radius:8px;background:#fff;box-shadow:0 14px 34px rgba(13,27,42,.18);
+  }
+  .ep-caixa-menu[hidden]{display:none;}
+  .ep-caixa-menu button{display:grid;grid-template-columns:30px minmax(0,1fr);gap:9px;align-items:center;width:100%;padding:9px;border:0;border-radius:6px;background:#fff;color:var(--text);text-align:left;cursor:pointer;}
+  .ep-caixa-menu button:hover{background:var(--surface2);}
+  .ep-caixa-menu strong,.ep-caixa-menu small{display:block;}
+  .ep-caixa-menu strong{font-size:11px;}
+  .ep-caixa-menu small{margin-top:2px;color:var(--text-3);font-size:9px;}
+  .ep-caixa-menu small.done{color:var(--green);font-weight:800;}
+  .ep-caixa-letter{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;background:rgba(201,162,78,.18);color:#8c6818;font-size:12px;font-weight:900;}
+  .ep-caixa-letter.frete{background:rgba(13,79,139,.12);color:#0d4f8b;}
+  .status-cash-tags{display:inline-flex;align-items:center;gap:3px;flex:0 0 auto;}
+  .status-lot-number-cell{display:flex;align-items:center;gap:6px;}
+  .status-cash-tag{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;box-sizing:border-box;border-radius:5px;font-size:8px;font-weight:950;line-height:1;}
+  .status-cash-tag.pending{border:1px dashed #b9ad9e;background:transparent;color:#9b8e7e;opacity:.65;}
+  .status-cash-tag.posted{border:1px solid #c9a24e;background:#c9a24e;color:#fff;opacity:1;}
+  .status-cash-tag.frete.posted{border-color:#0d4f8b;background:#0d4f8b;}
+  .lote-caixa-modal{display:none;position:fixed;inset:0;z-index:31000;align-items:center;justify-content:center;padding:18px;background:rgba(13,27,42,.48);}
+  .lote-caixa-modal.open{display:flex;}
+  .lote-caixa-dialog{width:min(520px,100%);padding:18px;border:1px solid var(--border);border-radius:8px;background:#fff;box-shadow:0 22px 60px rgba(13,27,42,.26);}
+  .lote-caixa-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .lote-caixa-title{font-size:17px;font-weight:900;color:var(--text);text-transform:none;}
+  .lote-caixa-sub{margin-top:3px;color:var(--text-3);font-size:11px;}
+  .lote-caixa-close{width:32px;height:32px;padding:0;border:1px solid var(--border);border-radius:50%;background:var(--surface2);color:var(--text-2);font-size:18px;cursor:pointer;}
+  .lote-caixa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .lote-caixa-field{min-width:0;}
+  .lote-caixa-field.description{grid-column:1/-1;}
+  .lote-caixa-field label{display:block;margin:0 0 5px;color:var(--text-3);font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+  .lote-caixa-field input{width:100%;height:40px;box-sizing:border-box;padding:0 11px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font:700 12px 'Inter',sans-serif;outline:none;}
+  .lote-caixa-field input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(13,27,42,.08);}
+  .lote-caixa-actions{display:flex;justify-content:space-between;gap:8px;margin-top:16px;}
+  .lote-caixa-actions-right{display:flex;justify-content:flex-end;gap:8px;margin-left:auto;}
+  .lote-caixa-btn{min-height:38px;padding:0 13px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);font:800 11px 'Inter',sans-serif;cursor:pointer;}
+  .lote-caixa-btn.primary{border-color:var(--green);background:var(--green);color:#fff;}
+  .lote-caixa-btn.danger{border-color:rgba(154,59,48,.3);color:#9a3b30;}
+  .lote-caixa-btn[hidden]{display:none;}
+  @media(max-width:700px){
+    body>#edit-panel-home.lote-editor-page-open{
+      padding:0 0 calc(18px + env(safe-area-inset-bottom));
+      background:#fff;
+    }
+    body>#edit-panel-home.lote-editor-page-open>#edit-panel{
+      width:100%!important;
+      max-width:none!important;
+    }
+    body>#edit-panel-home.lote-editor-page-open .ep{
+      min-height:100vh;
+      padding:0 10px 18px;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+    body>#edit-panel-home.lote-editor-page-open .ep-header{
+      top:0;
+      gap:8px;
+      min-height:58px;
+      margin:0 -10px 12px;
+      padding:8px 10px;
+    }
+    .lote-editor-back{width:38px;min-height:38px;padding:0;}
+    .lote-editor-back span:last-child{display:none;}
+    body>#edit-panel-home.lote-editor-page-open .lote-editor-heading .ep-title{font-size:14px;}
+    body>#edit-panel-home.lote-editor-page-open .ep-close{width:38px;height:38px;}
+    .ep-caixa-launch{margin:0;}
+    .ep-caixa-trigger{justify-content:center;min-height:38px;}
+    .ep-caixa-launch-header .ep-caixa-trigger{width:38px;padding:0;gap:0;}
+    .ep-caixa-launch-header .ep-caixa-trigger-label,.ep-caixa-launch-header .ep-caixa-trigger>span:last-child{display:none;}
+    .ep-caixa-launch-header .ep-caixa-menu{left:auto;right:0;top:44px;width:244px;}
+    .lote-caixa-modal{align-items:flex-end;padding:0;}
+    .lote-caixa-dialog{width:100%;padding:16px 14px calc(16px + env(safe-area-inset-bottom));border-width:1px 0 0;border-radius:8px 8px 0 0;}
+    .lote-caixa-grid{grid-template-columns:1fr;}
+    .lote-caixa-field.description{grid-column:1;}
+  }
+</style>
 </head>
 <body>
 
@@ -5522,8 +5827,8 @@ let activeLoteReturnStatus=null;
 let pillFilter='';
 var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rent:'',rentmes:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
 var STATUS_COLS=[
-  {key:'status',label:'Status',w:88},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
-  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:76},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
+  {key:'status',label:'Status',w:126},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
+  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:112},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
   {key:'entrada',label:'Entrada',w:92},{key:'abate',label:'Abate',w:92},{key:'recebimento',label:'Recebimento',w:104},
   {key:'faturamento',label:'Fat. lote',w:126},{key:'capital',label:'Capital',w:126},{key:'lucro',label:'Lucro',w:116},
   {key:'rent',label:'% Oper.',w:76},{key:'rentmes',label:'% Mês',w:76},{key:'rcExpectativa',label:'RC expectativa',w:108},{key:'rcRealizado',label:'RC realizado',w:100},{key:'consumoMedioExpectativa',label:'Consumo méd. expectativa',w:138},{key:'consumoMedioRealizado',label:'Consumo méd. realizado',w:130},{key:'gmdOrigem',label:'GMD Origem',w:108},{key:'gmdChegada',label:'GMD Chegada',w:108},{key:'gmcOrigem',label:'GMC Origem',w:116},{key:'gmcChegada',label:'GMC Chegada',w:116},{key:'eficiencia',label:'Efic. Origem',w:116},{key:'eficienciaChegada',label:'Efic. Cheg.',w:116},{key:'atProdChegada',label:'@ produzida - chegada',w:132},{key:'atProdOrigem',label:'@ produzida - origem',w:126},{key:'custoAtChegada',label:'Custo @ prod. chegada',w:142},{key:'custoAtOrigem',label:'Custo @ prod. origem',w:136}
@@ -6578,6 +6883,115 @@ var CAIXA_MANUAL_UPDATED_KEY='vmagro_caixa_manual_updated_v1';
 var CAIXA_LANCAMENTOS_KEY='vmagro_caixa_lancamentos_v1';
 function getCaixaLancamentos(){try{var arr=JSON.parse(localStorage.getItem(CAIXA_LANCAMENTOS_KEY)||'[]');return Array.isArray(arr)?arr:[];}catch(e){return [];}}
 function saveCaixaLancamentos(arr){try{localStorage.setItem(CAIXA_LANCAMENTOS_KEY,JSON.stringify(arr||[]));}catch(e){}}
+function getCaixaLancamentoLote(loteId,categoria){
+  return getCaixaLancamentos().find(function(item){
+    return String(item.loteId||'')===String(loteId||'')&&item.categoria===categoria&&item.tipo==='pagar';
+  })||null;
+}
+function valorPadraoLancamentoLote(lote,categoria){
+  var orc=lote&&lote.orcamentos&&lote.orcamentos[0];
+  if(!orc)return 0;
+  var qtd=Math.max(0,finNum(orc.qtd||lote.qtd));
+  if(categoria==='frete')return Math.max(0,finNum(calcularFreteUnitarioOrc(orc).liquido)*qtd);
+  var compraAnimal=Math.max(0,finNum(orc.pesoCom)*finNum(orc.valorKG));
+  var comissaoAnimal=orc.comissaoMode==='val'?finNum(orc.comissao):compraAnimal*finNum(orc.comissao)/100;
+  return Math.max(0,comissaoAnimal*qtd);
+}
+function toggleEpCaixaMenu(event){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var menu=document.getElementById('ep-caixa-menu');
+  if(!menu)return;
+  menu.hidden=!menu.hidden;
+}
+function fecharEpCaixaMenu(){var menu=document.getElementById('ep-caixa-menu');if(menu)menu.hidden=true;}
+function abrirLancamentoCaixaLote(categoria){
+  fecharEpCaixaMenu();
+  var lote=getLotes().find(function(item){return String(item.id)===String(_editLoteId);});
+  var modal=document.getElementById('lote-caixa-modal');
+  if(!lote||!modal)return;
+  var existente=getCaixaLancamentoLote(lote.id,categoria);
+  var numero=getNumeroLote(lote)||'—';
+  var nome=getLoteNomeReferencia(lote,lote.orcamentos&&lote.orcamentos[0])||'';
+  var dataPadrao=finLoteEntradaIso(lote,lote.orcamentos&&lote.orcamentos[0])||new Date().toISOString().slice(0,10);
+  var titulo=categoria==='frete'?'Frete':'Comissão';
+  document.getElementById('lote-caixa-modal-title').textContent=(existente?'Editar ':'Lançar ')+titulo.toLowerCase();
+  document.getElementById('lote-caixa-modal-sub').textContent='Lote '+numero+(nome?' · '+nome:'');
+  document.getElementById('lote-caixa-lote-id').value=lote.id;
+  document.getElementById('lote-caixa-categoria').value=categoria;
+  document.getElementById('lote-caixa-descricao').value=existente&&existente.descricao?existente.descricao:(titulo+' · Lote '+numero+(nome?' · '+nome:''));
+  document.getElementById('lote-caixa-data').value=existente&&existente.data?existente.data:dataPadrao;
+  document.getElementById('lote-caixa-valor').value=brNum(existente?finNum(existente.valor):valorPadraoLancamentoLote(lote,categoria),2);
+  var remover=document.getElementById('lote-caixa-remover');
+  if(remover)remover.hidden=!existente;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+}
+function fecharLancamentoCaixaLote(){
+  var modal=document.getElementById('lote-caixa-modal');
+  if(!modal)return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+function salvarLancamentoCaixaLote(){
+  var loteId=(document.getElementById('lote-caixa-lote-id')||{}).value||'';
+  var categoria=(document.getElementById('lote-caixa-categoria')||{}).value||'';
+  var descricao=String((document.getElementById('lote-caixa-descricao')||{}).value||'').trim();
+  var data=(document.getElementById('lote-caixa-data')||{}).value||'';
+  var valor=finNum((document.getElementById('lote-caixa-valor')||{}).value||0);
+  if(!loteId||['comissao','frete'].indexOf(categoria)<0||!descricao||!data||!(valor>0)){toast('Preencha descrição, data e valor');return;}
+  var lotes=getLotes(),lote=lotes.find(function(item){return String(item.id)===String(loteId);});
+  if(!lote)return;
+  var arr=getCaixaLancamentos();
+  var idx=arr.findIndex(function(item){return String(item.loteId||'')===String(loteId)&&item.categoria===categoria&&item.tipo==='pagar';});
+  var agora=new Date().toISOString();
+  var registro={
+    id:idx>=0?arr[idx].id:'cx_lote_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+    tipo:'pagar',descricao:descricao,data:data,valor:valor,loteId:loteId,categoria:categoria,
+    numeroLote:getNumeroLote(lote)||'',criadoEm:idx>=0?(arr[idx].criadoEm||agora):agora,atualizadoEm:agora
+  };
+  if(idx>=0)arr[idx]=registro;else arr.push(registro);
+  saveCaixaLancamentos(arr);
+  fecharLancamentoCaixaLote();
+  renderCaixa();
+  atualizarEtiquetasCaixaStatus(loteId);
+  atualizarBotoesCaixaEditor();
+  toast((idx>=0?'✓ Lançamento atualizado: ':'✓ Lançado no Caixa: ')+(categoria==='frete'?'frete':'comissão'));
+}
+function removerLancamentoCaixaLote(){
+  var loteId=(document.getElementById('lote-caixa-lote-id')||{}).value||'';
+  var categoria=(document.getElementById('lote-caixa-categoria')||{}).value||'';
+  if(!loteId||!categoria)return;
+  saveCaixaLancamentos(getCaixaLancamentos().filter(function(item){return !(String(item.loteId||'')===String(loteId)&&item.categoria===categoria&&item.tipo==='pagar');}));
+  fecharLancamentoCaixaLote();
+  renderCaixa();
+  atualizarEtiquetasCaixaStatus(loteId);
+  atualizarBotoesCaixaEditor();
+  toast('✓ Lançamento removido do Caixa');
+}
+function atualizarBotoesCaixaEditor(){
+  if(!_editLoteId)return;
+  ['comissao','frete'].forEach(function(categoria){
+    var el=document.querySelector('[data-ep-caixa-status="'+categoria+'"]');
+    if(!el)return;
+    var item=getCaixaLancamentoLote(_editLoteId,categoria);
+    el.classList.toggle('done',!!item);
+    el.textContent=item?'Lançado · '+fmt(item.valor):'Pendente';
+  });
+}
+function atualizarEtiquetasCaixaStatus(loteId){
+  document.querySelectorAll('.status-row[data-lid]').forEach(function(row){
+    if(String(row.dataset.lid)!==String(loteId))return;
+    ['comissao','frete'].forEach(function(categoria){
+      var seletor=categoria==='comissao'?'.status-cash-tag:not(.frete)':'.status-cash-tag.frete';
+      var tag=row.querySelector(seletor);
+      if(!tag)return;
+      var lancado=!!getCaixaLancamentoLote(loteId,categoria);
+      tag.classList.toggle('posted',lancado);
+      tag.classList.toggle('pending',!lancado);
+      tag.title=categoria==='frete'?(lancado?'Frete lançado no Caixa':'Frete pendente'):(lancado?'Comissão lançada no Caixa':'Comissão pendente');
+    });
+  });
+}
 function adicionarCaixaLancamento(){
   var tipo=(document.getElementById('cash-entry-type')||{}).value||'pagar';
   var descricao=String((document.getElementById('cash-entry-description')||{}).value||'').trim();
@@ -6616,6 +7030,7 @@ function renderCaixa(){
   var content=document.getElementById('cash-content');
   if(!content)return;
   var pagar=[],receber=[];
+  var caixaLancamentos=getCaixaLancamentos();
   getLotes().filter(canViewLot).forEach(function(lote){
     var orc=(lote.orcamentos&&lote.orcamentos[0])||null;
     if(!orc)return;
@@ -6625,15 +7040,15 @@ function renderCaixa(){
       qtd:(parseFloat(lote.qtd||orc.qtd)||0).toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.',
       dataEntrada:finLoteEntradaIso(lote,orc),
       dataRecebimento:finLoteRecebIso(lote,orc),
-      capital:parseFloat(metric.capital)||0,
+      capital:Math.max(0,(parseFloat(metric.capital)||0)-caixaLancamentos.filter(function(lancamento){return String(lancamento.loteId||'')===String(lote.id)&&lancamento.tipo==='pagar'&&['comissao','frete'].indexOf(lancamento.categoria)>=0;}).reduce(function(total,lancamento){return total+finNum(lancamento.valor);},0)),
       faturamento:parseFloat(metric.faturamento)||0,
       manual:false
     };
-    if(lote.status==='embarque')pagar.push(item);
+    if(lote.status==='embarque'&&item.capital>0)pagar.push(item);
     if(lote.status==='abatido')receber.push(item);
   });
-  getCaixaLancamentos().forEach(function(item){
-    var row={id:item.id,lote:item.descricao,qtd:'Lançamento manual',dataEntrada:item.data,dataRecebimento:item.data,capital:item.tipo==='pagar'?finNum(item.valor):0,faturamento:item.tipo==='receber'?finNum(item.valor):0,manual:true};
+  caixaLancamentos.forEach(function(item){
+    var row={id:item.id,lote:item.descricao,qtd:item.loteId?'Vinculado ao lote':'Lançamento manual',dataEntrada:item.data,dataRecebimento:item.data,capital:item.tipo==='pagar'?finNum(item.valor):0,faturamento:item.tipo==='receber'?finNum(item.valor):0,manual:true,vinculado:!!item.loteId};
     if(item.tipo==='pagar')pagar.push(row);else receber.push(row);
   });
   pagar.sort(function(a,b){return String(a.dataEntrada||'').localeCompare(String(b.dataEntrada||''));});
@@ -9440,13 +9855,39 @@ function toggleFutColumnsPanel(){
   renderFutColumnsPanel();
   panel.classList.toggle('open');
 }
+function futViewportState(){
+  var wrap=document.querySelector('#panel-futuros .fut-table-wrap');
+  var panel=document.getElementById('fut-column-panel');
+  return {
+    x:window.scrollX||0,
+    y:window.scrollY||0,
+    left:wrap?wrap.scrollLeft:0,
+    top:wrap?wrap.scrollTop:0,
+    panelTop:panel?panel.scrollTop:0
+  };
+}
+function restoreFutViewport(state){
+  if(!state)return;
+  requestAnimationFrame(function(){
+    window.scrollTo(state.x,state.y);
+    var wrap=document.querySelector('#panel-futuros .fut-table-wrap');
+    if(wrap){wrap.scrollLeft=state.left;wrap.scrollTop=state.top;}
+    var panel=document.getElementById('fut-column-panel');
+    if(panel)panel.scrollTop=state.panelTop||0;
+  });
+}
+function renderFuturosPreservingViewport(){
+  var state=futViewportState();
+  renderFuturos();
+  restoreFutViewport(state);
+}
 function setFutColumnVisible(key,checked){
   var visible=getFutColVisible();
   visible[key]=!!checked;
   var visibleData=FUT_COLS.filter(function(c){return !c.fixed&&visible[c.key]!==false;});
   if(visibleData.length<2){visible.status=true;visible.lote=true;}
   try{localStorage.setItem(FUT_COL_VISIBLE_KEY,JSON.stringify(visible));}catch(e){}
-  renderFuturos();
+  renderFuturosPreservingViewport();
   var panel=document.getElementById('fut-column-panel');
   if(panel)panel.classList.add('open');
 }
@@ -9460,7 +9901,7 @@ function setFutSort(key,dir){
   var nextDir=dir||((futSortState.key===key&&futSortState.dir==='asc')?'desc':'asc');
   futSortState={key:key||'abertura',dir:nextDir};
   try{localStorage.setItem(FUT_SORT_KEY,JSON.stringify(futSortState));}catch(e){}
-  renderFuturos();
+  renderFuturosPreservingViewport();
 }
 var futResizeState=null;
 function startFutColumnResize(ev,key){
@@ -9527,11 +9968,11 @@ function positionOpenTableMulti(){
   menu.style.top=openAbove?'auto':(rect.bottom+gap)+'px';menu.style.bottom=openAbove?(window.innerHeight-rect.top+gap)+'px':'auto';
   document.body.appendChild(menu);
 }
-function toggleTableMulti(scope,key,event){if(event)event.stopPropagation();var same=tableMultiOpen.scope===scope&&tableMultiOpen.key===key;tableMultiOpen=same?{scope:'',key:''}:{scope:scope,key:key};document.querySelectorAll('body>.table-multi-menu.table-multi-floating').forEach(function(old){old.remove();});if(scope==='fut')renderFuturos();else renderLotesPreservingViewport();if(!same)requestAnimationFrame(positionOpenTableMulti);}
+function toggleTableMulti(scope,key,event){if(event)event.stopPropagation();var same=tableMultiOpen.scope===scope&&tableMultiOpen.key===key;tableMultiOpen=same?{scope:'',key:''}:{scope:scope,key:key};document.querySelectorAll('body>.table-multi-menu.table-multi-floating').forEach(function(old){old.remove();});if(scope==='fut')renderFuturosPreservingViewport();else renderLotesPreservingViewport();if(!same)requestAnimationFrame(positionOpenTableMulti);}
 function toggleTableMultiValue(scope,key,encoded,event){
   if(event)event.stopPropagation();var selected=tableFilterSelected(scope,key).slice();
   if(encoded==='__all__')selected=[];else{var value=decodeURIComponent(encoded),index=selected.indexOf(value);if(index>=0)selected.splice(index,1);else selected.push(value);}
-  tableFilterState(scope)[key]=selected;tableMultiOpen={scope:scope,key:key};if(scope==='fut')renderFuturos();else renderLotesPreservingViewport();requestAnimationFrame(positionOpenTableMulti);
+  tableFilterState(scope)[key]=selected;tableMultiOpen={scope:scope,key:key};if(scope==='fut')renderFuturosPreservingViewport();else renderLotesPreservingViewport();requestAnimationFrame(positionOpenTableMulti);
 }
 window.addEventListener('resize',function(){if(tableMultiOpen.scope)requestAnimationFrame(positionOpenTableMulti);});
 document.addEventListener('click',function(event){if(event.target&&event.target.closest&&(event.target.closest('.table-multi')||event.target.closest('.table-multi-menu')))return;if(tableMultiOpen.scope){tableMultiOpen={scope:'',key:''};document.querySelectorAll('.table-multi.open').forEach(function(el){el.classList.remove('open');});document.querySelectorAll('body>.table-multi-menu.table-multi-floating').forEach(function(old){old.remove();});}});
@@ -9543,7 +9984,7 @@ function limparFiltrosFuturos(){
   Object.keys(futColumnFilters).forEach(function(key){futColumnFilters[key]=[];});
   tableMultiOpen={scope:'',key:''};
   document.querySelectorAll('body>.table-multi-menu.table-multi-floating').forEach(function(menu){menu.remove();});
-  renderFuturos();
+  renderFuturosPreservingViewport();
 }
 function futTableFilterHtml(key,options){
   if(key==='acoes')return '';
@@ -9941,10 +10382,16 @@ function dateBRFromIso(iso){
 
 /* ── EDIT PANEL ─────────────────────────────────── */
 var _editLoteId=null;
+var _editPanelReturnState=null;
 function ajustarEditPanelAoViewport(cardEl){
   var ep=document.getElementById('edit-panel');
   var host=document.getElementById('panel-lotes');
   if(!ep||!host)return;
+  if(document.body.classList.contains('lote-editor-page-open')){
+    ep.style.width='';
+    ep.style.maxWidth='';
+    return;
+  }
   if(window.innerWidth<=640){
     ep.style.width='100%';
     ep.style.maxWidth='100%';
@@ -10322,7 +10769,7 @@ function freteProjetadoLote(lote,orc){
 
 function openEditPanel(loteId, cardEl){
   var ep=document.getElementById('edit-panel');
-  var painelVisivel=!!(ep&&cardEl&&ep.style.display!=='none'&&cardEl.nextElementSibling===ep);
+  var painelVisivel=!!(ep&&ep.style.display!=='none'&&document.body.classList.contains('lote-editor-page-open'));
   if(_editLoteId!==null&&String(_editLoteId)===String(loteId)&&painelVisivel){
     closeEditPanel();
     return;
@@ -10335,8 +10782,23 @@ function openEditPanel(loteId, cardEl){
   // Highlight card
   document.querySelectorAll('.sc,.status-row').forEach(function(c){c.classList.remove('active-edit');});
   if(cardEl)cardEl.classList.add('active-edit');
-  if(cardEl&&ep&&cardEl.parentNode){
-    cardEl.insertAdjacentElement('afterend',ep);
+  var editorHost=document.getElementById('edit-panel-home');
+  if(editorHost){
+    if(!document.body.classList.contains('lote-editor-page-open')){
+      var tableWrap=document.querySelector('#panel-lotes .status-table-wrap');
+      _editPanelReturnState={
+        windowX:window.scrollX||0,
+        windowY:window.scrollY||0,
+        tableLeft:tableWrap?tableWrap.scrollLeft:0,
+        tableTop:tableWrap?tableWrap.scrollTop:0
+      };
+    }
+    document.body.appendChild(editorHost);
+    editorHost.appendChild(ep);
+    editorHost.classList.add('lote-editor-page-open');
+    editorHost.style.display='block';
+    editorHost.setAttribute('aria-hidden','false');
+    document.body.classList.add('lote-editor-page-open');
   }
   var o=lote.orcamentos&&lote.orcamentos[0];
   var transportadoraOpts='<option value="">A definir...</option>';
@@ -10423,6 +10885,8 @@ function openEditPanel(loteId, cardEl){
   var videosEntradaHtml=renderEpVideosHtml(lote,'entrada');
   var videosSaidaHtml=renderEpVideosHtml(lote,'saida');
   var contratosPrecoHtml=renderContratosPrecoStatusHtml(lote);
+  var caixaComissao=getCaixaLancamentoLote(lote.id,'comissao');
+  var caixaFrete=getCaixaLancamentoLote(lote.id,'frete');
   var realHtml='';
   var comparativoHtml='';
   var resultadoFinalHtml='';
@@ -10507,9 +10971,17 @@ function openEditPanel(loteId, cardEl){
       +'</section>';
   }
   ep.innerHTML='<div class="ep">'
-    +'<div class="ep-header" title="Clique para fechar" onclick="if(event.target.closest(\'.ep-close\'))return;closeEditPanel()">'
-      +'<div class="ep-title">Editar Orçamento</div>'
-      +'<button class="ep-close" onclick="closeEditPanel()">×</button>'
+    +'<div class="ep-header">'
+      +'<button type="button" class="lote-editor-back" onclick="closeEditPanel()" aria-label="Voltar para Status"><span aria-hidden="true">←</span><span>Voltar para Status</span></button>'
+      +'<div class="lote-editor-heading"><span>Editar orçamento</span><div class="ep-title">Lote '+escHtml(numeroLote)+(nomeLote?' · '+escHtml(nomeLote):'')+'</div></div>'
+      +'<div class="ep-caixa-launch ep-caixa-launch-header">'
+        +'<button type="button" class="ep-caixa-trigger" onclick="toggleEpCaixaMenu(event)"><span class="ep-caixa-trigger-icon">$</span><span class="ep-caixa-trigger-label">Lançar no Caixa</span><span aria-hidden="true">⌄</span></button>'
+        +'<div class="ep-caixa-menu" id="ep-caixa-menu" hidden onclick="event.stopPropagation()">'
+          +'<button type="button" onclick="abrirLancamentoCaixaLote(\'comissao\')"><span class="ep-caixa-letter">C</span><span><strong>Lançar comissão</strong><small data-ep-caixa-status="comissao" class="'+(caixaComissao?'done':'')+'">'+(caixaComissao?'Lançado · '+fmt(caixaComissao.valor):'Pendente')+'</small></span></button>'
+          +'<button type="button" onclick="abrirLancamentoCaixaLote(\'frete\')"><span class="ep-caixa-letter frete">F</span><span><strong>Lançar frete</strong><small data-ep-caixa-status="frete" class="'+(caixaFrete?'done':'')+'">'+(caixaFrete?'Lançado · '+fmt(caixaFrete.valor):'Pendente')+'</small></span></button>'
+        +'</div>'
+      +'</div>'
+      +'<button type="button" class="ep-close" onclick="closeEditPanel()" aria-label="Fechar edição">×</button>'
     +'</div>'
     +'<div class="ep-quick-grid">'
       +'<div class="ep-quick-field"><label>Status</label><select id="ep-status" class="field" onchange="updateEditPanelStatus(this.value)">'
@@ -10586,13 +11058,13 @@ function openEditPanel(loteId, cardEl){
     +'</div>'
   +'</div>';
   ep.style.display='block';
-  ajustarEditPanelAoViewport(cardEl);
-  requestAnimationFrame(function(){ajustarEditPanelAoViewport(cardEl);});
+  ep.style.width='';
+  ep.style.maxWidth='';
+  if(editorHost)editorHost.scrollTop=0;
   if(document.getElementById('ep-real-fat'))atualizarRealizadoPainel();
   atualizarTransferenciaB3Parcial(true);
   var finalModeInitial=document.getElementById('ep-final-mode');
   if(finalModeInitial)setResultadoFinalMode(finalModeInitial.value,true);
-  ep.scrollIntoView&&ep.scrollIntoView({behavior:'smooth',block:'nearest'});
   // Event delegation for quick-add buttons
   ep.onclick=function(evt){
     var target=evt.target.closest?evt.target.closest('[data-action]'):evt.target;
@@ -10630,7 +11102,7 @@ function editarOrcamentoDoPainel(loteId){
     toast('⚠ Este orçamento ainda não tem simulação para editar');
     return;
   }
-  closeEditPanel();
+  closeEditPanel(true);
   setTimeout(function(){editarOrcamento(loteId,0);},0);
 }
 
@@ -10896,20 +11368,41 @@ function excluirLotePainel(){
   toast('✓ Lote excluído');
 }
 
-function closeEditPanel(){
+function closeEditPanel(skipRestore){
   _editLoteId=null;
   var ep=document.getElementById('edit-panel');
+  var base=document.getElementById('edit-panel-home');
   if(ep){
     ep.style.display='none';
     ep.style.width='';
     ep.style.maxWidth='';
-    var base=document.getElementById('edit-panel-home');
     if(base)base.appendChild(ep);
   }
+  document.body.classList.remove('lote-editor-page-open');
+  if(base){
+    base.classList.remove('lote-editor-page-open');
+    base.style.display='none';
+    base.setAttribute('aria-hidden','true');
+    var panel=document.getElementById('panel-lotes');
+    if(panel)panel.appendChild(base);
+  }
   document.querySelectorAll('.sc,.status-row').forEach(function(c){c.classList.remove('active-edit');});
+  var returnState=_editPanelReturnState;
+  _editPanelReturnState=null;
+  if(!skipRestore&&returnState){
+    requestAnimationFrame(function(){
+      window.scrollTo(returnState.windowX,returnState.windowY);
+      var tableWrap=document.querySelector('#panel-lotes .status-table-wrap');
+      if(tableWrap){
+        tableWrap.scrollLeft=returnState.tableLeft;
+        tableWrap.scrollTop=returnState.tableTop;
+      }
+    });
+  }
 }
 window.addEventListener('resize',function(){
   if(_editLoteId===null)return;
+  if(document.body.classList.contains('lote-editor-page-open'))return;
   var card=document.querySelector('.status-row.active-edit,.sc.active-edit');
   requestAnimationFrame(function(){ajustarEditPanelAoViewport(card);});
 },{passive:true});
@@ -11984,7 +12477,7 @@ function statusGridTemplate(){
   return STATUS_COLS.map(function(c){
     if(visible[c.key]===false)return '0px';
     var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return Math.max(78,w)+'px';
+    return Math.max(c.key==='status'?126:(c.key==='numeroLote'?112:78),w)+'px';
   }).join(' ');
 }
 function statusGridWidth(){
@@ -11993,7 +12486,7 @@ function statusGridWidth(){
   return STATUS_COLS.reduce(function(total,c){
     if(visible[c.key]===false)return total;
     var w=parseFloat(widths[c.key]||c.w)||c.w;
-    return total+Math.max(78,w);
+    return total+Math.max(c.key==='status'?126:(c.key==='numeroLote'?112:78),w);
   },0);
 }
 function applyStatusGridTemplate(){
@@ -12069,7 +12562,16 @@ function toggleStatusColumnsPanel(){
 }
 function statusViewportState(){
   var wrap=document.querySelector('#panel-lotes .status-table-wrap');
-  return {x:window.scrollX||0,y:window.scrollY||0,left:wrap?wrap.scrollLeft:0,top:wrap?wrap.scrollTop:0};
+  var panel=document.getElementById('status-column-panel');
+  var options=panel&&panel.querySelector('.status-column-options');
+  return {
+    x:window.scrollX||0,
+    y:window.scrollY||0,
+    left:wrap?wrap.scrollLeft:0,
+    top:wrap?wrap.scrollTop:0,
+    panelTop:panel?panel.scrollTop:0,
+    optionsTop:options?options.scrollTop:0
+  };
 }
 function restoreStatusViewport(state){
   if(!state)return;
@@ -12077,6 +12579,12 @@ function restoreStatusViewport(state){
     window.scrollTo(state.x,state.y);
     var wrap=document.querySelector('#panel-lotes .status-table-wrap');
     if(wrap){wrap.scrollLeft=state.left;wrap.scrollTop=state.top;}
+    var panel=document.getElementById('status-column-panel');
+    if(panel){
+      panel.scrollTop=state.panelTop||0;
+      var options=panel.querySelector('.status-column-options');
+      if(options)options.scrollTop=state.optionsTop||0;
+    }
   });
 }
 function renderLotesPreservingViewport(){
@@ -12444,12 +12952,19 @@ function renderLotes(){
       +' data-sort-atProdOrigem="'+(o?atProdOrigemRaw:0)+'"'
       +' data-sort-custoAtChegada="'+(o?custoAtChegadaRaw:0)+'"'
       +' data-sort-custoAtOrigem="'+(o?custoAtOrigemRaw:0)+'"';
+    var comissaoCaixa=getCaixaLancamentoLote(l.id,'comissao');
+    var freteCaixa=getCaixaLancamentoLote(l.id,'frete');
     var statusLabel='<div class="status-cell status-badge-cell '+statusColClass('status')+'" data-status-col="status">'
       +'<span class="status-drag-dot" style="background:'+(barColor||'var(--border)')+'"></span>'
       +'<span class="badge '+sc.cls+'">'+escHtml(sc.label)+'</span>'
     +'</div>';
     var realizadoStatus=statusRealizadoLote(l);
-    var numeroLoteCell='<div class="status-cell '+statusColClass('numeroLote')+'" data-status-col="numeroLote"><span class="status-seq-pc">'+escHtml(numeroLote)+'</span></div>';
+    var numeroLoteCell='<div class="status-cell status-lot-number-cell '+statusColClass('numeroLote')+'" data-status-col="numeroLote"><span class="status-seq-pc">'+escHtml(numeroLote)+'</span>'
+      +'<span class="status-cash-tags" aria-label="Lançamentos no Caixa">'
+        +'<span class="status-cash-tag '+(comissaoCaixa?'posted':'pending')+'" title="Comissão '+(comissaoCaixa?'lançada no Caixa':'pendente')+'">C</span>'
+        +'<span class="status-cash-tag frete '+(freteCaixa?'posted':'pending')+'" title="Frete '+(freteCaixa?'lançado no Caixa':'pendente')+'">F</span>'
+      +'</span>'
+    +'</div>';
     var loteCell='<div class="status-cell '+statusColClass('lote')+'" data-status-col="lote"><span class="status-cell-title">'+escHtml(cardTitle||'A definir')+'</span>'
       +'<span class="real-status-chip status-realized-chip '+realizadoStatus.key+'">'+escHtml(realizadoStatus.label)+'</span>'
     +'</div>';
@@ -17343,6 +17858,40 @@ restoreBasicSession();
 <script>
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape')fecharModalCancelarFuturo();
+});
+</script>
+<div class="lote-caixa-modal" id="lote-caixa-modal" aria-hidden="true" onclick="if(event.target===this)fecharLancamentoCaixaLote()">
+  <div class="lote-caixa-dialog" role="dialog" aria-modal="true" aria-labelledby="lote-caixa-modal-title">
+    <div class="lote-caixa-head">
+      <div>
+        <div class="lote-caixa-title" id="lote-caixa-modal-title">Lançar no Caixa</div>
+        <div class="lote-caixa-sub" id="lote-caixa-modal-sub"></div>
+      </div>
+      <button type="button" class="lote-caixa-close" aria-label="Fechar" onclick="fecharLancamentoCaixaLote()">×</button>
+    </div>
+    <input type="hidden" id="lote-caixa-lote-id">
+    <input type="hidden" id="lote-caixa-categoria">
+    <div class="lote-caixa-grid">
+      <div class="lote-caixa-field description"><label for="lote-caixa-descricao">Descrição</label><input type="text" id="lote-caixa-descricao"></div>
+      <div class="lote-caixa-field"><label for="lote-caixa-data">Vencimento</label><input type="date" id="lote-caixa-data"></div>
+      <div class="lote-caixa-field"><label for="lote-caixa-valor">Valor</label><input type="text" inputmode="decimal" id="lote-caixa-valor" placeholder="R$ 0,00"></div>
+    </div>
+    <div class="lote-caixa-actions">
+      <button type="button" class="lote-caixa-btn danger" id="lote-caixa-remover" onclick="removerLancamentoCaixaLote()" hidden>Remover do Caixa</button>
+      <div class="lote-caixa-actions-right">
+        <button type="button" class="lote-caixa-btn" onclick="fecharLancamentoCaixaLote()">Cancelar</button>
+        <button type="button" class="lote-caixa-btn primary" onclick="salvarLancamentoCaixaLote()">Salvar lançamento</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('click',function(event){
+  var launch=event.target.closest&&event.target.closest('.ep-caixa-launch');
+  if(!launch)fecharEpCaixaMenu();
+});
+document.addEventListener('keydown',function(event){
+  if(event.key==='Escape'){fecharEpCaixaMenu();fecharLancamentoCaixaLote();}
 });
 </script>
 <div id="toast"></div>
