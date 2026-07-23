@@ -4884,6 +4884,124 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-futuros .fut-hero .h-greeting-name{font-size:14px!important;}
   }
 </style>
+<style id="status-stage-filter-refresh-20260723">
+  #panel-lotes .lotes-toolbar{
+    display:block;
+    width:min(100%,760px);
+    margin:0 auto 14px;
+    padding:4px;
+    border:1px solid rgba(211,194,164,.88);
+    border-radius:8px;
+    background:#fff;
+    box-shadow:0 3px 12px rgba(13,27,42,.06);
+  }
+  #panel-lotes .status-pills{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(92px,1fr));
+    gap:2px;
+    width:100%;
+    min-width:0;
+  }
+  #panel-lotes .status-pills .pill{
+    --stage-color:var(--accent);
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-width:0;
+    min-height:38px;
+    padding:7px 9px 8px;
+    overflow:hidden;
+    border:0;
+    border-radius:6px;
+    background:transparent;
+    color:var(--text-2);
+    font-size:10px;
+    font-weight:750;
+    line-height:1;
+    text-overflow:ellipsis;
+    transition:background .16s,color .16s,box-shadow .16s;
+  }
+  #panel-lotes .status-pills .pill::before{
+    content:"";
+    flex:0 0 7px;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--stage-color);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--stage-color) 15%,transparent);
+  }
+  #panel-lotes .status-pills .pill-label{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  #panel-lotes .status-pills .pill-count{
+    flex:0 0 auto;
+    color:inherit;
+    font-size:9px;
+    font-weight:900;
+    opacity:.72;
+  }
+  #panel-lotes .status-pills .pill[data-filter="embarque"]{--stage-color:var(--st-emb);}
+  #panel-lotes .status-pills .pill[data-filter="confinando"]{--stage-color:var(--st-conf);}
+  #panel-lotes .status-pills .pill[data-filter="escalado"]{--stage-color:var(--st-esc);}
+  #panel-lotes .status-pills .pill[data-filter="abatido"]{--stage-color:var(--st-abat);}
+  #panel-lotes .status-pills .pill[data-filter="recebido"]{--stage-color:var(--st-receb);}
+  #panel-lotes .status-pills .pill:hover{background:var(--surface2);color:var(--navy);}
+  #panel-lotes .status-pills .pill.active{
+    background:var(--surface2);
+    background:color-mix(in srgb,var(--stage-color) 11%,#FFFFFF);
+    color:var(--navy);
+    box-shadow:inset 0 -3px 0 var(--stage-color);
+  }
+  #panel-lotes .status-pills .pill.active[data-filter=""]{
+    background:var(--navy);
+    color:#fff;
+    box-shadow:none;
+  }
+  #panel-lotes .status-pills .pill.active[data-filter=""]::before{
+    background:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,162,78,.18);
+  }
+  #panel-lotes .status-pills .pill:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+  #panel-lotes .status-pills .pill.drop-target{
+    background:var(--surface2);
+    background:color-mix(in srgb,var(--stage-color) 16%,#FFFFFF);
+    box-shadow:inset 0 0 0 2px var(--stage-color),0 0 0 3px rgba(107,112,86,.12);
+  }
+  @media(max-width:640px){
+    #panel-lotes .lotes-toolbar{
+      width:100%;
+      margin-bottom:8px;
+      padding:3px;
+      border-radius:7px;
+      overflow:hidden;
+    }
+    #panel-lotes .status-pills{
+      display:grid;
+      grid-auto-flow:column;
+      grid-auto-columns:minmax(96px,1fr);
+      grid-template-columns:none;
+      gap:2px;
+      overflow-x:auto;
+      overscroll-behavior-inline:contain;
+      scroll-snap-type:x proximity;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+    }
+    #panel-lotes .status-pills::-webkit-scrollbar{display:none;}
+    #panel-lotes .status-pills .pill{
+      min-height:36px;
+      padding:7px 8px 8px;
+      border-radius:5px;
+      scroll-snap-align:start;
+      font-size:9.5px;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -5095,12 +5213,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <!-- Filter bar -->
       <div class="lotes-toolbar">
         <div class="status-pills">
-          <button class="pill active" data-filter="" onclick="setPillFilter(this,'')">Todos</button>
-          <button class="pill" data-filter="embarque" onclick="setPillFilter(this,'embarque')">Embarque</button>
-          <button class="pill" data-filter="confinando" onclick="setPillFilter(this,'confinando')">Confinado</button>
-          <button class="pill" data-filter="escalado" onclick="setPillFilter(this,'escalado')">Escalado</button>
-          <button class="pill" data-filter="abatido" onclick="setPillFilter(this,'abatido')">Abatido</button>
-          <button class="pill" data-filter="recebido" onclick="setPillFilter(this,'recebido')">Recebido</button>
+          <button class="pill active" data-filter="" aria-pressed="true" onclick="setPillFilter(this,'')"><span class="pill-label">Todos</span><span class="pill-count">(0)</span></button>
+          <button class="pill" data-filter="embarque" aria-pressed="false" onclick="setPillFilter(this,'embarque')"><span class="pill-label">Embarque</span><span class="pill-count">(0)</span></button>
+          <button class="pill" data-filter="confinando" aria-pressed="false" onclick="setPillFilter(this,'confinando')"><span class="pill-label">Confinado</span><span class="pill-count">(0)</span></button>
+          <button class="pill" data-filter="escalado" aria-pressed="false" onclick="setPillFilter(this,'escalado')"><span class="pill-label">Escalado</span><span class="pill-count">(0)</span></button>
+          <button class="pill" data-filter="abatido" aria-pressed="false" onclick="setPillFilter(this,'abatido')"><span class="pill-label">Abatido</span><span class="pill-count">(0)</span></button>
+          <button class="pill" data-filter="recebido" aria-pressed="false" onclick="setPillFilter(this,'recebido')"><span class="pill-label">Recebido</span><span class="pill-count">(0)</span></button>
         </div>
       </div>
 
@@ -12400,7 +12518,27 @@ function limparRealizadoPainel(){
 
 function syncStatusPills(){
   document.querySelectorAll('.pill').forEach(function(b){
-    b.classList.toggle('active', b.dataset.filter===(pillFilter||''));
+    var active=b.dataset.filter===(pillFilter||'');
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
+  });
+}
+function syncStatusPillHeadCounts(lotes){
+  var counts={embarque:0,confinando:0,escalado:0,abatido:0,recebido:0};
+  var total=0;
+  (lotes||[]).forEach(function(lote){
+    var orc=lote.orcamentos&&lote.orcamentos[0];
+    var qtd=Math.max(0,finNum(lote.qtd||(orc&&orc.qtd)));
+    var status=lote.status||'embarque';
+    total+=qtd;
+    if(Object.prototype.hasOwnProperty.call(counts,status))counts[status]+=qtd;
+  });
+  document.querySelectorAll('#panel-lotes .status-pills .pill[data-filter]').forEach(function(button){
+    var key=button.getAttribute('data-filter')||'';
+    var value=key?counts[key]||0:total;
+    var count=button.querySelector('.pill-count');
+    if(count)count.textContent='('+value.toLocaleString('pt-BR',{maximumFractionDigits:0})+')';
+    button.setAttribute('aria-label',(button.querySelector('.pill-label')||button).textContent+' · '+value.toLocaleString('pt-BR',{maximumFractionDigits:0})+' cabeças');
   });
 }
 
@@ -12732,7 +12870,9 @@ function populateFilterVend(){
 function filterPill(status){
   pillFilter=pillFilter===status?'':status;
   document.querySelectorAll('.pill').forEach(function(b){
-    b.classList.toggle('active', b.dataset.filter===(pillFilter||''));
+    var active=b.dataset.filter===(pillFilter||'');
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
   });
   renderHome();
   if(document.getElementById('panel-lotes').style.display!=='none')renderLotes();
@@ -12740,8 +12880,8 @@ function filterPill(status){
 
 function setPillFilter(el,status){
   pillFilter=status;
-  document.querySelectorAll('.pill').forEach(function(b){b.classList.remove('active');});
-  if(el)el.classList.add('active');
+  document.querySelectorAll('.pill').forEach(function(b){b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+  if(el){el.classList.add('active');el.setAttribute('aria-pressed','true');}
   renderLotes();
 }
 
@@ -13204,6 +13344,7 @@ function renderLotes(){
   var ST_COLORS={'embarque':'#C9A24E','confinando':'var(--green)','escalado':'var(--accent)','abatido':'#515640','recebido':'var(--text-3)'};
   var todosLotes=getLotes();
   if(garantirNumerosLote(todosLotes))saveLotes(todosLotes);
+  syncStatusPillHeadCounts(todosLotes.filter(function(lote){return canViewLot(lote);}));
   var lotes=todosLotes.filter(function(l){
     if(!canViewLot(l))return false;
     if(pillFilter&&l.status!==pillFilter)return false;
