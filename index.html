@@ -4421,6 +4421,54 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   #panel-futuros .fut-list-card{padding:7px!important;}
 }
 </style>
+<style id="mobile-spreadsheet-fluidity-20260722">
+@media (max-width:768px){
+  #panel-lotes .dashboard-cards-shell,
+  #panel-futuros .dashboard-cards-shell{margin-bottom:7px!important;}
+  #panel-lotes .dashboard-cards-collapsed,
+  #panel-futuros .dashboard-cards-collapsed{min-height:38px!important;padding:0 9px!important;}
+  #panel-lotes .dashboard-cards-collapsed button,
+  #panel-futuros .dashboard-cards-collapsed button{min-height:30px!important;padding:0 10px!important;}
+  #panel-lotes .status-sheet-card{padding:7px!important;}
+  #panel-lotes .status-sheet-heading{margin-bottom:5px!important;}
+  #panel-lotes .status-viewbar,
+  #panel-futuros .fut-table-controls{margin-bottom:5px!important;}
+  #panel-lotes .status-table-wrap,
+  #panel-futuros .fut-table-wrap{
+    height:var(--mobile-sheet-height,calc(100dvh - 178px))!important;
+    min-height:340px!important;
+    max-height:none!important;
+    scroll-snap-type:none;
+    touch-action:pan-x pan-y;
+  }
+  #panel-lotes .status-filter-cell{padding-left:34px!important;}
+  #panel-lotes .status-filter-cell>.table-column-drag,
+  #panel-futuros .fut-table-head-line>.table-column-drag{
+    display:grid!important;
+    position:absolute!important;
+    left:3px!important;
+    top:3px!important;
+    width:28px!important;
+    height:32px!important;
+    z-index:6!important;
+    border:1px solid rgba(201,162,78,.42)!important;
+    border-radius:6px!important;
+    background:#fff8e8!important;
+    color:#76520e!important;
+    font-size:17px!important;
+    touch-action:none!important;
+    -webkit-user-select:none!important;
+    user-select:none!important;
+  }
+  #panel-futuros .fut-table-head-line{padding-left:35px!important;}
+  .table-column-drag.column-touch-active{
+    background:var(--gold)!important;
+    color:var(--navy)!important;
+    box-shadow:0 3px 10px rgba(13,27,42,.2)!important;
+  }
+  body.table-column-touch-dragging{overflow:hidden!important;user-select:none!important;-webkit-user-select:none!important;}
+}
+</style>
 <style id="lote-editor-dedicated-page-20260722">
   body.lote-editor-page-open{overflow:hidden!important;}
   body>#edit-panel-home.lote-editor-page-open{
@@ -6210,7 +6258,13 @@ function statusSummaryCardsHtml(){
   return getDashboardCards('status').map(function(key){return dashboardDraggableCardHtml('status',key,cards[key]||'');}).join('')+dashboardAddCardHtml('status');
 }
 function dashboardCardsCollapsedKey(tab){return 'vm_dashboard_cards_collapsed_'+tab+dashboardViewportStorageSuffix()+'_v1';}
-function dashboardCardsCollapsed(tab){try{return localStorage.getItem(dashboardCardsCollapsedKey(tab))==='1';}catch(e){return false;}}
+function dashboardCardsCollapsed(tab){
+  try{
+    var saved=localStorage.getItem(dashboardCardsCollapsedKey(tab));
+    if(saved!==null)return saved==='1';
+    return window.innerWidth<=768&&(tab==='status'||tab==='futuros');
+  }catch(e){return window.innerWidth<=768&&(tab==='status'||tab==='futuros');}
+}
 function toggleDashboardCardsCollapsed(tab){
   var next=!dashboardCardsCollapsed(tab);
   try{localStorage.setItem(dashboardCardsCollapsedKey(tab),next?'1':'0');}catch(e){}
@@ -9931,6 +9985,57 @@ function futFreezeOptionsHtml(){
 }
 var futColumnDragKey='';
 function startFutColumnDrag(ev,key){futColumnDragKey=key;ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',key);}
+var tableColumnTouchState=null;
+function startTableColumnTouch(ev,scope,key){
+  if(ev.pointerType==='mouse'||ev.button!==0)return;
+  ev.preventDefault();ev.stopPropagation();
+  var handle=ev.currentTarget;
+  tableColumnTouchState={scope:scope,key:key,handle:handle,pointerId:ev.pointerId,targetKey:key,active:false,timer:null};
+  if(handle.setPointerCapture)try{handle.setPointerCapture(ev.pointerId);}catch(e){}
+  tableColumnTouchState.timer=setTimeout(function(){
+    if(!tableColumnTouchState||tableColumnTouchState.handle!==handle)return;
+    tableColumnTouchState.active=true;
+    handle.classList.add('column-touch-active');
+    document.body.classList.add('table-column-touch-dragging');
+    if(navigator.vibrate)try{navigator.vibrate(18);}catch(e){}
+  },160);
+}
+function moveTableColumnTouch(ev){
+  var state=tableColumnTouchState;
+  if(!state||state.pointerId!==ev.pointerId||!state.active)return;
+  ev.preventDefault();
+  document.querySelectorAll('.column-drag-over').forEach(function(el){el.classList.remove('column-drag-over');});
+  var hit=document.elementFromPoint(ev.clientX,ev.clientY);
+  var selector=state.scope==='fut'?'[data-fut-col]':'[data-status-col]';
+  var target=hit&&hit.closest?hit.closest(selector):null;
+  var panelId=state.scope==='fut'?'panel-futuros':'panel-lotes';
+  if(target&&target.closest('#'+panelId)){
+    state.targetKey=target.getAttribute(state.scope==='fut'?'data-fut-col':'data-status-col')||state.key;
+    target.classList.add('column-drag-over');
+  }
+  var wrap=document.querySelector('#'+panelId+' .'+(state.scope==='fut'?'fut-table-wrap':'status-table-wrap'));
+  if(wrap){var rect=wrap.getBoundingClientRect();if(ev.clientX<rect.left+54)wrap.scrollLeft-=18;else if(ev.clientX>rect.right-54)wrap.scrollLeft+=18;}
+}
+function endTableColumnTouch(ev){
+  var state=tableColumnTouchState;
+  if(!state||state.pointerId!==ev.pointerId)return;
+  clearTimeout(state.timer);
+  state.handle.classList.remove('column-touch-active');
+  document.body.classList.remove('table-column-touch-dragging');
+  document.querySelectorAll('.column-drag-over').forEach(function(el){el.classList.remove('column-drag-over');});
+  tableColumnTouchState=null;
+  if(!state.active||!state.targetKey||state.targetKey===state.key)return;
+  var columns=state.scope==='fut'?FUT_COLS:STATUS_COLS;
+  var from=columns.findIndex(function(c){return c.key===state.key;}),to=columns.findIndex(function(c){return c.key===state.targetKey;});
+  if(from<0||to<0)return;
+  var moved=columns.splice(from,1)[0];columns.splice(to,0,moved);
+  try{localStorage.setItem(state.scope==='fut'?FUT_COL_ORDER_KEY:STATUS_COL_ORDER_KEY,JSON.stringify(columns.map(function(c){return c.key;})));}catch(e){}
+  if(state.scope==='fut')renderFuturosPreservingViewport();else renderLotesPreservingViewport();
+  toast('Ordem das colunas atualizada');
+}
+document.addEventListener('pointermove',moveTableColumnTouch,{passive:false});
+document.addEventListener('pointerup',endTableColumnTouch);
+document.addEventListener('pointercancel',endTableColumnTouch);
 function overFutColumnDrag(ev){ev.preventDefault();var th=ev.currentTarget.closest('th');if(th)th.classList.add('column-drag-over');}
 function leaveFutColumnDrag(ev){var th=ev.currentTarget.closest('th');if(th)th.classList.remove('column-drag-over');}
 function dropFutColumn(ev,targetKey){
@@ -10427,7 +10532,7 @@ function renderFuturos(){
         :'<button type="button" class="fut-table-sort" onclick="setFutSort(\''+col.key+'\')">'+escHtml(col.label)+'<span class="fut-sort-mark">'+mark+'</span></button>';
       var filter=futTableFilterHtml(col.key,futHeaderFilterOptions(col.key,arr,loteMap));
       var trigger=filter?filter:'';
-      return '<th data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+' ondragover="overFutColumnDrag(event)" ondragleave="leaveFutColumnDrag(event)" ondrop="dropFutColumn(event,\''+col.key+'\')"><div class="fut-table-head-line"><span class="table-column-drag" draggable="true" title="Arraste para mudar a ordem" ondragstart="startFutColumnDrag(event,\''+col.key+'\')">⋮</span>'+title+trigger+'</div><span class="fut-col-resizer" onmousedown="startFutColumnResize(event,\''+col.key+'\')"></span></th>';
+      return '<th data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+' ondragover="overFutColumnDrag(event)" ondragleave="leaveFutColumnDrag(event)" ondrop="dropFutColumn(event,\''+col.key+'\')"><div class="fut-table-head-line"><span class="table-column-drag" draggable="true" title="Segure e arraste para mudar a ordem" aria-label="Reordenar coluna '+escHtml(col.label)+'" onpointerdown="startTableColumnTouch(event,\'fut\',\''+col.key+'\')" ondragstart="startFutColumnDrag(event,\''+col.key+'\')">⋮</span>'+title+trigger+'</div><span class="fut-col-resizer" onmousedown="startFutColumnResize(event,\''+col.key+'\')"></span></th>';
     }).join('');
   }
   renderFutColumnsPanel();
@@ -12941,7 +13046,7 @@ function renderLotes(){
     +'</button>';
   }
   function statusFilterResizeHandle(c){return '<span class="status-col-resizer" title="Arraste para ajustar a largura" onmousedown="startStatusColumnResize(event,\''+c.key+'\')" onclick="event.stopPropagation()"></span>';}
-  function statusColumnDragHandle(c){return '<span class="table-column-drag" draggable="true" title="Arraste para mudar a ordem" ondragstart="startStatusColumnDrag(event,\''+c.key+'\')">⋮</span>';}
+  function statusColumnDragHandle(c){return '<span class="table-column-drag" draggable="true" title="Segure e arraste para mudar a ordem" aria-label="Reordenar coluna '+escHtml(c.label)+'" onpointerdown="startTableColumnTouch(event,\'status\',\''+c.key+'\')" ondragstart="startStatusColumnDrag(event,\''+c.key+'\')">⋮</span>';}
   function statusColumnDropAttrs(c){return ' data-status-col="'+c.key+'" ondragover="overStatusColumnDrag(event)" ondragleave="leaveStatusColumnDrag(event)" ondrop="dropStatusColumn(event,\''+c.key+'\')"';}
   function filterInput(c,placeholder){
     var key=c.key;
@@ -13504,7 +13609,7 @@ function setupStatusDrag(container){
   container.querySelectorAll('.sc[data-lid],.status-row[data-lid]').forEach(function(card){
     card.addEventListener('pointerdown',function(evt){
       if(evt.pointerType==='mouse'||evt.button!==0)return;
-      if(evt.target&&evt.target.closest&&evt.target.closest('button,input,select,textarea,a'))return;
+      if(evt.target&&evt.target.closest&&evt.target.closest('button,input,select,textarea,a,.table-column-drag'))return;
       iniciarArrasteToqueStatus(evt,card);
     });
     card.addEventListener('dragstart',function(evt){
