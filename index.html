@@ -13086,8 +13086,11 @@ function renderLotes(){
     var quebraKgVal=quebraKgRaw?fmtNum(quebraKgRaw,1)+' kg':'—';
     var modalidadeVal=o?calcModeloLabel(o.modeloConta||'msop'):'—';
     var racaVal=l.tipoCustom||labelRaca(l.tipoAnimal)||(o&&(o.tipoCustom||labelRaca(o.tipoAnimal)))||'A definir';
-    var pesoOrigemRaw=finNum(zooStatus&&zooStatus.pesoOrigem);
+    var pesoOrigemRaw=finNum((zooStatus&&(zooStatus.pesoOrigem||zooStatus.pesoCompra))||(o&&o.pesoCom)||l.pesoMedio);
     var pesoChegadaRaw=finNum(zooStatus&&zooStatus.pesoEntrada);
+    if(!pesoChegadaRaw&&pesoOrigemRaw){
+      pesoChegadaRaw=pesoOrigemRaw*(1-(finNum(o&&o.quebra_pct)/100));
+    }
     var pesoOrigemVal=o&&pesoOrigemRaw?fmtNum(pesoOrigemRaw,2)+' kg':'—';
     var pesoChegadaVal=o&&pesoChegadaRaw?fmtNum(pesoChegadaRaw,2)+' kg':'—';
     var gmdOrigemVal=o&&techStatus.gmdOrigem?fmtNum(techStatus.gmdOrigem,2)+' kg/dia':'—';
@@ -13407,8 +13410,11 @@ function renderLotes(){
       if(rcRealizadoFiltro)addStatusFilterOption('rcRealizado',fmtNum(rcRealizadoFiltro,2)+'%');
       if(consumoMedioExpectativaFiltro)addStatusFilterOption('consumoMedioExpectativa',fmtNum(consumoMedioExpectativaFiltro,2)+'%');
       if(consumoMedioRealizadoFiltro)addStatusFilterOption('consumoMedioRealizado',fmtNum(consumoMedioRealizadoFiltro,2)+'%');
-      if(zooStatus.pesoOrigem)addStatusFilterOption('pesoOrigem',fmtNum(zooStatus.pesoOrigem,2)+' kg');
-      if(zooStatus.pesoEntrada)addStatusFilterOption('pesoChegada',fmtNum(zooStatus.pesoEntrada,2)+' kg');
+      var pesoOrigemFiltro=finNum((zooStatus&&(zooStatus.pesoOrigem||zooStatus.pesoCompra))||(o&&o.pesoCom)||l.pesoMedio);
+      var pesoChegadaFiltro=finNum(zooStatus&&zooStatus.pesoEntrada);
+      if(!pesoChegadaFiltro&&pesoOrigemFiltro)pesoChegadaFiltro=pesoOrigemFiltro*(1-(finNum(o&&o.quebra_pct)/100));
+      if(pesoOrigemFiltro)addStatusFilterOption('pesoOrigem',fmtNum(pesoOrigemFiltro,2)+' kg');
+      if(pesoChegadaFiltro)addStatusFilterOption('pesoChegada',fmtNum(pesoChegadaFiltro,2)+' kg');
       if(techStatus.gmdOrigem)addStatusFilterOption('gmdOrigem',fmtNum(techStatus.gmdOrigem,2)+' kg/dia');
       if(techStatus.gmdChegada)addStatusFilterOption('gmdChegada',fmtNum(techStatus.gmdChegada,2)+' kg/dia');
       if(techStatus.gmcOrigem)addStatusFilterOption('gmcOrigem',fmtNum(techStatus.gmcOrigem,3)+' kg/dia');
