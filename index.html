@@ -11294,6 +11294,7 @@ function openEditPanel(loteId, cardEl){
     document.body.classList.add('lote-editor-page-open');
   }
   var o=lote.orcamentos&&lote.orcamentos[0];
+  var nomeConfinamentoEditor=getConfinamentoLote(lote)||'Manual / sem boitel';
   var transportadoraOpts='<option value="">A definir...</option>';
   getTransportadoras().filter(function(t){return t.ativa!==false||t.id===lote.transportadoraId;}).forEach(function(t){
     transportadoraOpts+='<option value="'+escHtml(t.id)+'"'+(lote.transportadoraId===t.id?' selected':'')+'>'+escHtml(t.nome||'Transportadora')+'</option>';
@@ -11466,7 +11467,7 @@ function openEditPanel(loteId, cardEl){
   ep.innerHTML='<div class="ep">'
     +'<div class="ep-header">'
       +'<button type="button" class="lote-editor-back" onclick="closeEditPanel()" aria-label="Voltar para Status"><span aria-hidden="true">←</span><span>Voltar para Status</span></button>'
-      +'<div class="lote-editor-heading"><span>Editar orçamento</span><div class="ep-title">Lote '+escHtml(numeroLote)+(nomeLote?' · '+escHtml(nomeLote):'')+'</div></div>'
+      +'<div class="lote-editor-heading"><span>'+escHtml(nomeConfinamentoEditor)+'</span><div class="ep-title">Lote '+escHtml(numeroLote)+(nomeLote?' · '+escHtml(nomeLote):'')+'</div></div>'
       +'<div class="ep-caixa-launch ep-caixa-launch-header">'
         +'<button type="button" class="ep-caixa-trigger" onclick="toggleEpCaixaMenu(event)"><span class="ep-caixa-trigger-icon">$</span><span class="ep-caixa-trigger-label">Lançar no Caixa</span><span aria-hidden="true">⌄</span></button>'
         +'<div class="ep-caixa-menu" id="ep-caixa-menu" hidden onclick="event.stopPropagation()">'
