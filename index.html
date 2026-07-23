@@ -894,6 +894,11 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .fut-modal-close{border:0;background:rgba(13,27,42,.06);width:34px;height:34px;border-radius:999px;font-size:18px;color:var(--text-2);cursor:pointer;}
 .fut-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .fut-modal-grid .field{margin:0;}
+.fut-date-entry{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:6px;}
+.fut-date-entry>input{min-width:0;}
+.fut-date-picker{width:44px!important;padding:0 7px!important;cursor:pointer;color:var(--navy);background:#fff;}
+.fut-date-picker::-webkit-datetime-edit{display:none;}
+.fut-date-picker::-webkit-calendar-picker-indicator{width:20px;height:20px;margin:0;cursor:pointer;opacity:.78;}
 .fut-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
 .fut-modal-actions button{min-height:42px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:850;padding:0 16px;cursor:pointer;}
 .fut-modal-actions .save{background:var(--olive);border:1px solid var(--olive);color:#fff;}
@@ -4804,7 +4809,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-lotes .status-sheet-sub{font-size:8px!important;}
 
     #panel-futuros .fut-table-actions,
-    #panel-lotes .status-view-actions{gap:4px!important;}
+    #panel-lotes .status-view-actions{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      gap:4px!important;
+    }
     #panel-futuros .fut-table-actions>.status-view-btn,
     #panel-lotes .status-view-btn{
       height:32px!important;
@@ -5731,7 +5739,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             <div class="fut-table-actions">
               <button type="button" class="status-view-btn" onclick="limparFiltrosFuturos()">Limpar filtros</button>
               <button type="button" class="status-view-btn" onclick="toggleFutColumnsPanel()">Colunas visíveis</button>
-              <button type="button" class="status-view-btn" onclick="resetFutColumns()">Restaurar</button>
               <div id="fut-column-panel" class="fut-column-panel"></div>
             </div>
           </div>
@@ -9975,6 +9982,8 @@ function fecharFormFuturo(){
 function limparFormFuturo(loteId,abrir){
   var ids=['fut-id','fut-codigo','fut-vencimento','fut-data-venda','fut-preco-venda','fut-data-compra','fut-preco-compra','fut-custos','fut-obs'];
   ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var dataAbertura=document.getElementById('fut-data-venda');
+  if(dataAbertura)dataAbertura.value=_isoDate(new Date());
   var op=document.getElementById('fut-operacao');if(op)op.value=loteId?'hedge':'hedge';
   var lado=document.getElementById('fut-lado');if(lado)lado.value='venda';
   var tipo=document.getElementById('fut-tipo');if(tipo)tipo.value='bolsa';
@@ -10108,9 +10117,11 @@ function abrirModalLiquidarFuturo(id){
   var r=futuroResultado(c);
   if(r.status==='cancelado'||r.qtdAberta<=0){toast('⚠ Este contrato não possui saldo aberto');return;}
   function set(id,val){var el=document.getElementById(id);if(el)el.value=val||'';}
+  var hoje=_isoDate(new Date());
   set('fut-liquidar-id',c.id);
   set('fut-liquidar-qtd',Math.max(1,r.qtdAberta));
-  set('fut-liquidar-data','');
+  set('fut-liquidar-data',dataLiquidacaoBR(hoje));
+  set('fut-liquidar-data-picker',hoje);
   set('fut-liquidar-preco','');
   set('fut-liquidar-corretagem','0,00');
   set('fut-liquidar-taxas','0,00');
@@ -10119,6 +10130,29 @@ function abrirModalLiquidarFuturo(id){
   if(saldo)saldo.textContent='Saldo aberto: '+fmtContratosB3(r.qtdAberta)+' contrato(s)';
   var modal=document.getElementById('fut-liquidar-modal');
   if(modal){modal.classList.add('show');modal.setAttribute('aria-hidden','false');}
+}
+function dataLiquidacaoBR(iso){
+  var p=String(iso||'').split('-');
+  return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:'';
+}
+function normalizarDataLiquidacao(valor){
+  var m=String(valor||'').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(!m)return '';
+  var dia=Number(m[1]),mes=Number(m[2]),ano=Number(m[3]);
+  var d=new Date(ano,mes-1,dia);
+  if(d.getFullYear()!==ano||d.getMonth()!==mes-1||d.getDate()!==dia)return '';
+  return _isoDate(d);
+}
+function mascararDataLiquidacao(input){
+  var n=String(input.value||'').replace(/\D/g,'').slice(0,8);
+  input.value=n.slice(0,2)+(n.length>2?'/'+n.slice(2,4):'')+(n.length>4?'/'+n.slice(4):'');
+  var iso=normalizarDataLiquidacao(input.value);
+  var picker=document.getElementById('fut-liquidar-data-picker');
+  if(picker&&iso)picker.value=iso;
+}
+function selecionarDataLiquidacao(input){
+  var texto=document.getElementById('fut-liquidar-data');
+  if(texto&&input.value)texto.value=dataLiquidacaoBR(input.value);
 }
 function fecharModalLiquidarFuturo(){
   var modal=document.getElementById('fut-liquidar-modal');
@@ -10134,12 +10168,19 @@ function confirmarLiquidacaoFuturo(){
   var r=futuroResultado(c);
   var qtd=Math.round(parseFloat((document.getElementById('fut-liquidar-qtd')||{}).value)||0);
   var preco=finNum((document.getElementById('fut-liquidar-preco')||{}).value);
+  var dataInput=document.getElementById('fut-liquidar-data');
+  var dataLiquidacao=normalizarDataLiquidacao(dataInput&&dataInput.value);
   if(qtd<=0||qtd>r.qtdAberta){toast('⚠ Informe uma quantidade válida até '+fmtContratosB3(r.qtdAberta)+' contrato(s)');return;}
   if(!preco){toast('⚠ Informe o preço de liquidação');return;}
+  if(!dataLiquidacao){
+    toast('⚠ Informe uma data válida no formato DD/MM/AAAA');
+    if(dataInput)dataInput.focus();
+    return;
+  }
   var liq={
     id:'liq_'+Date.now(),
     qtdContratos:qtd,
-    data:(document.getElementById('fut-liquidar-data')||{}).value||'',
+    data:dataLiquidacao,
     preco:preco,
     corretagemArroba:finNum((document.getElementById('fut-liquidar-corretagem')||{}).value),
     taxas:finNum((document.getElementById('fut-liquidar-taxas')||{}).value),
@@ -10364,9 +10405,11 @@ function renderFutColumnsPanel(){
   var panel=document.getElementById('fut-column-panel');
   if(!panel)return;
   var visible=getFutColVisible();
+  var allSelected=FUT_COLS.filter(function(c){return !c.fixed;}).every(function(c){return visible[c.key]!==false;});
   panel.innerHTML='<div class="fut-column-panel-title">Informações visíveis</div>'
     +'<div class="fut-column-panel-sub">Escolha as colunas da tabela de contratos.</div>'
     +futFreezeOptionsHtml()
+    +'<div class="columns-select-tools"><label class="columns-select-all"><input type="checkbox"'+(allSelected?' checked':'')+' onchange="setFutAllColumns(this.checked)"><span>Selecionar tudo</span></label></div>'
     +groupedColumnOptionsHtml(FUT_COLS.filter(function(c){return !c.fixed;}),FUT_COLUMN_GROUPS,function(c){
       return '<label class="fut-column-option"><input type="checkbox"'+(visible[c.key]!==false?' checked':'')+' onchange="setFutColumnVisible(\''+c.key+'\',this.checked)"><span>'+escHtml(c.label)+'</span></label>';
     });
@@ -10487,6 +10530,15 @@ function setFutColumnVisible(key,checked){
   visible[key]=!!checked;
   var visibleData=FUT_COLS.filter(function(c){return !c.fixed&&visible[c.key]!==false;});
   if(visibleData.length<2){visible.status=true;visible.lote=true;}
+  try{localStorage.setItem(FUT_COL_VISIBLE_KEY,JSON.stringify(visible));}catch(e){}
+  renderFuturosPreservingViewport();
+  var panel=document.getElementById('fut-column-panel');
+  if(panel)panel.classList.add('open');
+}
+function setFutAllColumns(checked){
+  var visible={};
+  FUT_COLS.forEach(function(col){visible[col.key]=col.fixed?true:!!checked;});
+  if(!checked){visible.status=true;visible.lote=true;}
   try{localStorage.setItem(FUT_COL_VISIBLE_KEY,JSON.stringify(visible));}catch(e){}
   renderFuturosPreservingViewport();
   var panel=document.getElementById('fut-column-panel');
@@ -13467,7 +13519,7 @@ function renderLotes(){
       +'<div class="status-column-panel-title">Informações visíveis</div>'
       +'<div class="status-column-panel-sub">Selecione quais colunas deseja ver na tabela de Status.</div>'
       +statusFreezeOptionsHtml()
-      +'<div class="columns-select-tools"><label class="columns-select-all"><input type="checkbox"'+(allSelected?' checked':'')+' onchange="setStatusAllColumns(this.checked)"><span>Selecionar tudo</span></label><button type="button" class="columns-clear-btn" onclick="clearStatusColumns()">Limpar</button></div>'
+      +'<div class="columns-select-tools"><label class="columns-select-all"><input type="checkbox"'+(allSelected?' checked':'')+' onchange="setStatusAllColumns(this.checked)"><span>Selecionar tudo</span></label></div>'
       +'<div class="status-column-options">'+groupedColumnOptionsHtml(STATUS_COLS,HOME_STATUS_COLUMN_GROUPS,function(c){
         var checked=visible[c.key]!==false?' checked':'';
         return '<label class="status-column-option"><input type="checkbox"'+checked+' onchange="setStatusColumnVisible(\''+c.key+'\',this.checked)"> <span>'+escHtml(c.label)+'</span></label>';
@@ -13480,7 +13532,6 @@ function renderLotes(){
       +'<div class="status-view-actions">'
         +'<button type="button" class="status-view-btn" onclick="limparStatusColumnFilters()">Limpar filtros</button>'
         +'<button type="button" class="status-view-btn" onclick="toggleStatusColumnsPanel()">Colunas visíveis</button>'
-        +'<button type="button" class="status-view-btn" onclick="resetStatusColumns()">Restaurar</button>'
         +statusColumnPanelHtml()
       +'</div>'
     +'</div>';
@@ -18604,7 +18655,13 @@ restoreBasicSession();
     <input type="hidden" id="fut-liquidar-id">
     <div class="fut-modal-grid">
       <div class="field"><label>Qtd contratos a liquidar</label><input type="number" id="fut-liquidar-qtd" min="1" step="1"><div class="hint" id="fut-liquidar-saldo">Saldo aberto: —</div></div>
-      <div class="field"><label>Data da liquidação</label><input type="date" id="fut-liquidar-data"></div>
+      <div class="field">
+        <label for="fut-liquidar-data">Data da liquidação</label>
+        <div class="fut-date-entry">
+          <input type="text" id="fut-liquidar-data" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="DD/MM/AAAA" oninput="mascararDataLiquidacao(this)">
+          <input type="date" id="fut-liquidar-data-picker" class="fut-date-picker" aria-label="Selecionar data no calendário" onchange="selecionarDataLiquidacao(this)">
+        </div>
+      </div>
       <div class="field"><label>Preço liquidação (R$/@)</label><input type="text" id="fut-liquidar-preco" inputmode="decimal" data-decimal="1"></div>
       <div class="field"><label>Corretagem / taxas liquidação (R$/@)</label><input type="text" id="fut-liquidar-corretagem" inputmode="decimal" data-decimal="1" value="0,00"></div>
       <div class="field fut-span-4"><label>Taxas adicionais (R$)</label><input type="text" id="fut-liquidar-taxas" inputmode="decimal" data-decimal="1" value="0,00"></div>
