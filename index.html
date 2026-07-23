@@ -4747,6 +4747,132 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     }
   }
 </style>
+<style id="mobile-spreadsheet-priority-final-20260722">
+  @media(max-width:768px){
+    #panel-lotes,
+    #panel-futuros{padding-top:0!important;}
+
+    #panel-futuros .fut-hero{
+      display:grid!important;
+      grid-template-columns:minmax(0,1fr) auto!important;
+      gap:8px!important;
+      align-items:center!important;
+      min-height:48px!important;
+      margin-bottom:6px!important;
+      padding:7px 9px!important;
+      border-radius:9px!important;
+    }
+    #panel-futuros .fut-hero .h-greeting-name{font-size:16px!important;line-height:1.1!important;}
+    #panel-futuros .fut-hero .h-greeting-date{display:none!important;}
+    #panel-futuros .fut-new-btn{width:auto!important;min-height:36px!important;padding:0 10px!important;font-size:9px!important;}
+
+    #panel-futuros .fut-layout{display:flex!important;flex-direction:column!important;gap:7px!important;}
+    #panel-futuros .fut-list-card,
+    #panel-lotes .status-sheet-card{
+      width:100%!important;
+      min-width:0!important;
+      margin:0!important;
+      padding:6px!important;
+      overflow:visible!important;
+      border:1px solid var(--border)!important;
+      border-radius:8px!important;
+      background:#fff!important;
+      box-shadow:0 3px 12px rgba(13,27,42,.06)!important;
+    }
+    #panel-futuros .fut-toolbar{min-height:28px!important;margin:0 0 4px!important;padding:0 2px!important;}
+    #panel-futuros .fut-toolbar .home-panel-title,
+    #panel-lotes .status-sheet-title{font-size:9px!important;letter-spacing:.7px!important;}
+    #panel-futuros .fut-toolbar .home-panel-note,
+    #panel-lotes .status-sheet-sub{font-size:8px!important;}
+
+    #panel-futuros .fut-table-actions,
+    #panel-lotes .status-view-actions{gap:4px!important;}
+    #panel-futuros .fut-table-actions>.status-view-btn,
+    #panel-lotes .status-view-btn{
+      height:32px!important;
+      min-height:32px!important;
+      padding:0 4px!important;
+      border-radius:6px!important;
+      font-size:8px!important;
+    }
+
+    #panel-futuros .fut-table-wrap,
+    #panel-lotes .status-table-wrap{
+      display:block!important;
+      width:100%!important;
+      height:var(--mobile-sheet-viewport-height,calc(100svh - 190px))!important;
+      min-height:390px!important;
+      max-height:calc(100dvh - 76px)!important;
+      overflow:auto!important;
+      overscroll-behavior:contain!important;
+      -webkit-overflow-scrolling:touch!important;
+      touch-action:pan-x pan-y!important;
+      scroll-padding-top:42px!important;
+      border:1px solid rgba(211,194,164,.9)!important;
+      border-radius:7px!important;
+      background:#fff!important;
+      box-shadow:inset 0 1px 0 #fff!important;
+    }
+
+    #panel-futuros .fut-table{isolation:auto!important;}
+    #panel-futuros .fut-table thead,
+    #panel-futuros .fut-table thead tr{
+      position:static!important;
+      top:auto!important;
+      z-index:auto!important;
+      transform:none!important;
+    }
+    #panel-futuros .fut-table thead th{
+      position:sticky!important;
+      top:0!important;
+      z-index:60!important;
+      height:42px!important;
+      overflow:visible!important;
+      background:#fffaf0!important;
+      border-bottom:2px solid var(--gold)!important;
+      box-shadow:0 3px 7px rgba(13,27,42,.10)!important;
+      background-clip:padding-box!important;
+    }
+    #panel-futuros .fut-table thead th.column-frozen{z-index:68!important;background:#fffaf0!important;}
+    #panel-futuros .fut-table-head-line{height:40px!important;min-height:40px!important;}
+
+    #panel-lotes .status-filter-row{
+      position:sticky!important;
+      top:0!important;
+      z-index:60!important;
+      min-height:42px!important;
+      overflow:visible!important;
+      background:#fffaf0!important;
+      border-bottom:2px solid var(--gold)!important;
+      box-shadow:0 3px 7px rgba(13,27,42,.10)!important;
+    }
+    #panel-lotes .status-filter-cell{
+      height:42px!important;
+      overflow:visible!important;
+      background:#fffaf0!important;
+    }
+    #panel-lotes .status-filter-row>.status-filter-cell.column-frozen{z-index:68!important;background:#fffaf0!important;}
+    #panel-lotes .status-table-body .status-row>.status-cell{height:40px!important;}
+
+    #panel-futuros .fut-table tfoot td,
+    #panel-lotes .status-total-row{
+      bottom:0!important;
+      box-shadow:0 -3px 8px rgba(13,27,42,.10)!important;
+    }
+    #panel-futuros .fut-form{margin-top:0!important;}
+    #panel-futuros #fut-summary,
+    #panel-futuros #fut-month-dashboard,
+    #panel-lotes .dashboard-cards-shell{margin-top:7px!important;margin-bottom:0!important;}
+    #panel-lotes .status-table-note,
+    #panel-lotes .status-mobile-hint{display:none!important;}
+  }
+  @media(max-width:390px){
+    #panel-futuros .fut-table-wrap,
+    #panel-lotes .status-table-wrap{min-height:350px!important;}
+    #panel-futuros .fut-hero{grid-template-columns:1fr auto!important;}
+    #panel-futuros .fut-hero .h-greeting-name{font-size:14px!important;}
+  }
+</style>
 </head>
 <body>
 
@@ -8181,6 +8307,7 @@ function switchTab(tab){
   }
   if(tab==='calc'&&calcMode==='standalone'&&!calcStandaloneInitialized)abrirCalcStandalone();
   ensureExportControls();
+  scheduleMobileSpreadsheetViewport();
 }
 
 var _lastScrollY=0;
@@ -10115,6 +10242,48 @@ function renderFuturosPreservingViewport(){
   renderFuturos();
   restoreFutViewport(state);
 }
+var _mobileSheetViewportFrame=0;
+function prioritizeMobileSpreadsheets(){
+  var mobile=window.innerWidth<=768;
+  var futPanel=document.getElementById('panel-futuros');
+  if(futPanel){
+    var summary=document.getElementById('fut-summary');
+    var month=document.getElementById('fut-month-dashboard');
+    var layout=futPanel.querySelector('.fut-layout');
+    var form=layout&&layout.querySelector('.fut-form');
+    var list=layout&&layout.querySelector('.fut-list-card');
+    if(layout&&summary&&month){
+      if(mobile){futPanel.insertBefore(layout,summary);if(form&&list)layout.insertBefore(list,form);}
+      else{futPanel.insertBefore(summary,layout);futPanel.insertBefore(month,layout);if(form&&list)layout.insertBefore(form,list);}
+    }
+  }
+  var statusPanel=document.getElementById('panel-lotes');
+  if(statusPanel){
+    var sheet=statusPanel.querySelector('.status-sheet-card');
+    var dashboard=statusPanel.querySelector('.dashboard-cards-shell');
+    if(sheet&&dashboard){
+      if(mobile)statusPanel.insertBefore(sheet,dashboard);
+      else statusPanel.insertBefore(dashboard,sheet);
+    }
+  }
+}
+function scheduleMobileSpreadsheetViewport(){
+  if(_mobileSheetViewportFrame)cancelAnimationFrame(_mobileSheetViewportFrame);
+  _mobileSheetViewportFrame=requestAnimationFrame(function(){
+    _mobileSheetViewportFrame=0;
+    prioritizeMobileSpreadsheets();
+    if(window.innerWidth>768)return;
+    var viewport=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    ['#panel-futuros .fut-table-wrap','#panel-lotes .status-table-wrap'].forEach(function(selector){
+      var wrap=document.querySelector(selector);
+      if(!wrap||getComputedStyle(wrap).display==='none'||!wrap.offsetParent)return;
+      var top=Math.max(8,Math.min(190,wrap.getBoundingClientRect().top));
+      var height=Math.max(viewport<=680?350:390,Math.floor(viewport-top-68));
+      height=Math.min(height,Math.floor(viewport-76));
+      wrap.style.setProperty('--mobile-sheet-viewport-height',height+'px');
+    });
+  });
+}
 var _futTableViewportFrame=0;
 function scheduleFutTableViewport(){
   if(_futTableViewportFrame)cancelAnimationFrame(_futTableViewportFrame);
@@ -10137,9 +10306,13 @@ function scheduleFutTableViewport(){
 }
 window.addEventListener('scroll',scheduleFutTableViewport,{passive:true});
 window.addEventListener('resize',scheduleFutTableViewport,{passive:true});
+window.addEventListener('scroll',scheduleMobileSpreadsheetViewport,{passive:true});
+window.addEventListener('resize',scheduleMobileSpreadsheetViewport,{passive:true});
 if(window.visualViewport){
   window.visualViewport.addEventListener('resize',scheduleFutTableViewport,{passive:true});
   window.visualViewport.addEventListener('scroll',scheduleFutTableViewport,{passive:true});
+  window.visualViewport.addEventListener('resize',scheduleMobileSpreadsheetViewport,{passive:true});
+  window.visualViewport.addEventListener('scroll',scheduleMobileSpreadsheetViewport,{passive:true});
 }
 function setFutColumnVisible(key,checked){
   var visible=getFutColVisible();
@@ -10381,7 +10554,10 @@ function renderFutMonthDashboard(lotes,contratos){
     if(a.key==='sem-mes')return 1;if(b.key==='sem-mes')return -1;return a.key.localeCompare(b.key);
   });
   var collapsed=false;
-  try{collapsed=localStorage.getItem('vm_fut_month_dashboard_collapsed_v1')==='1';}catch(e){}
+  try{
+    var monthDashboardSaved=localStorage.getItem('vm_fut_month_dashboard_collapsed_v1');
+    collapsed=monthDashboardSaved===null?window.innerWidth<=768:monthDashboardSaved==='1';
+  }catch(e){collapsed=window.innerWidth<=768;}
   var head='<div class="fut-month-dashboard-head"><div><div class="fut-month-dashboard-title">Cobertura mensal B3</div><div class="fut-month-dashboard-note">Contratos travados / necessidade projetada</div></div><button type="button" class="fut-month-dashboard-toggle" onclick="toggleFutMonthDashboard()">'+(collapsed?'Mostrar dashboard':'Minimizar dashboard')+'</button></div>';
   if(collapsed){host.innerHTML='<div class="fut-month-dashboard">'+head+'</div>';return;}
   var cores=['#28577A','#7C3F59','#376348','#8B4E23','#79602A','#356364','#66477A','#8A4438','#596331','#345A7D','#75513A','#465667'];
@@ -10541,6 +10717,7 @@ function renderFuturos(){
     if(mobileList)mobileList.innerHTML='<div class="home-empty-small">Nenhum contrato encontrado.</div>';
     applyFutTableLayout();
     scheduleFutTableViewport();
+    scheduleMobileSpreadsheetViewport();
     return;
   }
   var registros=filtrados.map(function(c){
@@ -10647,6 +10824,7 @@ function renderFuturos(){
   renderFutTableTotal(registros,visibleCols);
   applyFutTableLayout();
   scheduleFutTableViewport();
+  scheduleMobileSpreadsheetViewport();
 }
 function abrirLoteNoStatus(loteId){
   if(!loteId)return;
@@ -13591,6 +13769,7 @@ function renderLotes(){
   sortStatusRows();
   applyStatusGridTemplate();
   applyStatusColumnFilters();
+  scheduleMobileSpreadsheetViewport();
 }
 
 var _statusDragId=null;
