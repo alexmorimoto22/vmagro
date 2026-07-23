@@ -5930,13 +5930,13 @@ let activeLoteDetailId=null;
 let activeOrcEditIndex=null;
 let activeLoteReturnStatus=null;
 let pillFilter='';
-var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rentProj:'',rentmesProj:'',rentReal:'',rentmesReal:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
+var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rentProj:'',rentmesProj:'',rentReal:'',rentmesReal:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',pesoOrigem:'',pesoChegada:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
 var STATUS_COLS=[
   {key:'status',label:'Status',w:126},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
   {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:128},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
   {key:'entrada',label:'Entrada',w:92},{key:'abate',label:'Abate',w:92},{key:'recebimento',label:'Recebimento',w:104},
   {key:'faturamento',label:'Fat. lote',w:126},{key:'capital',label:'Capital',w:126},{key:'lucro',label:'Lucro',w:116},
-  {key:'rentProj',label:'% Oper. proj (projetado)',w:142},{key:'rentmesProj',label:'% Mês proj (projetado)',w:136},{key:'rentReal',label:'% Oper. real (realizado)',w:142},{key:'rentmesReal',label:'% Mês real (realizado)',w:136},{key:'rcExpectativa',label:'RC expectativa',w:108},{key:'rcRealizado',label:'RC realizado',w:100},{key:'consumoMedioExpectativa',label:'Consumo méd. expectativa',w:138},{key:'consumoMedioRealizado',label:'Consumo méd. realizado',w:130},{key:'gmdOrigem',label:'GMD Origem',w:108},{key:'gmdChegada',label:'GMD Chegada',w:108},{key:'gmcOrigem',label:'GMC Origem',w:116},{key:'gmcChegada',label:'GMC Chegada',w:116},{key:'eficiencia',label:'Efic. Origem',w:116},{key:'eficienciaChegada',label:'Efic. Cheg.',w:116},{key:'atProdChegada',label:'@ produzida - chegada',w:132},{key:'atProdOrigem',label:'@ produzida - origem',w:126},{key:'custoAtChegada',label:'Custo @ prod. chegada',w:142},{key:'custoAtOrigem',label:'Custo @ prod. origem',w:136}
+  {key:'rentProj',label:'% Oper. proj (projetado)',w:142},{key:'rentmesProj',label:'% Mês proj (projetado)',w:136},{key:'rentReal',label:'% Oper. real (realizado)',w:142},{key:'rentmesReal',label:'% Mês real (realizado)',w:136},{key:'rcExpectativa',label:'RC expectativa',w:108},{key:'rcRealizado',label:'RC realizado',w:100},{key:'consumoMedioExpectativa',label:'Consumo méd. expectativa',w:138},{key:'consumoMedioRealizado',label:'Consumo méd. realizado',w:130},{key:'pesoOrigem',label:'Peso origem',w:104},{key:'pesoChegada',label:'Peso chegada',w:108},{key:'gmdOrigem',label:'GMD Origem',w:108},{key:'gmdChegada',label:'GMD Chegada',w:108},{key:'gmcOrigem',label:'GMC Origem',w:116},{key:'gmcChegada',label:'GMC Chegada',w:116},{key:'eficiencia',label:'Efic. Origem',w:116},{key:'eficienciaChegada',label:'Efic. Cheg.',w:116},{key:'atProdChegada',label:'@ produzida - chegada',w:132},{key:'atProdOrigem',label:'@ produzida - origem',w:126},{key:'custoAtChegada',label:'Custo @ prod. chegada',w:142},{key:'custoAtOrigem',label:'Custo @ prod. origem',w:136}
 ];
 var STATUS_COL_VISIBLE_KEY='vm_status_cols_visible_v2';
 var STATUS_COL_WIDTH_KEY='vm_status_cols_width_v2';
@@ -6065,7 +6065,7 @@ var HOME_STATUS_COLUMN_GROUPS=[
   {label:'Compra e logística',keys:['origem','vendedor','frigorifico','qtd','kmRodados','quebraPct','quebraKg']},
   {label:'Datas',keys:['entrada','abate','recebimento']},
   {label:'Financeiro',keys:['faturamento','capital','lucro','rent','rentmes','rentProj','rentmesProj','rentReal','rentmesReal']},
-  {label:'Zootécnico',keys:['rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem']},
+  {label:'Zootécnico',keys:['rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem']},
   {label:'Proteção B3',keys:['b3']}
 ];
 function groupedColumnOptionsHtml(columns,groups,renderOption){
@@ -12485,8 +12485,8 @@ function applyStatusColumnFilters(){
   var rows=document.querySelectorAll('#lote-list .status-row[data-lid]');
   var qtd=0,kmRodados=0,faturamento=0,capital=0,lucro=0,projCapital=0,projLucro=0,realCapital=0,realLucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0,b3Abertos=0,b3Liquidados=0;
   var quebraPctPeso=0,quebraKgPeso=0,rcExpectativaPeso=0,rcExpectativaQtd=0,rcRealizadoPeso=0,rcRealizadoQtd=0,consumoExpectativaPeso=0,consumoExpectativaQtd=0,consumoRealizadoPeso=0,consumoRealizadoQtd=0;
-  var gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0,atProdChegadaPeso=0,atProdOrigemPeso=0,custoAtChegadaPeso=0,custoAtOrigemPeso=0;
-  var gmdOrigemQtd=0,gmdChegadaQtd=0,gmcOrigemQtd=0,gmcChegadaQtd=0,eficienciaQtd=0,eficienciaChegadaQtd=0,atProdChegadaQtd=0,atProdOrigemQtd=0,custoAtChegadaQtd=0,custoAtOrigemQtd=0;
+  var pesoOrigemPeso=0,pesoChegadaPeso=0,gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0,atProdChegadaPeso=0,atProdOrigemPeso=0,custoAtChegadaPeso=0,custoAtOrigemPeso=0;
+  var pesoOrigemQtd=0,pesoChegadaQtd=0,gmdOrigemQtd=0,gmdChegadaQtd=0,gmcOrigemQtd=0,gmcChegadaQtd=0,eficienciaQtd=0,eficienciaChegadaQtd=0,atProdChegadaQtd=0,atProdOrigemQtd=0,custoAtChegadaQtd=0,custoAtOrigemQtd=0;
   rows.forEach(function(row){
     var show=statusRowPassaFiltros(row);
     row.style.display=show?'':'none';
@@ -12529,6 +12529,8 @@ function applyStatusColumnFilters(){
       if(rcRealizadoRow>0){rcRealizadoPeso+=rcRealizadoRow*qtdRow;rcRealizadoQtd+=qtdRow;}
       if(consumoExpectativaRow>0){consumoExpectativaPeso+=consumoExpectativaRow*qtdRow;consumoExpectativaQtd+=qtdRow;}
       if(consumoRealizadoRow>0){consumoRealizadoPeso+=consumoRealizadoRow*qtdRow;consumoRealizadoQtd+=qtdRow;}
+      var pesoOrigemRow=parseFloat(row.getAttribute('data-sort-pesoOrigem'))||0;
+      var pesoChegadaRow=parseFloat(row.getAttribute('data-sort-pesoChegada'))||0;
       var gmdOrigemRow=parseFloat(row.getAttribute('data-sort-gmdOrigem'))||0;
       var gmdChegadaRow=parseFloat(row.getAttribute('data-sort-gmdChegada'))||0;
       var gmcOrigemRow=parseFloat(row.getAttribute('data-sort-gmcOrigem'))||0;
@@ -12539,6 +12541,8 @@ function applyStatusColumnFilters(){
       var atProdOrigemRow=parseFloat(row.getAttribute('data-sort-atProdOrigem'))||0;
       var custoAtChegadaRow=parseFloat(row.getAttribute('data-sort-custoAtChegada'))||0;
       var custoAtOrigemRow=parseFloat(row.getAttribute('data-sort-custoAtOrigem'))||0;
+      if(pesoOrigemRow>0){pesoOrigemPeso+=pesoOrigemRow*qtdRow;pesoOrigemQtd+=qtdRow;}
+      if(pesoChegadaRow>0){pesoChegadaPeso+=pesoChegadaRow*qtdRow;pesoChegadaQtd+=qtdRow;}
       if(gmdOrigemRow>0){gmdOrigemPeso+=gmdOrigemRow*qtdRow;gmdOrigemQtd+=qtdRow;}
       if(gmdChegadaRow>0){gmdChegadaPeso+=gmdChegadaRow*qtdRow;gmdChegadaQtd+=qtdRow;}
       if(gmcOrigemRow>0){gmcOrigemPeso+=gmcOrigemRow*qtdRow;gmcOrigemQtd+=qtdRow;}
@@ -12613,6 +12617,8 @@ function applyStatusColumnFilters(){
   setStatusFooterValue('rcRealizado',rcRealizadoQtd>0?fmtNum(rcRealizadoPeso/rcRealizadoQtd,2)+'%':'—');
   setStatusFooterValue('consumoMedioExpectativa',consumoExpectativaQtd>0?fmtNum(consumoExpectativaPeso/consumoExpectativaQtd,2)+'%':'—');
   setStatusFooterValue('consumoMedioRealizado',consumoRealizadoQtd>0?fmtNum(consumoRealizadoPeso/consumoRealizadoQtd,2)+'%':'—');
+  setStatusFooterValue('pesoOrigem',pesoOrigemQtd>0?fmtNum(pesoOrigemPeso/pesoOrigemQtd,2)+' kg':'—');
+  setStatusFooterValue('pesoChegada',pesoChegadaQtd>0?fmtNum(pesoChegadaPeso/pesoChegadaQtd,2)+' kg':'—');
   setStatusFooterValue('gmdOrigem',gmdOrigemQtd>0?fmtNum(gmdOrigemPeso/gmdOrigemQtd,2)+' kg/dia':'—');
   setStatusFooterValue('gmdChegada',gmdChegadaQtd>0?fmtNum(gmdChegadaPeso/gmdChegadaQtd,2)+' kg/dia':'—');
   setStatusFooterValue('gmcOrigem',gmcOrigemQtd>0?fmtNum(gmcOrigemPeso/gmcOrigemQtd,3)+' kg/dia':'—');
@@ -12764,7 +12770,7 @@ function statusSortValue(row,key){
   var v=row.getAttribute('data-sort-'+key);
   if(v===null||v===undefined)v=row.getAttribute('data-filter-'+key)||row.textContent||'';
   var n=parseFloat(String(v).replace(/\./g,'').replace(',','.'));
-  if(['ano','qtd','kmRodados','quebraPct','quebraKg','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem','status'].indexOf(key)>=0&&!isNaN(n))return n;
+  if(['ano','qtd','kmRodados','quebraPct','quebraKg','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem','status'].indexOf(key)>=0&&!isNaN(n))return n;
   return _statusNorm(v);
 }
 function sortStatusRows(){
@@ -12846,7 +12852,7 @@ function resetStatusColumns(){
     localStorage.removeItem(STATUS_COL_ORDER_KEY);
     localStorage.removeItem(STATUS_COL_FROZEN_KEY);
   }catch(e){}
-  var defaultStatusOrder=['status','ano','confinamento','modalidade','raca','origem','vendedor','frigorifico','numeroLote','lote','b3','qtd','kmRodados','quebraPct','quebraKg','entrada','abate','recebimento','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem'];
+  var defaultStatusOrder=['status','ano','confinamento','modalidade','raca','origem','vendedor','frigorifico','numeroLote','lote','b3','qtd','kmRodados','quebraPct','quebraKg','entrada','abate','recebimento','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem'];
   STATUS_COLS.sort(function(a,b){return defaultStatusOrder.indexOf(a.key)-defaultStatusOrder.indexOf(b.key);});
   statusColumnsPanelOpen=false;
   renderLotes();
@@ -12971,7 +12977,7 @@ function renderLotes(){
     var placeholders={
       status:'Todos',ano:'Ano',confinamento:'Confinamento',modalidade:'Modalidade',raca:'Raça',origem:'Origem',vendedor:'Vendedor',lote:'Lote',b3:'B3',qtd:'Qtd',kmRodados:'km',quebraPct:'%',quebraKg:'kg',
       entrada:'Entrada',abate:'Abate',recebimento:'Receb.',faturamento:'R$',capital:'R$',
-      lucro:'R$',rentProj:'%',rentmesProj:'%',rentReal:'%',rentmesReal:'%',rcExpectativa:'%',rcRealizado:'%',consumoMedioExpectativa:'%',consumoMedioRealizado:'%',gmdOrigem:'kg/dia',gmdChegada:'kg/dia',gmcOrigem:'kg/dia',gmcChegada:'kg/dia',eficiencia:'kg MS/@ origem',eficienciaChegada:'kg MS/@ cheg.',atProdChegada:'@',atProdOrigem:'@',custoAtChegada:'R$/@',custoAtOrigem:'R$/@'
+      lucro:'R$',rentProj:'%',rentmesProj:'%',rentReal:'%',rentmesReal:'%',rcExpectativa:'%',rcRealizado:'%',consumoMedioExpectativa:'%',consumoMedioRealizado:'%',pesoOrigem:'kg',pesoChegada:'kg',gmdOrigem:'kg/dia',gmdChegada:'kg/dia',gmcOrigem:'kg/dia',gmcChegada:'kg/dia',eficiencia:'kg MS/@ origem',eficienciaChegada:'kg MS/@ cheg.',atProdChegada:'@',atProdOrigem:'@',custoAtChegada:'R$/@',custoAtOrigem:'R$/@'
     };
     return STATUS_COLS.map(function(c){
       if(c.key==='status')return filterStatus(c);
@@ -13080,6 +13086,10 @@ function renderLotes(){
     var quebraKgVal=quebraKgRaw?fmtNum(quebraKgRaw,1)+' kg':'—';
     var modalidadeVal=o?calcModeloLabel(o.modeloConta||'msop'):'—';
     var racaVal=l.tipoCustom||labelRaca(l.tipoAnimal)||(o&&(o.tipoCustom||labelRaca(o.tipoAnimal)))||'A definir';
+    var pesoOrigemRaw=finNum(zooStatus&&zooStatus.pesoOrigem);
+    var pesoChegadaRaw=finNum(zooStatus&&zooStatus.pesoEntrada);
+    var pesoOrigemVal=o&&pesoOrigemRaw?fmtNum(pesoOrigemRaw,2)+' kg':'—';
+    var pesoChegadaVal=o&&pesoChegadaRaw?fmtNum(pesoChegadaRaw,2)+' kg':'—';
     var gmdOrigemVal=o&&techStatus.gmdOrigem?fmtNum(techStatus.gmdOrigem,2)+' kg/dia':'—';
     var gmdChegadaVal=o&&techStatus.gmdChegada?fmtNum(techStatus.gmdChegada,2)+' kg/dia':'—';
     var gmcOrigemVal=o&&techStatus.gmcOrigem?fmtNum(techStatus.gmcOrigem,3)+' kg/dia':'—';
@@ -13146,6 +13156,8 @@ function renderLotes(){
       +' data-filter-rcRealizado="'+escHtml(rcRealizadoVal)+'"'
       +' data-filter-consumoMedioExpectativa="'+escHtml(consumoMedioExpectativaVal)+'"'
       +' data-filter-consumoMedioRealizado="'+escHtml(consumoMedioRealizadoVal)+'"'
+      +' data-filter-pesoOrigem="'+escHtml(pesoOrigemVal)+'"'
+      +' data-filter-pesoChegada="'+escHtml(pesoChegadaVal)+'"'
       +' data-filter-gmdOrigem="'+escHtml(gmdOrigemVal)+'"'
       +' data-filter-gmdChegada="'+escHtml(gmdChegadaVal)+'"'
       +' data-filter-gmcOrigem="'+escHtml(gmcOrigemVal)+'"'
@@ -13184,6 +13196,8 @@ function renderLotes(){
       +' data-sort-rcRealizado="'+rcRealizadoRaw+'"'
       +' data-sort-consumoMedioExpectativa="'+consumoMedioExpectativaRaw+'"'
       +' data-sort-consumoMedioRealizado="'+consumoMedioRealizadoRaw+'"'
+      +' data-sort-pesoOrigem="'+pesoOrigemRaw+'"'
+      +' data-sort-pesoChegada="'+pesoChegadaRaw+'"'
       +' data-sort-gmdOrigem="'+techStatus.gmdOrigem+'"'
       +' data-sort-gmdChegada="'+techStatus.gmdChegada+'"'
       +' data-sort-gmcOrigem="'+techStatus.gmcOrigem+'"'
@@ -13238,6 +13252,8 @@ function renderLotes(){
       +'<span class="rate" data-status-mobile-field="rcRealizado"><em>RC realizado</em>'+escHtml(rcRealizadoVal)+'</span>'
       +'<span data-status-mobile-field="consumoMedioExpectativa"><em>Cons. méd. expectativa</em>'+escHtml(consumoMedioExpectativaVal)+'</span>'
       +'<span data-status-mobile-field="consumoMedioRealizado"><em>Cons. méd. realizado</em>'+escHtml(consumoMedioRealizadoVal)+'</span>'
+      +'<span data-status-mobile-field="pesoOrigem"><em>Peso origem</em>'+escHtml(pesoOrigemVal)+'</span>'
+      +'<span data-status-mobile-field="pesoChegada"><em>Peso chegada</em>'+escHtml(pesoChegadaVal)+'</span>'
       +'<span data-status-mobile-field="raca"><em>Raça</em>'+escHtml(racaVal)+'</span>'
       +'<span data-status-mobile-field="gmdOrigem"><em>GMD origem</em>'+escHtml(gmdOrigemVal)+'</span>'
       +'<span data-status-mobile-field="gmdChegada"><em>GMD chegada</em>'+escHtml(gmdChegadaVal)+'</span>'
@@ -13282,6 +13298,8 @@ function renderLotes(){
       +statusCell('rcRealizado',rcRealizadoVal,'rate')
       +statusCell('consumoMedioExpectativa',consumoMedioExpectativaVal,'rate')
       +statusCell('consumoMedioRealizado',consumoMedioRealizadoVal,'rate')
+      +statusCell('pesoOrigem',pesoOrigemVal,'rate')
+      +statusCell('pesoChegada',pesoChegadaVal,'rate')
       +statusCell('gmdOrigem',gmdOrigemVal,'rate')
       +statusCell('gmdChegada',gmdChegadaVal,'rate')
       +statusCell('gmcOrigem',gmcOrigemVal,'rate')
@@ -13389,6 +13407,8 @@ function renderLotes(){
       if(rcRealizadoFiltro)addStatusFilterOption('rcRealizado',fmtNum(rcRealizadoFiltro,2)+'%');
       if(consumoMedioExpectativaFiltro)addStatusFilterOption('consumoMedioExpectativa',fmtNum(consumoMedioExpectativaFiltro,2)+'%');
       if(consumoMedioRealizadoFiltro)addStatusFilterOption('consumoMedioRealizado',fmtNum(consumoMedioRealizadoFiltro,2)+'%');
+      if(zooStatus.pesoOrigem)addStatusFilterOption('pesoOrigem',fmtNum(zooStatus.pesoOrigem,2)+' kg');
+      if(zooStatus.pesoEntrada)addStatusFilterOption('pesoChegada',fmtNum(zooStatus.pesoEntrada,2)+' kg');
       if(techStatus.gmdOrigem)addStatusFilterOption('gmdOrigem',fmtNum(techStatus.gmdOrigem,2)+' kg/dia');
       if(techStatus.gmdChegada)addStatusFilterOption('gmdChegada',fmtNum(techStatus.gmdChegada,2)+' kg/dia');
       if(techStatus.gmcOrigem)addStatusFilterOption('gmcOrigem',fmtNum(techStatus.gmcOrigem,3)+' kg/dia');
