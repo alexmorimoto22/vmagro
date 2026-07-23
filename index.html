@@ -1281,7 +1281,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .ep .field input,.ep .field select{border-radius:8px;border-width:1.5px;min-height:40px;font-weight:650;}
   .ep .field input:focus,.ep .field select:focus,.ep textarea:focus{box-shadow:0 0 0 3px rgba(13,27,42,.08);}
   .ep-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
-  .ep-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+  .ep-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px;}
   .ep-quick-grid.ep-quick-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}
   .ep-quick-field{min-width:0;}
   .ep-quick-field label{display:block;margin:0 0 5px;color:var(--text-3);font-size:9px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;}
@@ -5815,6 +5815,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <button class="csn" onclick="showCfg('frigs')">Frigoríficos</button>
         <button class="csn" onclick="showCfg('boiteis')">Boitéis</button>
         <button class="csn" onclick="showCfg('transportadoras')">Transportadoras</button>
+        <button class="csn" onclick="showCfg('pecuaristas')">Pecuaristas</button>
         <button class="csn" id="csn-users" onclick="showCfg('users')">Usuários</button>
         <button class="csn" id="csn-params" onclick="showCfg('params')">Parâmetros</button>
       </div>
@@ -5948,6 +5949,28 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           </div>
         </div>
         <div id="transportadora-list"></div>
+      </div>
+
+      <!-- PECUARISTAS -->
+      <div id="cfg-pecuaristas" style="display:none">
+        <div class="cfg-header">
+          <div><h2>Pecuaristas</h2><p>Pecuaristas disponíveis para vincular aos lotes em embarque</p></div>
+          <button class="btn-add" onclick="showPecuaristaForm()">+ Adicionar</button>
+        </div>
+        <div id="pecuarista-form" style="display:none" class="cfg-form">
+          <div class="form-title" id="pecuarista-form-title">Novo pecuarista</div>
+          <input type="hidden" id="pf-id">
+          <div class="g2">
+            <div class="field"><label>Nome do pecuarista</label><input type="text" id="pf-nome" placeholder="Ex: Fazenda Modelo"></div>
+            <div class="field"><label>Telefone <span style="font-size:9px;color:var(--text-3);font-weight:400;">(opcional)</span></label><input type="text" id="pf-tel" placeholder="(00) 00000-0000"></div>
+          </div>
+          <div class="field" style="display:flex;align-items:center;gap:8px;"><label style="min-height:0;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px!important;"><input type="checkbox" id="pf-ativo" checked style="width:auto;min-height:auto;"> Pecuarista ativo</label></div>
+          <div class="form-btns">
+            <button class="btn-save" onclick="salvarPecuarista()">Salvar</button>
+            <button class="btn-cancel" onclick="hidePecuaristaForm()">Cancelar</button>
+          </div>
+        </div>
+        <div id="pecuarista-list"></div>
       </div>
 
       <!-- USUÁRIOS (master only) -->
@@ -6263,10 +6286,10 @@ let activeLoteDetailId=null;
 let activeOrcEditIndex=null;
 let activeLoteReturnStatus=null;
 let pillFilter='';
-var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rentProj:'',rentmesProj:'',rentReal:'',rentmesReal:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',pesoOrigem:'',pesoChegada:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
+var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',pecuarista:'',transportadora:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rentProj:'',rentmesProj:'',rentReal:'',rentmesReal:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',pesoOrigem:'',pesoChegada:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
 var STATUS_COLS=[
   {key:'status',label:'Status',w:126},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
-  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'numeroLote',label:'Nº lote',w:128},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
+  {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'pecuarista',label:'Pecuarista',w:132},{key:'transportadora',label:'Transportadora',w:142},{key:'numeroLote',label:'Nº lote',w:128},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
   {key:'entrada',label:'Entrada',w:92},{key:'abate',label:'Abate',w:92},{key:'recebimento',label:'Recebimento',w:104},
   {key:'faturamento',label:'Fat. lote',w:126},{key:'capital',label:'Capital',w:126},{key:'lucro',label:'Lucro',w:116},
   {key:'rentProj',label:'% Oper. proj (projetado)',w:142},{key:'rentmesProj',label:'% Mês proj (projetado)',w:136},{key:'rentReal',label:'% Oper. real (realizado)',w:142},{key:'rentmesReal',label:'% Mês real (realizado)',w:136},{key:'rcExpectativa',label:'RC expectativa',w:108},{key:'rcRealizado',label:'RC realizado',w:100},{key:'consumoMedioExpectativa',label:'Consumo méd. expectativa',w:138},{key:'consumoMedioRealizado',label:'Consumo méd. realizado',w:130},{key:'pesoOrigem',label:'Peso origem',w:104},{key:'pesoChegada',label:'Peso chegada',w:108},{key:'gmdOrigem',label:'GMD Origem',w:108},{key:'gmdChegada',label:'GMD Chegada',w:108},{key:'gmcOrigem',label:'GMC Origem',w:116},{key:'gmcChegada',label:'GMC Chegada',w:116},{key:'eficiencia',label:'Efic. Origem',w:116},{key:'eficienciaChegada',label:'Efic. Cheg.',w:116},{key:'atProdChegada',label:'@ produzida - chegada',w:132},{key:'atProdOrigem',label:'@ produzida - origem',w:126},{key:'custoAtChegada',label:'Custo @ prod. chegada',w:142},{key:'custoAtOrigem',label:'Custo @ prod. origem',w:136}
@@ -6289,6 +6312,17 @@ try{
       var qtdStatusIndex=STATUS_COLS.findIndex(function(c){return c.key==='qtd';});
       if(kmStatusIndex>=0&&qtdStatusIndex>=0){var kmStatusCol=STATUS_COLS.splice(kmStatusIndex,1)[0];qtdStatusIndex=STATUS_COLS.findIndex(function(c){return c.key==='qtd';});STATUS_COLS.splice(qtdStatusIndex+1,0,kmStatusCol);}
     }
+    ['pecuarista','transportadora'].forEach(function(key){
+      if(savedStatusOrder.indexOf(key)>=0)return;
+      var from=STATUS_COLS.findIndex(function(c){return c.key===key;});
+      var anchorKey=key==='pecuarista'?'frigorifico':'pecuarista';
+      var anchor=STATUS_COLS.findIndex(function(c){return c.key===anchorKey;});
+      if(from>=0&&anchor>=0){
+        var col=STATUS_COLS.splice(from,1)[0];
+        anchor=STATUS_COLS.findIndex(function(c){return c.key===anchorKey;});
+        STATUS_COLS.splice(anchor+1,0,col);
+      }
+    });
   }
 }catch(e){}
 var STATUS_SORT_KEY='vm_status_sort_v1';
@@ -6395,7 +6429,7 @@ function endHomeColumnResize(){
 }
 var HOME_STATUS_COLUMN_GROUPS=[
   {label:'Identificação',keys:['status','ano','confinamento','modalidade','raca','numeroLote','lote']},
-  {label:'Compra e logística',keys:['origem','vendedor','frigorifico','qtd','kmRodados','quebraPct','quebraKg']},
+  {label:'Compra e logística',keys:['origem','vendedor','frigorifico','pecuarista','transportadora','qtd','kmRodados','quebraPct','quebraKg']},
   {label:'Datas',keys:['entrada','abate','recebimento']},
   {label:'Financeiro',keys:['faturamento','capital','lucro','rent','rentmes','rentProj','rentmesProj','rentReal','rentmesReal']},
   {label:'Zootécnico',keys:['rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem']},
@@ -7160,6 +7194,7 @@ function loadConfig(){
   if(!c.vendedores)c.vendedores=dfVends();
   if(!c.boiteis)c.boiteis=dfBoiteis();
   if(!Array.isArray(c.transportadoras))c.transportadoras=[];
+  if(!Array.isArray(c.pecuaristas))c.pecuaristas=[];
   if(!c.params)c.params=dfParams();
   return c;
 }
@@ -8371,7 +8406,7 @@ function applyCurrentUserPermissions(){
   var tabCfg=document.getElementById('tab-config'),sideCfg=document.getElementById('side-config');if(tabCfg)tabCfg.style.display='';if(sideCfg)sideCfg.style.display='';
   document.querySelectorAll('.header-report').forEach(function(el){el.style.display='';});
   var canManage=isAdminUser();
-  document.querySelectorAll('#cfg-vends input,#cfg-vends select,#cfg-vends textarea,#cfg-vends button,#cfg-frigs input,#cfg-frigs select,#cfg-frigs textarea,#cfg-frigs button,#cfg-boiteis input,#cfg-boiteis select,#cfg-boiteis textarea,#cfg-boiteis button,#cfg-transportadoras input,#cfg-transportadoras select,#cfg-transportadoras textarea,#cfg-transportadoras button').forEach(function(el){el.disabled=!canManage;});
+  document.querySelectorAll('#cfg-vends input,#cfg-vends select,#cfg-vends textarea,#cfg-vends button,#cfg-frigs input,#cfg-frigs select,#cfg-frigs textarea,#cfg-frigs button,#cfg-boiteis input,#cfg-boiteis select,#cfg-boiteis textarea,#cfg-boiteis button,#cfg-transportadoras input,#cfg-transportadoras select,#cfg-transportadoras textarea,#cfg-transportadoras button,#cfg-pecuaristas input,#cfg-pecuaristas select,#cfg-pecuaristas textarea,#cfg-pecuaristas button').forEach(function(el){el.disabled=!canManage;});
   var usersTab=document.getElementById('csn-users');if(usersTab)usersTab.style.display=canManage?'':'none';
   document.querySelectorAll('#cfg-users input,#cfg-users select,#cfg-users button').forEach(function(el){el.disabled=!canManage;});
   var canParams=isParameterAdmin();
@@ -11492,6 +11527,10 @@ function openEditPanel(loteId, cardEl){
   getTransportadoras().filter(function(t){return t.ativa!==false||t.id===lote.transportadoraId;}).forEach(function(t){
     transportadoraOpts+='<option value="'+escHtml(t.id)+'"'+(lote.transportadoraId===t.id?' selected':'')+'>'+escHtml(t.nome||'Transportadora')+'</option>';
   });
+  var pecuaristaOpts='<option value="">A definir...</option>';
+  getPecuaristas().filter(function(p){return p.ativo!==false||p.id===lote.pecuaristaId;}).forEach(function(p){
+    pecuaristaOpts+='<option value="'+escHtml(p.id)+'"'+(lote.pecuaristaId===p.id?' selected':'')+'>'+escHtml(p.nome||'Pecuarista')+'</option>';
+  });
   // Observação do confinamento fica nos ajustes finais para não duplicar os campos operacionais.
   var confHtml='';
   var cr=lote.confRecord||{};
@@ -11680,6 +11719,9 @@ function openEditPanel(loteId, cardEl){
       +'</select></div>'
       +'<div class="ep-quick-field"><label>Transportadora</label><select id="ep-transportadora" class="field">'
         +transportadoraOpts
+      +'</select></div>'
+      +'<div class="ep-quick-field"><label>Pecuarista</label><select id="ep-pecuarista" class="field">'
+        +pecuaristaOpts
       +'</select></div>'
       +'<div class="ep-quick-field"><label>Número do lote</label><input type="text" inputmode="text" pattern="[0-9]+(?:-[0-9]+)?" id="ep-lot-number" value="'+escHtml(numeroLote)+'" placeholder="Ex: 105 ou 105-1"></div>'
     +'</div>'
@@ -12099,11 +12141,13 @@ function applyEditPanelDraft(lote){
   var vendEl=document.getElementById('ep-vend');
   var frigEl=document.getElementById('ep-frig');
   var transportadoraEl=document.getElementById('ep-transportadora');
+  var pecuaristaEl=document.getElementById('ep-pecuarista');
   var obsEl=document.getElementById('ep-obs');
   var relEl=document.getElementById('ep-relatorio');
   if(vendEl&&vendEl.value&&vendEl.value!=='__new__')lote.vendedorId=vendEl.value;
   if(frigEl&&frigEl.value&&frigEl.value!=='__new__')lote.frigId=frigEl.value;
   if(transportadoraEl)lote.transportadoraId=transportadoraEl.value||null;
+  if(pecuaristaEl)lote.pecuaristaId=pecuaristaEl.value||null;
   if(obsEl)lote.obs=obsEl.value.trim();
   if(relEl)lote.relatorio=relEl.value.trim();
   if(!Array.isArray(lote.arquivos))lote.arquivos=[];
@@ -12676,10 +12720,12 @@ function saveEditPanel(){
   if(!aplicarIdentificacaoLote(arr[i],arr))return;
   var newStatus=document.getElementById('ep-status').value;
   var newTransportadora=(document.getElementById('ep-transportadora')||{value:''}).value;
+  var newPecuarista=(document.getElementById('ep-pecuarista')||{value:''}).value;
   var newObs=document.getElementById('ep-obs').value.trim();
   var newRelatorio=(document.getElementById('ep-relatorio')||{value:''}).value.trim();
   arr[i].status=newStatus;
   arr[i].transportadoraId=newTransportadora||null;
+  arr[i].pecuaristaId=newPecuarista||null;
   arr[i].obs=newObs;
   arr[i].relatorio=newRelatorio;
   if(!Array.isArray(arr[i].arquivos))arr[i].arquivos=[];
@@ -13378,7 +13424,7 @@ function resetStatusColumns(){
     localStorage.removeItem(STATUS_COL_ORDER_KEY);
     localStorage.removeItem(STATUS_COL_FROZEN_KEY);
   }catch(e){}
-  var defaultStatusOrder=['status','ano','confinamento','modalidade','raca','origem','vendedor','frigorifico','numeroLote','lote','b3','qtd','kmRodados','quebraPct','quebraKg','entrada','abate','recebimento','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem'];
+  var defaultStatusOrder=['status','ano','confinamento','modalidade','raca','origem','vendedor','frigorifico','pecuarista','transportadora','numeroLote','lote','b3','qtd','kmRodados','quebraPct','quebraKg','entrada','abate','recebimento','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem'];
   STATUS_COLS.sort(function(a,b){return defaultStatusOrder.indexOf(a.key)-defaultStatusOrder.indexOf(b.key);});
   statusColumnsPanelOpen=false;
   renderLotes();
@@ -13416,6 +13462,8 @@ function renderLotes(){
   var fT=(document.getElementById('filter-tipo')||{value:''}).value;
   var vends=getVends();
   var frigs=getFrigs();
+  var transportadoras=getTransportadoras();
+  var pecuaristas=getPecuaristas();
   var ST_COLORS={'embarque':'#C9A24E','confinando':'var(--green)','escalado':'var(--accent)','abatido':'#515640','recebido':'var(--text-3)'};
   var todosLotes=getLotes();
   if(garantirNumerosLote(todosLotes))saveLotes(todosLotes);
@@ -13544,6 +13592,10 @@ function renderLotes(){
     var frigorificoId=(o&&o.frigId)||l.frigId||'';
     var frigorifico=frigorificoId?frigs.find(function(f){return f.id===frigorificoId;}):null;
     var frigorificoVal=(o&&o.frigNome)||(frigorifico&&frigorifico.nome)||'A definir';
+    var pecuarista=pecuaristas.find(function(p){return p.id===l.pecuaristaId;});
+    var pecuaristaVal=(pecuarista&&pecuarista.nome)||'A definir';
+    var transportadora=transportadoras.find(function(t){return t.id===l.transportadoraId;});
+    var transportadoraVal=(transportadora&&transportadora.nome)||'A definir';
     var barColor=STATUS_COLORS[l.status]||ST_COLORS[l.status]||'var(--border)';
     var nomeReferencia=getLoteNomeReferencia(l,o);
     var cardTitle=nomeReferencia;
@@ -13664,6 +13716,8 @@ function renderLotes(){
       +' data-filter-origem="'+escHtml(origemVal)+'"'
       +' data-filter-vendedor="'+escHtml(vendedorVal)+'"'
       +' data-filter-frigorifico="'+escHtml(frigorificoVal)+'"'
+      +' data-filter-pecuarista="'+escHtml(pecuaristaVal)+'"'
+      +' data-filter-transportadora="'+escHtml(transportadoraVal)+'"'
       +' data-filter-numeroLote="'+escHtml(numeroLote)+'"'
       +' data-filter-lote="'+escHtml(cardTitle||'A definir')+'"'
       +' data-filter-b3="'+escHtml(b3Estado)+'"'
@@ -13704,6 +13758,9 @@ function renderLotes(){
       +' data-sort-raca="'+escHtml(racaVal)+'"'
       +' data-sort-origem="'+escHtml(origemVal)+'"'
       +' data-sort-vendedor="'+escHtml(vendedorVal)+'"'
+      +' data-sort-frigorifico="'+escHtml(frigorificoVal)+'"'
+      +' data-sort-pecuarista="'+escHtml(pecuaristaVal)+'"'
+      +' data-sort-transportadora="'+escHtml(transportadoraVal)+'"'
       +' data-sort-numeroLote="'+escHtml(numeroLote)+'"'
       +' data-sort-lote="'+escHtml(cardTitle||'A definir')+'"'
       +' data-sort-b3="'+escHtml(b3Val)+'"'
@@ -13768,6 +13825,8 @@ function renderLotes(){
       +'<span data-status-mobile-field="b3"><em>B3</em>'+escHtml(b3Cobertura)+'</span>'
       +'<span class="vendor" data-status-mobile-field="vendedor" title="'+escHtml(vendedorVal)+'"><em>Vendedor</em>'+escHtml(vendedorVal)+'</span>'
       +'<span data-status-mobile-field="frigorifico" title="'+escHtml(frigorificoVal)+'"><em>Frigorífico</em>'+escHtml(frigorificoVal)+'</span>'
+      +'<span data-status-mobile-field="pecuarista" title="'+escHtml(pecuaristaVal)+'"><em>Pecuarista</em>'+escHtml(pecuaristaVal)+'</span>'
+      +'<span data-status-mobile-field="transportadora" title="'+escHtml(transportadoraVal)+'"><em>Transportadora</em>'+escHtml(transportadoraVal)+'</span>'
       +'<span class="muted" data-status-mobile-field="trava"><em>Trava</em>'+escHtml(b3Estado)+'</span>'
       +'<span data-status-mobile-field="origem" title="'+escHtml(origemVal)+'"><em>Origem</em>'+escHtml(origemVal)+'</span>'
       +'<span class="money" data-status-mobile-field="capital"><em>Capital</em>'+escHtml(fmtCompactMoney(capital))+'</span>'
@@ -13806,6 +13865,8 @@ function renderLotes(){
       +statusCell('origem',origemVal,'muted')
       +statusCell('vendedor',vendedorVal,'muted')
       +statusCell('frigorifico',frigorificoVal,'muted')
+      +statusCell('pecuarista',pecuaristaVal,'muted')
+      +statusCell('transportadora',transportadoraVal,'muted')
       +numeroLoteCell
       +loteCell
       +b3Cell
@@ -13866,6 +13927,10 @@ function renderLotes(){
     var frigorificoId=(o&&o.frigId)||l.frigId||'';
     var frigorifico=frigorificoId?frigs.find(function(f){return f.id===frigorificoId;}):null;
     var frigorificoVal=(o&&o.frigNome)||(frigorifico&&frigorifico.nome)||'A definir';
+    var pecuarista=pecuaristas.find(function(p){return p.id===l.pecuaristaId;});
+    var pecuaristaVal=(pecuarista&&pecuarista.nome)||'A definir';
+    var transportadora=transportadoras.find(function(t){return t.id===l.transportadoraId;});
+    var transportadoraVal=(transportadora&&transportadora.nome)||'A definir';
     var sc=STATUS_CFG[l.status]||STATUS_CFG.embarque;
     var nomeReferencia=getLoteNomeReferencia(l,o);
     var cardTitle=nomeReferencia;
@@ -13895,6 +13960,8 @@ function renderLotes(){
     addStatusFilterOption('origem',origemVal);
     addStatusFilterOption('vendedor',(vend&&vend.nome)?vend.nome:'A definir');
     addStatusFilterOption('frigorifico',frigorificoVal);
+    addStatusFilterOption('pecuarista',pecuaristaVal);
+    addStatusFilterOption('transportadora',transportadoraVal);
     addStatusFilterOption('numeroLote',numeroLote);
     addStatusFilterOption('lote',cardTitle||'A definir');
     var b3Status=coberturaStatusB3(l,o,metric);
@@ -16181,7 +16248,7 @@ function calcular(opts){
 
 /* ── CONFIGURAÇÕES ─────────────────────────────── */
 function showCfg(sec){
-  var sections=['vends','frigs','boiteis','transportadoras','users','params'];
+  var sections=['vends','frigs','boiteis','transportadoras','pecuaristas','users','params'];
   if(sections.indexOf(sec)<0)sec='vends';
   if(sec==='users'&&!isAdminUser())sec='vends';
   sections.forEach(function(s){
@@ -16193,6 +16260,7 @@ function showCfg(sec){
   if(sec==='frigs')renderFrigList();
   if(sec==='boiteis')renderBoitelList();
   if(sec==='transportadoras')renderTransportadoraList();
+  if(sec==='pecuaristas')renderPecuaristaList();
   if(sec==='users')renderUsersList();
   if(sec==='params'){loadParamsForm();renderCustomCostList();renderRacasList();}
   applyCurrentUserPermissions();
@@ -16754,6 +16822,59 @@ function inativarTransportadora(id){
   saveConfig(cfg);
   renderTransportadoraList();
   toast(item.ativa?'✓ Transportadora reativada':'✓ Transportadora inativada');
+}
+
+/* ─ PECUARISTAS ───────────────────────────────── */
+function getPecuaristas(){return sortByName(loadConfig().pecuaristas||[]);}
+function renderPecuaristaList(){
+  var el=document.getElementById('pecuarista-list');
+  if(!el)return;
+  var items=getPecuaristas();
+  if(!items.length){el.innerHTML='<div class="empty-state">Nenhum pecuarista cadastrado.</div>';return;}
+  el.innerHTML=items.map(function(p){
+    var status=p.ativo===false?'Inativo':'Ativo';
+    return '<div class="item-card"><div class="ic-header"><div><div class="ic-name">'+escHtml(p.nome||'Pecuarista')+'</div><div class="ic-sub">'+escHtml(p.telefone||'Sem telefone')+' · '+status+'</div></div><div style="display:flex;gap:6px;"><button class="btn-ic-edit" onclick="editarPecuarista(\''+escHtml(p.id)+'\')">Editar</button><button class="btn-ic-del" onclick="inativarPecuarista(\''+escHtml(p.id)+'\')">'+(p.ativo===false?'Reativar':'Inativar')+'</button></div></div></div>';
+  }).join('');
+}
+function showPecuaristaForm(id){
+  if(!requirePermission('settings.operational'))return;
+  var form=document.getElementById('pecuarista-form');
+  if(!form)return;
+  var item=id?getPecuaristas().find(function(p){return p.id===id;}):null;
+  document.getElementById('pecuarista-form-title').textContent=item?'Editar pecuarista':'Novo pecuarista';
+  document.getElementById('pf-id').value=item?item.id:'';
+  document.getElementById('pf-nome').value=item?item.nome||'':'';
+  document.getElementById('pf-tel').value=item?item.telefone||'':'';
+  document.getElementById('pf-ativo').checked=!item||item.ativo!==false;
+  form.style.display='block';
+  document.getElementById('pf-nome').focus();
+}
+function hidePecuaristaForm(){var form=document.getElementById('pecuarista-form');if(form)form.style.display='none';}
+function editarPecuarista(id){showPecuaristaForm(id);}
+function salvarPecuarista(){
+  if(!requirePermission('settings.operational'))return;
+  var nome=(document.getElementById('pf-nome')||{value:''}).value.trim();
+  if(!nome){toast('⚠ Informe o nome do pecuarista');return;}
+  var cfg=loadConfig();
+  if(!Array.isArray(cfg.pecuaristas))cfg.pecuaristas=[];
+  var id=(document.getElementById('pf-id')||{value:''}).value;
+  var item={id:id||'pecuarista_'+Date.now(),nome:nome,telefone:(document.getElementById('pf-tel')||{value:''}).value.trim(),ativo:!!(document.getElementById('pf-ativo')||{}).checked};
+  var index=cfg.pecuaristas.findIndex(function(p){return p.id===item.id;});
+  if(index>=0)cfg.pecuaristas[index]=item;else cfg.pecuaristas.push(item);
+  saveConfig(cfg);
+  hidePecuaristaForm();
+  renderPecuaristaList();
+  toast('✓ Pecuarista salvo');
+}
+function inativarPecuarista(id){
+  if(!requirePermission('settings.operational'))return;
+  var cfg=loadConfig();
+  var item=(cfg.pecuaristas||[]).find(function(p){return p.id===id;});
+  if(!item)return;
+  item.ativo=item.ativo===false;
+  saveConfig(cfg);
+  renderPecuaristaList();
+  toast(item.ativo?'✓ Pecuarista reativado':'✓ Pecuarista inativado');
 }
 
 function aplicarTecladoNumerico(root){
@@ -18180,6 +18301,8 @@ restoreBasicSession();
     { key: 'origem', label: 'Origem', group: 'Operacao' },
     { key: 'vendedor', label: 'Vendedor', group: 'Operacao' },
     { key: 'frigorifico', label: 'Frigorífico', group: 'Operacao' },
+    { key: 'pecuarista', label: 'Pecuarista', group: 'Operacao' },
+    { key: 'transportadora', label: 'Transportadora', group: 'Operacao' },
     { key: 'entrada', label: 'Entrada', group: 'Datas' },
     { key: 'abate', label: 'Abate', group: 'Datas' },
     { key: 'recebimento', label: 'Recebimento', group: 'Datas' },
@@ -18201,7 +18324,7 @@ restoreBasicSession();
     { key: 'eficiencia', label: 'Eficiencia origem', group: 'Tecnico' },
     { key: 'eficienciaChegada', label: 'Eficiencia chegada', group: 'Tecnico' }
   ];
-  var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'vendedor', 'trava', 'capital', 'lucro', 'rentmes', 'boitel', 'modalidade'];
+  var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'vendedor', 'pecuarista', 'transportadora', 'trava', 'capital', 'lucro', 'rentmes', 'boitel', 'modalidade'];
   var ALLOWED = FIELD_DEFS.reduce(function (map, item) {
     map[item.key] = true;
     return map;
