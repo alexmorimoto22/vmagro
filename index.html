@@ -10253,8 +10253,15 @@ function prioritizeMobileSpreadsheets(){
     var form=layout&&layout.querySelector('.fut-form');
     var list=layout&&layout.querySelector('.fut-list-card');
     if(layout&&summary&&month){
-      if(mobile){futPanel.insertBefore(layout,summary);if(form&&list)layout.insertBefore(list,form);}
-      else{futPanel.insertBefore(summary,layout);futPanel.insertBefore(month,layout);if(form&&list)layout.insertBefore(form,list);}
+      if(mobile){
+        futPanel.insertBefore(summary,layout);
+        futPanel.insertBefore(month,layout);
+        if(form&&list)layout.insertBefore(list,form);
+      }else{
+        futPanel.insertBefore(summary,layout);
+        futPanel.insertBefore(month,layout);
+        if(form&&list)layout.insertBefore(form,list);
+      }
     }
   }
   var statusPanel=document.getElementById('panel-lotes');
