@@ -918,6 +918,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .fut-contract-month.fut-month-1{background:#E7EFF7;color:#28577A;border-color:#C6D9EA;}
 .fut-contract-month.fut-month-2{background:#F3E7EC;color:#7C3F59;border-color:#E2C7D3;}
 .fut-contract-month.fut-month-3{background:#E5F0E8;color:#376348;border-color:#C5DDCC;}
+.fut-side-tag{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:4px 8px;border:1px solid transparent;border-radius:5px;font-size:9.5px;font-weight:850;line-height:1;text-transform:uppercase;white-space:nowrap;}
+.fut-side-tag.sell{background:#F5E5E2;border-color:#DDBBB5;color:#873D35;}
+.fut-side-tag.buy{background:#E4EEF7;border-color:#BCD1E4;color:#285B82;}
 .fut-contract-month.fut-month-4{background:#F8E9DC;color:#8B4E23;border-color:#EBCDB4;}
 .fut-contract-month.fut-month-5{background:#F2E9D6;color:#79602A;border-color:#E1D0A8;}
 .fut-contract-month.fut-month-6{background:#E2EEEE;color:#356364;border-color:#BFDBDB;}
@@ -11075,7 +11078,7 @@ function renderFuturos(){
       momentoLote:'<span class="strong">'+loteStatus+'</span>',
       confinamento:boitelTagHtml(dadosLote.confinamento),pecuarista:escHtml(pecuaristaNome),origem:escHtml(dadosLote.origem),qtdLote:escHtml(dadosLote.qtd),entradaLote:escHtml(dadosLote.entrada),
       faturamentoLote:'<span class="money">'+escHtml(dadosLote.faturamento)+'</span>',
-      codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'<span class="muted">Sem vencimento</span>',lado:escHtml(r.lado==='compra'?'Compra':'Venda'),
+      codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'<span class="muted">Sem vencimento</span>',lado:'<span class="fut-side-tag '+(r.lado==='compra'?'buy':'sell')+'">'+(r.lado==='compra'?'Compra':'Venda')+'</span>',
       qtdOriginal:fmtContratosB3(r.qtdContratos||0)+' ctr',aberto:fmtContratosB3(r.qtdAberta||0)+' ctr',liquidado:fmtContratosB3(r.qtdLiquidada||0)+' ctr',
       abertura:'<span class="money">'+abertura+'</span><div class="muted">'+vendaData+'</div>',liquidacao:'<span class="money">'+liq+'</span><div class="muted">'+liqData+'</div>',
       resultadoRealizado:'<span class="money '+resClass+'">'+resultado+'</span>',resultadoAberto:'<span class="money">Em aberto</span>',acoes:actions
@@ -11092,7 +11095,7 @@ function renderFuturos(){
       +'<div class="fut-mobile-grid">'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Tipo de operação</div><div class="fut-mobile-value">'+(r.operacao==='livre'?'Livre':'Hedge')+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Tipo de trava</div><div class="fut-mobile-value">'+escHtml(tipo)+'</div></div>'
-        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Lado</div><div class="fut-mobile-value">'+(r.lado==='compra'?'Compra':'Venda')+'</div></div>'
+        +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Lado</div><div class="fut-mobile-value"><span class="fut-side-tag '+(r.lado==='compra'?'buy':'sell')+'">'+(r.lado==='compra'?'Compra':'Venda')+'</span></div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Momento do lote</div><div class="fut-mobile-value">'+loteStatus+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Cobertura</div><div class="fut-mobile-value">'+escHtml(cobertura)+'</div></div>'
         +'<div class="fut-mobile-cell"><div class="fut-mobile-label">Total contratos do lote</div><div class="fut-mobile-value">'+(lote?fmtContratosLoteB3(totalContratosLote)+' ctr':'—')+'</div></div>'
