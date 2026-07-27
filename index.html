@@ -10306,6 +10306,19 @@ function toggleFormFuturo(){
 function fecharFormFuturo(){
   limparFormFuturo('',false);
 }
+function abrirNovoContratoB3(loteId){
+  if(typeof closeEditPanel==='function'&&document.body.classList.contains('lote-editor-page-open')){
+    closeEditPanel(true);
+  }
+  if(switchTab('futuros')===false)return;
+  requestAnimationFrame(function(){
+    limparFormFuturo(loteId||'');
+    requestAnimationFrame(function(){
+      var form=document.getElementById('fut-form-card');
+      if(form)form.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+}
 function limparFormFuturo(loteId,abrir){
   var ids=['fut-id','fut-codigo','fut-vencimento','fut-data-venda','fut-preco-venda','fut-data-compra','fut-preco-compra','fut-custos','fut-obs'];
   ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
@@ -11566,7 +11579,7 @@ function renderContratosPrecoStatusHtml(lote){
   var contratos=contratosB3PorLote(lote.id);
   var resumo=resultadoB3Lote(lote.id);
   var cobertura=textoCoberturaB3(lote,(lote.orcamentos&&lote.orcamentos[0]),resumo,true);
-  var addBtn='<button type="button" class="btn-ep-detail" onclick="switchTab(\'futuros\');limparFormFuturo(\''+lote.id+'\')">+ Novo contrato</button>';
+  var addBtn='<button type="button" class="btn-ep-detail" onclick="abrirNovoContratoB3(\''+lote.id+'\')">+ Novo contrato</button>';
   if(!contratos.length){
     return '<div class="ep-section">Contratos / travas de preço</div>'
       +'<div style="background:rgba(13,27,42,.05);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;">'
@@ -14702,7 +14715,7 @@ function renderDTabB3(){
       +'<div class="fut-card primary"><div class="fut-card-label">Resultado B3 do lote</div><div class="fut-card-value">'+fmt(resumo.resultado)+'</div><div class="fut-card-sub">'+fmtContratosB3(resumo.liquidados)+' contrato(s) liquidado(s)</div></div>'
       +'<div class="fut-card"><div class="fut-card-label">Contratos</div><div class="fut-card-value">'+escHtml(cobertura)+'</div><div class="fut-card-sub">'+fmtContratosB3(resumo.abertos)+' aberto(s) · '+resumo.registros+' lançamento(s)</div></div>'
       +'<div class="fut-card"><div class="fut-card-label">Contratos protegidos</div><div class="fut-card-value">'+fmtContratosB3(resumo.contratos)+' ctr</div><div class="fut-card-sub">'+resumo.arrobas.toLocaleString('pt-BR',{maximumFractionDigits:0})+' @ equivalentes</div></div>'
-      +'<div class="fut-card"><div class="fut-card-label">Ação</div><div class="fut-card-value" style="font-size:14px;"><button class="btn-save" onclick="switchTab(\'futuros\');limparFormFuturo(\''+lote.id+'\')">+ Novo B3</button></div><div class="fut-card-sub">Já vinculado a este lote</div></div>'
+      +'<div class="fut-card"><div class="fut-card-label">Ação</div><div class="fut-card-value" style="font-size:14px;"><button class="btn-save" onclick="abrirNovoContratoB3(\''+lote.id+'\')">+ Novo B3</button></div><div class="fut-card-sub">Já vinculado a este lote</div></div>'
     +'</div>'
     +'<div class="fut-table-wrap"><table class="fut-table"><thead><tr><th>Status</th><th>Contrato</th><th>Contratos protegidos</th><th>Venda</th><th>Liquidação</th><th>Resultado</th><th>Ações</th></tr></thead><tbody>'
       +(rows||'<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px;">Nenhum contrato B3 vinculado a este lote.</td></tr>')
