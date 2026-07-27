@@ -5272,6 +5272,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 </style>
 <style id="status-mobile-summary-only-20260727">
+  #panel-lotes .status-table-body .status-row.status-filtered-out{
+    display:none!important;
+  }
   /* The in-app browser can report a wider viewport than the visible panel. */
   @media (max-width:1024px){
     #panel-lotes .status-table-body .status-row{
@@ -5295,6 +5298,54 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       width:100%!important;
       min-width:0!important;
     }
+  }
+</style>
+<style id="b3-mobile-status-card-layout-20260727">
+  @media(max-width:768px){
+    #panel-futuros .fut-list-card{
+      width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;
+      border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;
+    }
+    #panel-futuros .fut-mobile-list{width:100%!important;max-width:100%!important;}
+    #panel-futuros .b3-mobile-reference-card{width:100%!important;max-width:100%!important;}
+    #panel-futuros .b3-mobile-tools{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:7px 0 10px!important;padding:0!important;border:0!important;background:transparent!important;}
+    #panel-futuros .b3-mobile-tools .status-mobile-columns-trigger,
+    #panel-futuros .b3-mobile-tools .status-mobile-sort-trigger{display:inline-flex!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:8px 6px!important;font-size:10px!important;}
+    #panel-futuros [data-b3-mobile-field][hidden]{display:none!important;}
+    body.b3-mobile-columns-open,body.b3-mobile-sort-open{overflow:hidden!important;}
+    body.b3-mobile-columns-open #b3-mobile-columns-backdrop{display:block!important;visibility:visible!important;opacity:1!important;}
+    body.b3-mobile-columns-open #b3-mobile-columns-sheet{display:flex!important;visibility:visible!important;transform:translateY(0)!important;}
+    body.b3-mobile-sort-open #b3-mobile-sort-backdrop{display:block!important;visibility:visible!important;opacity:1!important;}
+    body.b3-mobile-sort-open #b3-mobile-sort-sheet{display:block!important;visibility:visible!important;transform:translateY(0)!important;}
+    #panel-futuros .b3-mobile-reference-card{border-radius:8px!important;overflow:hidden!important;background:#fff!important;cursor:pointer;}
+    #panel-futuros .b3-mobile-reference-card>summary{display:block!important;background:#fff!important;}
+    #panel-futuros .b3-mobile-reference-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;min-width:0;padding:8px 9px 7px;border-bottom:1px solid rgba(216,203,181,.72);}
+    #panel-futuros .b3-mobile-reference-identity{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;}
+    #panel-futuros .b3-mobile-reference-lot{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:48px;height:27px;padding:0 8px;border-radius:5px;background:var(--navy);color:#fff;font-size:9px;font-weight:900;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-title{min-width:0;overflow:hidden;color:var(--navy);font-size:11.5px;font-weight:900;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-head>.badge{margin:0;padding:4px 8px!important;font-size:7.5px!important;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-confinement{display:block;min-width:0;max-width:88px;overflow:hidden;}
+    #panel-futuros .b3-mobile-reference-confinement .boitel-color-tag{display:block;max-width:100%;padding:4px 6px;font-size:7.5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;width:100%;min-width:0;padding:7px 4px 6px;background:#fff;}
+    #panel-futuros .b3-mobile-reference-metrics>div{min-width:0;padding:1px 4px;text-align:center;border-right:1px solid rgba(216,203,181,.78);}
+    #panel-futuros .b3-mobile-reference-metrics>div:last-child{border-right:0;}
+    #panel-futuros .b3-mobile-reference-metrics small{display:block;margin-bottom:4px;overflow:hidden;color:var(--taupe);font-size:6px;font-weight:800;line-height:1;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-metrics strong{display:block;min-width:0;overflow:hidden;color:var(--navy);font-size:8.2px;font-weight:900;line-height:1.12;text-overflow:ellipsis;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-metrics .pos strong{color:var(--green);}
+    #panel-futuros .b3-mobile-reference-metrics .neg strong{color:var(--red);}
+    #panel-futuros .b3-mobile-reference-foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center;min-width:0;padding:6px 9px;border-top:1px solid rgba(216,203,181,.6);background:#faf8f3;}
+    #panel-futuros .b3-mobile-reference-foot span{display:block;min-width:0;overflow:hidden;color:var(--text-3);font-size:7px;font-weight:650;line-height:1.15;text-align:center;text-overflow:ellipsis;white-space:nowrap;}
+    #panel-futuros .b3-mobile-reference-card:not([open])>.fut-mobile-grid,
+    #panel-futuros .b3-mobile-reference-card:not([open])>.fut-mobile-actions{display:none!important;}
+  }
+  @media(max-width:380px){
+    #panel-futuros .b3-mobile-reference-head{gap:5px;padding:7px;}
+    #panel-futuros .b3-mobile-reference-lot{min-width:44px;padding:0 6px;font-size:8px;}
+    #panel-futuros .b3-mobile-reference-title{font-size:10.5px;}
+    #panel-futuros .b3-mobile-reference-confinement{max-width:68px;}
+    #panel-futuros .b3-mobile-reference-metrics>div{padding-left:2px;padding-right:2px;}
+    #panel-futuros .b3-mobile-reference-metrics small{font-size:5.5px;}
+    #panel-futuros .b3-mobile-reference-metrics strong{font-size:7.5px;}
   }
 </style>
 </head>
@@ -6008,11 +6059,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             </div>
           </div>
           <div class="b3-mobile-tools" aria-label="Ordenação e filtros dos contratos B3">
-            <label class="b3-mobile-field b3-mobile-sort-field"><span>Ordenar por</span><select id="b3-mobile-sort" onchange="setFutSort(this.value,(document.getElementById('b3-mobile-direction')||{}).value||'desc')"><option value="vencimento">Vencimento</option><option value="abertura">Data de abertura</option><option value="codigo">Código</option><option value="numeroLote">Número do lote</option><option value="lote">Lote / operação</option><option value="status">Status</option><option value="qtdOriginal">Qtd. contratos</option><option value="aberto">Saldo aberto</option><option value="resultadoRealizado">Resultado</option></select></label>
-            <label class="b3-mobile-field b3-mobile-direction-field"><span>Ordem</span><select id="b3-mobile-direction" onchange="setFutSort((document.getElementById('b3-mobile-sort')||{}).value||'vencimento',this.value)"><option value="desc">Maior / recente</option><option value="asc">Menor / antigo</option></select></label>
-            <label class="b3-mobile-field"><span>Status</span><select id="b3-mobile-status" onchange="updateFutColumnFilter('status',this.value)"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Liquidado">Liquidado</option><option value="Cancelado">Cancelado</option></select></label>
-            <label class="b3-mobile-field"><span>Lado</span><select id="b3-mobile-side" onchange="updateFutColumnFilter('lado',this.value)"><option value="">Todos</option><option value="Venda">Venda</option><option value="Compra">Compra</option></select></label>
-            <button type="button" class="b3-mobile-clear" onclick="limparFiltrosFuturos()">Limpar filtros</button>
+            <button type="button" class="status-mobile-columns-trigger" onclick="openB3MobileColumns(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg><span>Colunas visíveis</span></button>
+            <button type="button" class="status-mobile-sort-trigger" onclick="openB3MobileSort(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h8M8 18h4M4 5v14M2 17l2 2 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Ordenar</span></button>
           </div>
           <div class="fut-table-wrap">
             <table class="fut-table">
@@ -11199,6 +11247,79 @@ function renderFutTableTotal(registros,visibleCols){
     return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+(values[col.key]||'—')+'</td>';
   }).join('');
 }
+var B3_MOBILE_CARD_FIELDS=[
+  {key:'contrato',label:'Contrato'},{key:'vencimento',label:'Vencimento'},{key:'qtd',label:'Quantidade'},
+  {key:'aberto',label:'Saldo aberto'},{key:'abertura',label:'Preço de abertura'},{key:'resultado',label:'Resultado'},
+  {key:'operacao',label:'Operação / lado'},{key:'pecuarista',label:'Pecuarista'},{key:'origem',label:'Origem'}
+];
+var B3_MOBILE_CARD_FIELDS_KEY='vm_agro_b3_mobile_card_fields_v1';
+function getB3MobileCardFields(){
+  try{
+    var saved=JSON.parse(localStorage.getItem(B3_MOBILE_CARD_FIELDS_KEY)||'null');
+    var allowed={};B3_MOBILE_CARD_FIELDS.forEach(function(field){allowed[field.key]=true;});
+    if(Array.isArray(saved)){saved=saved.filter(function(key){return allowed[key];});if(saved.length)return saved;}
+  }catch(e){}
+  return B3_MOBILE_CARD_FIELDS.map(function(field){return field.key;});
+}
+function applyB3MobileCardFields(){
+  var visible=getB3MobileCardFields();
+  document.querySelectorAll('#fut-mobile-list [data-b3-mobile-field]').forEach(function(node){
+    node.hidden=visible.indexOf(node.getAttribute('data-b3-mobile-field'))<0;
+  });
+  document.querySelectorAll('#fut-mobile-list .b3-mobile-reference-metrics,#fut-mobile-list .b3-mobile-reference-foot').forEach(function(group){
+    var count=Array.prototype.filter.call(group.children,function(node){return !node.hidden;}).length;
+    group.style.setProperty('grid-template-columns','repeat('+Math.max(1,count)+',minmax(0,1fr))','important');
+  });
+}
+function closeB3MobileColumns(){document.body.classList.remove('b3-mobile-columns-open');}
+function openB3MobileColumns(event){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var sheet=document.getElementById('b3-mobile-columns-sheet');
+  if(!sheet){
+    var backdrop=document.createElement('div');backdrop.className='status-mobile-columns-backdrop';backdrop.id='b3-mobile-columns-backdrop';backdrop.onclick=closeB3MobileColumns;
+    sheet=document.createElement('aside');sheet.className='status-mobile-columns-sheet';sheet.id='b3-mobile-columns-sheet';
+    sheet.innerHTML='<div class="status-mobile-columns-sheet-handle"></div><div class="status-mobile-columns-sheet-header"><div><h2 class="status-mobile-columns-sheet-title">Informações visíveis</h2><p class="status-mobile-columns-sheet-subtitle">Escolha o que aparece nos cards da B3.</p></div><button type="button" class="status-mobile-columns-close" onclick="closeB3MobileColumns()">&times;</button></div><div class="status-mobile-columns-sheet-body"><div class="status-mobile-columns-options">'+B3_MOBILE_CARD_FIELDS.map(function(field){return '<label class="status-mobile-columns-option"><input type="checkbox" value="'+field.key+'"><span>'+field.label+'</span></label>';}).join('')+'</div></div><div class="status-mobile-columns-sheet-actions"><button type="button" class="status-mobile-columns-action" onclick="resetB3MobileColumns()">Restaurar padrão</button><button type="button" class="status-mobile-columns-action" onclick="closeB3MobileColumns()">Cancelar</button><button type="button" class="status-mobile-columns-action status-mobile-columns-action-primary" onclick="saveB3MobileColumns()">Aplicar</button></div>';
+    document.body.appendChild(backdrop);document.body.appendChild(sheet);
+  }
+  var visible=getB3MobileCardFields();
+  sheet.querySelectorAll('input').forEach(function(input){input.checked=visible.indexOf(input.value)>=0;});
+  document.body.classList.add('b3-mobile-columns-open');
+}
+function saveB3MobileColumns(){
+  var sheet=document.getElementById('b3-mobile-columns-sheet');
+  var fields=sheet?Array.prototype.map.call(sheet.querySelectorAll('input:checked'),function(input){return input.value;}):[];
+  if(!fields.length){toast('Selecione ao menos um dado.');return;}
+  try{localStorage.setItem(B3_MOBILE_CARD_FIELDS_KEY,JSON.stringify(fields));}catch(e){}
+  applyB3MobileCardFields();closeB3MobileColumns();
+}
+function resetB3MobileColumns(){
+  try{localStorage.removeItem(B3_MOBILE_CARD_FIELDS_KEY);}catch(e){}
+  applyB3MobileCardFields();closeB3MobileColumns();
+}
+function closeB3MobileSort(){document.body.classList.remove('b3-mobile-sort-open');}
+function openB3MobileSort(event){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var sheet=document.getElementById('b3-mobile-sort-sheet');
+  if(!sheet){
+    var backdrop=document.createElement('div');backdrop.className='status-mobile-sort-backdrop';backdrop.id='b3-mobile-sort-backdrop';backdrop.onclick=closeB3MobileSort;
+    sheet=document.createElement('aside');sheet.className='status-mobile-sort-sheet';sheet.id='b3-mobile-sort-sheet';
+    sheet.innerHTML='<div class="status-mobile-sort-handle"></div><div class="status-mobile-sort-head"><div><h2 class="status-mobile-sort-title">Ordenar e filtrar</h2><p class="status-mobile-sort-sub">Organize os contratos B3.</p></div><button type="button" class="status-mobile-sort-close" onclick="closeB3MobileSort()">&times;</button></div><div class="status-mobile-sort-body"><div class="status-mobile-sort-field"><label>Ordenar por</label><select id="b3-sheet-sort"><option value="vencimento">Vencimento</option><option value="abertura">Data de abertura</option><option value="codigo">Contrato</option><option value="numeroLote">Número do lote</option><option value="lote">Lote / operação</option><option value="status">Status</option><option value="qtdOriginal">Quantidade</option><option value="aberto">Saldo aberto</option><option value="resultadoRealizado">Resultado</option></select></div><div class="status-mobile-sort-field"><label>Ordem</label><select id="b3-sheet-direction"><option value="desc">Maior / recente</option><option value="asc">Menor / antigo</option></select></div><div class="status-mobile-sort-field"><label>Status</label><select id="b3-sheet-status"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Liquidado">Liquidado</option><option value="Cancelado">Cancelado</option></select></div><div class="status-mobile-sort-field"><label>Lado</label><select id="b3-sheet-side"><option value="">Todos</option><option value="Venda">Venda</option><option value="Compra">Compra</option></select></div></div><div class="status-mobile-sort-actions"><button type="button" class="status-mobile-sort-action" onclick="clearB3MobileSort()">Limpar filtros</button><button type="button" class="status-mobile-sort-action primary" onclick="applyB3MobileSort()">Aplicar</button></div>';
+    document.body.appendChild(backdrop);document.body.appendChild(sheet);
+  }
+  document.getElementById('b3-sheet-sort').value=futSortState.key||'vencimento';
+  document.getElementById('b3-sheet-direction').value=futSortState.dir==='asc'?'asc':'desc';
+  document.getElementById('b3-sheet-status').value=tableFilterSelected('fut','status')[0]||'';
+  document.getElementById('b3-sheet-side').value=tableFilterSelected('fut','lado')[0]||'';
+  document.body.classList.add('b3-mobile-sort-open');
+}
+function applyB3MobileSort(){
+  futColumnFilters.status=(document.getElementById('b3-sheet-status')||{}).value||'';
+  futColumnFilters.lado=(document.getElementById('b3-sheet-side')||{}).value||'';
+  closeB3MobileSort();
+  setFutSort((document.getElementById('b3-sheet-sort')||{}).value||'vencimento',(document.getElementById('b3-sheet-direction')||{}).value||'desc');
+}
+function clearB3MobileSort(){limparFiltrosFuturos();closeB3MobileSort();}
+
 function renderFuturos(){
   fillFuturoLoteSelects();
   fillFuturoPecuaristaSelect();
@@ -11380,14 +11501,26 @@ function renderFuturos(){
       resultadoRealizado:'<span class="money '+resClass+'">'+resultado+'</span>',resultadoAberto:'<span class="money">Em aberto</span>',acoes:actions
     };
     rows.push('<tr>'+visibleCols.map(function(col){return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+cells[col.key]+'</td>';}).join('')+'</tr>');
-    cards.push('<details class="fut-mobile-card">'
+    var numeroLoteMobile=lote?escHtml(getNumeroLote(lote)||'—'):'—';
+    cards.push('<details class="fut-mobile-card b3-mobile-reference-card">'
       +'<summary>'
-        +'<div class="fut-mobile-top"><div><div class="fut-mobile-title">'+contratoComMes+'</div><div class="fut-mobile-sub">'+loteNome+' · '+loteStatus+'</div><div class="fut-mobile-expand">Toque para ver detalhes</div></div>'+st+'</div>'
-        +'<div class="fut-mobile-quick">'
-          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Contratos</div><div class="fut-mobile-quick-value">'+fmtContratosB3(r.qtdContratos||0)+' ctr</div></div>'
-          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Saldo aberto</div><div class="fut-mobile-quick-value">'+fmtContratosB3(r.qtdAberta)+' ctr</div></div>'
-          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Abertura</div><div class="fut-mobile-quick-value">'+abertura+'</div></div>'
-          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Resultado</div><div class="fut-mobile-quick-value '+resClass+'">'+resultado+'</div></div>'
+        +'<div class="b3-mobile-reference-head">'
+          +'<div class="b3-mobile-reference-identity"><span class="b3-mobile-reference-lot">'+(lote?'Lote '+numeroLoteMobile:'Livre')+'</span><strong class="b3-mobile-reference-title">'+loteNome+'</strong></div>'
+          +st
+          +'<span class="b3-mobile-reference-confinement">'+boitelTagHtml(dadosLote.confinamento)+'</span>'
+        +'</div>'
+        +'<div class="b3-mobile-reference-metrics">'
+          +'<div data-b3-mobile-field="contrato"><small>Contrato</small><strong>'+contrato+'</strong></div>'
+          +'<div data-b3-mobile-field="vencimento"><small>Venc.</small><strong>'+(mesContrato?escHtml(mesContrato):'—')+'</strong></div>'
+          +'<div data-b3-mobile-field="qtd"><small>Qtd</small><strong>'+fmtContratosB3(r.qtdContratos||0)+' ctr</strong></div>'
+          +'<div data-b3-mobile-field="aberto"><small>Aberto</small><strong>'+fmtContratosB3(r.qtdAberta)+' ctr</strong></div>'
+          +'<div data-b3-mobile-field="abertura"><small>Abertura</small><strong>'+abertura+'</strong></div>'
+          +'<div data-b3-mobile-field="resultado" class="'+resClass+'"><small>Resultado</small><strong>'+resultado+'</strong></div>'
+        +'</div>'
+        +'<div class="b3-mobile-reference-foot">'
+          +'<span data-b3-mobile-field="operacao">'+(r.operacao==='livre'?'Livre':'Hedge')+' · '+(r.lado==='compra'?'Compra':'Venda')+'</span>'
+          +'<span data-b3-mobile-field="pecuarista">'+escHtml(pecuaristaNome)+'</span>'
+          +'<span data-b3-mobile-field="origem">'+escHtml(dadosLote.origem)+'</span>'
         +'</div>'
       +'</summary>'
       +'<div class="fut-mobile-grid">'
@@ -11411,7 +11544,7 @@ function renderFuturos(){
     +'</details>');
   });
   list.innerHTML=rows.join('');
-  if(mobileList)mobileList.innerHTML=cards.join('');
+  if(mobileList){mobileList.innerHTML=cards.join('');applyB3MobileCardFields();}
   renderFutTableTotal(registros,visibleCols);
   applyFutTableLayout();
   scheduleFutTableViewport();
@@ -13397,6 +13530,7 @@ function applyStatusColumnFilters(){
   var pesoOrigemQtd=0,pesoChegadaQtd=0,gmdOrigemQtd=0,gmdChegadaQtd=0,gmcOrigemQtd=0,gmcChegadaQtd=0,eficienciaQtd=0,eficienciaChegadaQtd=0,atProdChegadaQtd=0,atProdOrigemQtd=0,custoAtChegadaQtd=0,custoAtOrigemQtd=0;
   rows.forEach(function(row){
     var show=statusRowPassaFiltros(row);
+    row.classList.toggle('status-filtered-out',!show);
     row.style.display=show?'':'none';
     if(!show)return;
     visiveis++;
@@ -18848,15 +18982,10 @@ restoreBasicSession();
 
   function fillStatusMobileSortFilters() {
     var boitel = document.getElementById('status-mobile-sort-boitel');
-    var modalidade = document.getElementById('status-mobile-sort-modalidade');
-    if (!boitel || !modalidade) return;
+    if (!boitel) return;
     var boitelAtual = tableFilterSelected('status', 'confinamento')[0] || '';
-    var modalidadeAtual = tableFilterSelected('status', 'modalidade')[0] || '';
     boitel.innerHTML = '<option value="">Todos os boiteis</option>' + statusMobileUniqueValues('confinamento').map(function (value) {
       return '<option value="' + escHtml(value) + '"' + (value === boitelAtual ? ' selected' : '') + '>' + escHtml(value) + '</option>';
-    }).join('');
-    modalidade.innerHTML = '<option value="">Todas as modalidades</option>' + statusMobileUniqueValues('modalidade').map(function (value) {
-      return '<option value="' + escHtml(value) + '"' + (value === modalidadeAtual ? ' selected' : '') + '>' + escHtml(value) + '</option>';
     }).join('');
     var sortKey = document.getElementById('status-mobile-sort-key');
     var sortDir = document.getElementById('status-mobile-sort-dir');
@@ -18888,7 +19017,6 @@ restoreBasicSession();
         '<div class="status-mobile-sort-field"><label for="status-mobile-sort-status">Etapa</label><select id="status-mobile-sort-status"><option value="">Todas</option><option value="Embarque">Embarque</option><option value="Confinado">Confinado</option><option value="Escalado">Escalado</option><option value="Abatido">Abatido</option><option value="Recebido">Recebido</option></select></div>' +
         '<div class="status-mobile-sort-field"><label for="status-mobile-sort-b3">B3</label><select id="status-mobile-sort-b3"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Travado">Travado</option><option value="Liquidado parcial">Liquidado parcial</option><option value="Liquidado">Liquidado</option><option value="Encerrado">Encerrado</option></select></div>' +
         '<div class="status-mobile-sort-field full"><label for="status-mobile-sort-boitel">Boitel</label><select id="status-mobile-sort-boitel"></select></div>' +
-        '<div class="status-mobile-sort-field full"><label for="status-mobile-sort-modalidade">Modalidade</label><select id="status-mobile-sort-modalidade"></select></div>' +
       '</div>' +
       '<div class="status-mobile-sort-actions"><button type="button" class="status-mobile-sort-action status-mobile-sort-clear">Limpar filtros</button><button type="button" class="status-mobile-sort-action primary status-mobile-sort-apply">Aplicar</button></div>';
     document.body.appendChild(backdrop);
@@ -18918,11 +19046,10 @@ restoreBasicSession();
     var key = (document.getElementById('status-mobile-sort-key') || {}).value || 'numeroLote';
     var dir = (document.getElementById('status-mobile-sort-dir') || {}).value || 'asc';
     var boitel = (document.getElementById('status-mobile-sort-boitel') || {}).value || '';
-    var modalidade = (document.getElementById('status-mobile-sort-modalidade') || {}).value || '';
     var status = (document.getElementById('status-mobile-sort-status') || {}).value || '';
     var b3 = (document.getElementById('status-mobile-sort-b3') || {}).value || '';
-    statusColumnFilters.confinamento = boitel ? [boitel] : [];
-    statusColumnFilters.modalidade = modalidade ? [modalidade] : [];
+    statusColumnFilters.confinamento = boitel;
+    statusColumnFilters.modalidade = '';
     statusColumnFilters.status = status ? [status] : [];
     statusColumnFilters.b3 = b3 ? [b3] : [];
     setStatusSort(key, dir);
@@ -18933,15 +19060,13 @@ restoreBasicSession();
 
   function clearStatusMobileSortFilters() {
     statusColumnFilters.confinamento = [];
-    statusColumnFilters.modalidade = [];
+    statusColumnFilters.modalidade = '';
     statusColumnFilters.status = [];
     statusColumnFilters.b3 = [];
     var boitel = document.getElementById('status-mobile-sort-boitel');
-    var modalidade = document.getElementById('status-mobile-sort-modalidade');
     var status = document.getElementById('status-mobile-sort-status');
     var b3 = document.getElementById('status-mobile-sort-b3');
     if (boitel) boitel.value = '';
-    if (modalidade) modalidade.value = '';
     if (status) status.value = '';
     if (b3) b3.value = '';
     applyStatusColumnFilters();
