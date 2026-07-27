@@ -3114,6 +3114,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 @media (max-width: 768px) {
   body.status-mobile-columns-open {
     overflow: hidden !important;
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    width: 100%;
   }
 
   .status-mobile-columns-trigger {
@@ -3168,7 +3172,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     bottom: 0;
     display: flex;
     flex-direction: column;
-    max-height: min(82vh, 720px);
+    height: min(82dvh, 720px);
+    max-height: calc(100dvh - env(safe-area-inset-top));
+    overflow: hidden;
     padding: 0 16px calc(14px + env(safe-area-inset-bottom));
     border: 1px solid rgba(201, 162, 78, .5);
     border-bottom: 0;
@@ -3190,6 +3196,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   .status-mobile-columns-sheet-handle {
+    flex: 0 0 auto;
     width: 38px;
     height: 4px;
     margin: 8px auto 4px;
@@ -3198,6 +3205,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   .status-mobile-columns-sheet-header {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -3235,8 +3243,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   .status-mobile-columns-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
     padding: 10px 2px 6px;
   }
 
@@ -3283,6 +3296,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   .status-mobile-columns-sheet-actions {
+    flex: 0 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
@@ -5110,10 +5124,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-lotes .status-mobile-sub{max-width:100%!important;font-size:11px!important;white-space:normal!important;}
     #panel-lotes .status-mobile-columns-trigger-wrap{
       display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;width:100%!important;min-width:0!important;margin:7px 0 10px!important;
+      position:relative!important;z-index:30!important;pointer-events:auto!important;
     }
     #panel-lotes #status-mobile-columns-trigger-v2,
     #panel-lotes #status-mobile-sort-trigger-v1{
       display:inline-flex!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:8px 6px!important;font-size:10px!important;overflow:hidden!important;
+      position:relative!important;z-index:31!important;pointer-events:auto!important;
     }
     #panel-lotes #status-mobile-columns-trigger-v2 span,
     #panel-lotes #status-mobile-sort-trigger-v1 span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
@@ -5191,7 +5207,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-lotes .status-row.active-edit>.status-cell:nth-child(n){display:none!important;}
     #panel-lotes .status-row.active-edit>*:not(.status-mobile-reference-card){display:none!important;}
     #panel-lotes .status-row.active-edit{height:auto!important;min-height:0!important;overflow:hidden!important;}
-    #panel-lotes .status-mobile-reference-card{display:block!important;width:100%!important;min-width:0!important;overflow:hidden!important;}
+    #panel-lotes .status-mobile-reference-card{display:block!important;width:100%!important;min-width:0!important;overflow:hidden!important;cursor:pointer!important;-webkit-tap-highlight-color:rgba(201,162,78,.16);}
+    #panel-lotes .status-mobile-reference-card:active{background:#faf8f3!important;}
     #panel-lotes .status-mobile-reference-head{
       display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;
       min-width:0;padding:8px 9px 7px;border-bottom:1px solid rgba(216,203,181,.72);background:#fff;
@@ -5205,12 +5222,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       min-width:0;overflow:hidden;color:var(--navy);font-size:11.5px;font-weight:900;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;
     }
     #panel-lotes .status-mobile-reference-head>.badge{margin:0;padding:4px 8px!important;font-size:7.5px!important;white-space:nowrap;}
-    #panel-lotes .status-mobile-reference-edit{
-      display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:58px;height:29px;padding:0 8px;
-      border:1px solid rgba(201,162,78,.72);border-radius:5px;background:#fff;color:var(--navy);
-      font:800 8.5px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;
+    #panel-lotes .status-mobile-reference-confinement{
+      display:block;min-width:0;max-width:92px;overflow:hidden;color:var(--text-2);
+      font-size:8px;font-weight:850;line-height:1.15;text-align:right;text-overflow:ellipsis;white-space:nowrap;
     }
-    #panel-lotes .status-mobile-reference-edit svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    #panel-lotes .status-mobile-reference-confinement .boitel-color-tag{
+      display:block;max-width:100%;padding:4px 6px;font-size:7.5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;
+    }
     #panel-lotes .status-mobile-reference-metrics{
       display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;width:100%;min-width:0;padding:7px 5px 6px;background:#fff;
     }
@@ -5244,7 +5262,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-lotes .status-mobile-reference-lot{min-width:44px;padding:0 6px;font-size:8px;}
     #panel-lotes .status-mobile-reference-title{font-size:10.5px;}
     #panel-lotes .status-mobile-reference-head>.badge{padding:4px 6px!important;font-size:7px!important;}
-    #panel-lotes .status-mobile-reference-edit{min-width:50px;padding:0 6px;}
+    #panel-lotes .status-mobile-reference-confinement{max-width:72px;font-size:7.5px;}
     #panel-lotes .status-mobile-reference-metrics{grid-template-columns:repeat(6,minmax(0,1fr));padding:6px 3px;}
     #panel-lotes .status-mobile-reference-metrics>div{padding-left:3px;padding-right:3px;}
     #panel-lotes .status-mobile-reference-metrics small{font-size:5.8px;}
@@ -14166,9 +14184,7 @@ function renderLotes(){
       +'<div class="status-mobile-reference-head">'
         +'<div class="status-mobile-reference-identity"><span class="status-mobile-reference-lot">Lote '+escHtml(numeroLote)+'</span><strong class="status-mobile-reference-title">'+escHtml(cardTitle||'A definir')+'</strong></div>'
         +'<span class="badge '+sc.cls+'">'+escHtml(sc.label)+'</span>'
-        +'<button type="button" class="status-mobile-reference-edit" onclick="event.stopPropagation();openEditPanel(\''+l.id+'\',this.closest(\'.status-row\'))" aria-label="Editar lote '+escHtml(numeroLote)+'">'
-          +'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg><span>Editar</span>'
-        +'</button>'
+        +'<span class="status-mobile-reference-confinement">'+boitelTagHtml(confinamento)+'</span>'
       +'</div>'
       +'<div class="status-mobile-reference-metrics">'
         +'<div data-status-mobile-field="qtd"><small>Qtd</small><strong>'+escHtml(qtdVal)+'</strong></div>'
@@ -14381,6 +14397,10 @@ function renderLotes(){
       +'<div><div class="status-mobile-title">Status dos lotes</div><div class="status-mobile-sub">Acompanhe o desempenho de cada lote.</div></div>'
     +'</div>'
     +dashboardCardsShellHtml('status','status-summary',statusSummaryCardsHtml())
+    +'<div class="status-mobile-columns-trigger-wrap">'
+      +'<button type="button" id="status-mobile-columns-trigger-v2" class="status-mobile-columns-trigger" onclick="event.preventDefault();event.stopPropagation();window.openStatusMobileColumns(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg><span>Colunas visíveis</span></button>'
+      +'<button type="button" id="status-mobile-sort-trigger-v1" class="status-mobile-sort-trigger" onclick="event.preventDefault();event.stopPropagation();window.openStatusMobileSort(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h8M8 18h4M4 5v14M2 17l2 2 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Ordenar</span></button>'
+    +'</div>'
     +'<div class="status-sheet-card"><div class="status-sheet-heading"><div class="status-sheet-title">Todos os lotes</div><div class="status-sheet-sub" id="status-sheet-count">'+lotes.length+' de '+lotes.length+' lançamento(s)</div></div>'
     +statusViewbarHtml()
     +'<div class="status-table-wrap"><div class="status-table">'
@@ -18639,6 +18659,7 @@ restoreBasicSession();
   var observer;
   var resizeObserver;
   var scheduled = false;
+  var columnsPageScrollY = 0;
 
   function sanitizeFields(value) {
     if (!Array.isArray(value)) return DEFAULT_FIELDS.slice();
@@ -18768,13 +18789,18 @@ restoreBasicSession();
     if (!isMobile()) return;
     buildSheet();
     syncCheckboxes();
+    columnsPageScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = '-' + columnsPageScrollY + 'px';
     document.body.classList.add('status-mobile-columns-open');
     var backdrop = document.getElementById('status-mobile-columns-backdrop-v2');
     if (backdrop) backdrop.setAttribute('aria-hidden', 'false');
   }
 
   function closeStatusMobileColumns() {
+    var wasOpen = document.body.classList.contains('status-mobile-columns-open');
     document.body.classList.remove('status-mobile-columns-open');
+    document.body.style.top = '';
+    if (wasOpen) window.scrollTo(0, columnsPageScrollY);
     var backdrop = document.getElementById('status-mobile-columns-backdrop-v2');
     if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
   }
@@ -18911,41 +18937,57 @@ restoreBasicSession();
 
   function ensureTrigger() {
     var panel = getStatusPanel();
-    var current = document.getElementById('status-mobile-columns-trigger-v2');
     if (!panel) {
-      if (current) current.style.display = 'none';
       return;
     }
+    var triggerWraps = Array.prototype.slice.call(panel.querySelectorAll('.status-mobile-columns-trigger-wrap'));
+    var list = panel.querySelector('#lote-list');
+    var wrap = triggerWraps.filter(function (item) { return list && list.contains(item); })[0] || triggerWraps[0] || null;
+    triggerWraps.forEach(function (item) {
+      if (item !== wrap) item.remove();
+    });
+    var current = wrap ? wrap.querySelector('.status-mobile-columns-trigger') : null;
     if (!current) {
-      var wrap = document.createElement('div');
+      wrap = document.createElement('div');
       wrap.className = 'status-mobile-columns-trigger-wrap';
       current = document.createElement('button');
       current.type = 'button';
       current.id = 'status-mobile-columns-trigger-v2';
       current.className = 'status-mobile-columns-trigger';
       current.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Colunas visíveis</span>';
-      current.addEventListener('click', openStatusMobileColumns);
       wrap.appendChild(current);
 
       var anchor = panel.querySelector('.lotes-toolbar');
       if (anchor && anchor.parentNode) {
         anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
       } else {
-        var list = panel.querySelector('#lote-list');
         if (list && list.parentNode) list.parentNode.insertBefore(wrap, list);
         else panel.insertBefore(wrap, panel.firstChild);
       }
     }
-    var wrap = current.parentNode;
-    var sortTrigger = document.getElementById('status-mobile-sort-trigger-v1');
+    wrap = current.parentNode;
+    var sortTrigger = wrap.querySelector('.status-mobile-sort-trigger');
     if (!sortTrigger && wrap) {
       sortTrigger = document.createElement('button');
       sortTrigger.type = 'button';
       sortTrigger.id = 'status-mobile-sort-trigger-v1';
       sortTrigger.className = 'status-mobile-sort-trigger';
       sortTrigger.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h8M8 18h4M4 5v14M2 17l2 2 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ordenar</span>';
-      sortTrigger.addEventListener('click', openStatusMobileSort);
       wrap.appendChild(sortTrigger);
+    }
+    current.onclick = function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      openStatusMobileColumns(event);
+    };
+    if (sortTrigger) sortTrigger.onclick = function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      openStatusMobileSort(event);
+    };
+    var dashboard = panel.querySelector('.dashboard-cards-shell');
+    if (isMobile() && dashboard && dashboard.parentNode && wrap && dashboard.nextElementSibling !== wrap) {
+      dashboard.parentNode.insertBefore(wrap, dashboard.nextSibling);
     }
     current.style.display = isMobile() && panelIsVisible(panel) ? '' : 'none';
     if (sortTrigger) sortTrigger.style.display = isMobile() && panelIsVisible(panel) ? '' : 'none';
