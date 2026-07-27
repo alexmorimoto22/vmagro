@@ -5036,6 +5036,249 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     #panel-lotes .status-pills .pill-count{font-size:7.3px;}
   }
 </style>
+<style id="mobile-b3-status-readable-20260727">
+  .b3-mobile-tools,.status-mobile-reference-card{display:none;}
+  @media(max-width:768px){
+    html,body{max-width:100%;overflow-x:hidden;}
+    .main{width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding-left:8px!important;padding-right:8px!important;}
+    #panel-lotes{
+      width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;transform:none!important;
+      padding:0 0 94px!important;box-sizing:border-box!important;overflow-x:hidden!important;
+    }
+    #panel-lotes *,#panel-lotes *::before,#panel-lotes *::after{box-sizing:border-box;}
+    #panel-lotes #lote-list,
+    #panel-lotes .status-sheet-card,
+    #panel-lotes .status-table-wrap,
+    #panel-lotes .status-table,
+    #panel-lotes .status-table-body{width:100%!important;max-width:100%!important;min-width:0!important;}
+    #panel-lotes .lotes-toolbar{width:100%!important;max-width:100%!important;margin:0 0 8px!important;overflow:hidden!important;}
+    #panel-lotes .status-pills{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;width:100%!important;min-width:0!important;overflow:visible!important;}
+    #panel-lotes .status-pills .pill{min-width:0!important;padding-left:4px!important;padding-right:4px!important;}
+    #panel-lotes .status-pills .pill-label{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+    #panel-futuros .fut-table-controls,
+    #panel-futuros .fut-table-wrap{display:none!important;}
+    #panel-futuros .fut-mobile-list{display:block!important;}
+    #panel-futuros .fut-list-card{padding:10px!important;border-radius:8px!important;overflow:visible!important;}
+    #panel-futuros .fut-toolbar{margin-bottom:8px!important;}
+    .b3-mobile-tools{
+      display:grid;
+      grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);
+      gap:8px;
+      margin:0 0 10px;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:#f8f6f0;
+    }
+    .b3-mobile-field{display:block;min-width:0;}
+    .b3-mobile-field>span{display:block;margin:0 0 4px;color:var(--taupe);font-size:8px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;}
+    .b3-mobile-field select{
+      width:100%;height:42px;box-sizing:border-box;padding:0 30px 0 10px;
+      border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--navy);
+      font:750 12px 'Inter',sans-serif;outline:none;
+    }
+    .b3-mobile-field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,78,.13);}
+    .b3-mobile-clear{
+      grid-column:1/-1;min-height:40px;border:1px solid var(--border);border-radius:7px;
+      background:#fff;color:var(--text-2);font:850 11px 'Inter',sans-serif;cursor:pointer;
+    }
+    #panel-futuros .fut-mobile-card{margin-bottom:9px;border-radius:8px;box-shadow:0 3px 12px rgba(13,27,42,.06);}
+    #panel-futuros .fut-mobile-top{padding:12px;background:#faf8f3;}
+    #panel-futuros .fut-mobile-title{font-size:14px;line-height:1.25;}
+    #panel-futuros .fut-mobile-sub{font-size:11px;line-height:1.35;white-space:normal;}
+    #panel-futuros .fut-mobile-expand{font-size:10px;color:var(--accent);}
+    #panel-futuros .fut-mobile-quick{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:0;}
+    #panel-futuros .fut-mobile-quick-item{padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+    #panel-futuros .fut-mobile-quick-item:nth-child(2n){border-right:0;}
+    #panel-futuros .fut-mobile-quick-item:nth-last-child(-n+2){border-bottom:0;}
+    #panel-futuros .fut-mobile-quick-label{font-size:8px;}
+    #panel-futuros .fut-mobile-quick-value{font-size:12.5px;overflow:visible;text-overflow:clip;}
+    #panel-futuros .fut-mobile-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    #panel-futuros .fut-mobile-cell{min-width:0;padding:10px 11px;}
+    #panel-futuros .fut-mobile-value{font-size:12px;overflow-wrap:anywhere;}
+    #panel-futuros .fut-mobile-value .muted{margin-top:3px;font-size:9.5px;}
+    #panel-futuros .fut-mobile-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;}
+    #panel-futuros .fut-mobile-actions .fut-action{min-height:42px;margin:0;padding:7px;font-size:10px;}
+
+    #panel-lotes .status-mobile-toolbar,
+    #panel-lotes .status-mobile-filter-panel,
+    #panel-lotes .status-mobile-hint{display:none!important;}
+    #panel-lotes .status-mobile-head{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-width:0!important;margin:8px 0 10px!important;}
+    #panel-lotes .status-mobile-icon{width:38px!important;height:38px!important;flex:0 0 38px!important;}
+    #panel-lotes .status-mobile-head>div:last-child{min-width:0!important;}
+    #panel-lotes .status-mobile-title{font-size:19px!important;letter-spacing:0!important;}
+    #panel-lotes .status-mobile-sub{max-width:100%!important;font-size:11px!important;white-space:normal!important;}
+    #panel-lotes .status-mobile-columns-trigger-wrap{
+      display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;width:100%!important;min-width:0!important;margin:7px 0 10px!important;
+    }
+    #panel-lotes #status-mobile-columns-trigger-v2,
+    #panel-lotes #status-mobile-sort-trigger-v1{
+      display:inline-flex!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:8px 6px!important;font-size:10px!important;overflow:hidden!important;
+    }
+    #panel-lotes #status-mobile-columns-trigger-v2 span,
+    #panel-lotes #status-mobile-sort-trigger-v1 span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+    #panel-lotes .status-sheet-card{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;}
+    #panel-lotes .status-sheet-heading,
+    #panel-lotes .status-viewbar,
+    #panel-lotes .status-filter-row,
+    #panel-lotes .status-head,
+    #panel-lotes .status-total-row{display:none!important;}
+    #panel-lotes .status-table-wrap{
+      display:block!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+      overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+    }
+    #panel-lotes .status-table{width:100%!important;min-width:0!important;}
+    #panel-lotes .status-table-body{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;width:100%!important;background:transparent!important;border:0!important;border-radius:0!important;overflow:visible!important;box-shadow:none!important;}
+    #panel-lotes .status-row{
+      position:relative!important;display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;
+      gap:7px 9px!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important;
+      margin:0!important;padding:11px!important;border:1px solid var(--border)!important;border-radius:8px!important;
+      background:#fff!important;box-shadow:0 3px 12px rgba(13,27,42,.06)!important;overflow:hidden!important;
+    }
+    #panel-lotes .status-row::before{
+      content:"Lote " attr(data-lote-seq)!important;display:inline-flex!important;grid-column:1!important;grid-row:1!important;
+      align-items:center!important;justify-content:center!important;align-self:center!important;min-width:54px!important;height:28px!important;
+      padding:0 8px!important;border-radius:6px!important;background:var(--navy)!important;color:#fff!important;
+      font-size:10px!important;font-weight:900!important;line-height:1!important;
+    }
+    #panel-lotes .status-row>.status-cell{display:none!important;}
+    #panel-lotes .status-row>[data-status-col="lote"]{
+      display:flex!important;grid-column:2!important;grid-row:1!important;align-items:center!important;gap:6px!important;min-width:0!important;
+      height:auto!important;padding:0!important;border:0!important;background:transparent!important;overflow:hidden!important;
+    }
+    #panel-lotes .status-row>[data-status-col="status"]{
+      display:flex!important;grid-column:1/-1!important;grid-row:2!important;align-items:center!important;justify-self:start!important;
+      height:auto!important;padding:0!important;border:0!important;background:transparent!important;
+    }
+    #panel-lotes .status-row .status-cell-title{display:-webkit-box!important;min-width:0!important;max-width:100%!important;font-size:12.5px!important;line-height:1.2!important;overflow:hidden!important;white-space:normal!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;}
+    #panel-lotes .status-row .real-status-chip{display:none!important;}
+    #panel-lotes .status-row .status-drag-dot{display:none!important;}
+    #panel-lotes .status-row .badge{font-size:8px!important;padding:4px 7px!important;}
+    #panel-lotes .status-mobile-line{
+      display:grid!important;grid-column:1/-1!important;grid-row:3!important;grid-template-columns:repeat(var(--status-mobile-grid-columns,2),minmax(0,1fr))!important;
+      gap:6px!important;width:100%!important;min-width:0!important;padding:0!important;overflow:visible!important;white-space:normal!important;
+    }
+    #panel-lotes .status-mobile-line i,
+    #panel-lotes .status-mobile-line b{display:none!important;}
+    #panel-lotes .status-mobile-line>span{
+      display:block!important;grid-column:auto!important;width:auto!important;max-width:100%!important;min-width:0!important;min-height:42px!important;padding:6px!important;box-sizing:border-box!important;
+      overflow:hidden!important;border:1px solid rgba(216,203,181,.72)!important;border-radius:6px!important;
+      background:#faf8f3!important;color:var(--navy)!important;font-size:10.5px!important;font-weight:850!important;
+      line-height:1.22!important;white-space:normal!important;overflow-wrap:anywhere!important;
+    }
+    #panel-lotes .status-mobile-line>span.status-profit-color{padding:7px 8px!important;border-radius:6px!important;}
+    #panel-lotes .status-mobile-line span[hidden],
+    #panel-lotes .status-mobile-line span.status-mobile-field-hidden{display:none!important;}
+    #panel-lotes .status-mobile-line em{
+      display:block!important;margin:0 0 4px!important;color:var(--taupe)!important;font-style:normal!important;
+      font-size:6.8px!important;font-weight:900!important;letter-spacing:.35px!important;line-height:1!important;text-transform:uppercase!important;
+    }
+    #panel-lotes .status-mobile-line>span.status-profit-color em{color:inherit!important;opacity:.8!important;}
+    #panel-lotes .status-mobile-line .boitel-color-tag{max-width:100%!important;white-space:normal!important;}
+    #panel-lotes .status-table-note{margin:9px 1px 0!important;font-size:9.5px!important;line-height:1.35!important;}
+
+    #panel-lotes .status-mobile-columns-trigger-wrap{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+    #panel-lotes #status-mobile-columns-trigger-v2,
+    #panel-lotes #status-mobile-sort-trigger-v1{display:inline-flex!important;}
+    #panel-lotes .status-row{
+      display:block!important;padding:0!important;border-radius:8px!important;background:#fff!important;
+    }
+    #panel-lotes .status-row::before,
+    #panel-lotes .status-row>.status-cell,
+    #panel-lotes .status-row>.status-mobile-line{display:none!important;}
+    #panel-lotes .status-table-body .status-row.active-edit>.status-cell[data-status-col],
+    #panel-lotes .status-table-body .status-row.active-edit>.status-mobile-line,
+    #panel-lotes .status-row.active-edit>.status-cell:nth-child(n){display:none!important;}
+    #panel-lotes .status-row.active-edit>*:not(.status-mobile-reference-card){display:none!important;}
+    #panel-lotes .status-row.active-edit{height:auto!important;min-height:0!important;overflow:hidden!important;}
+    #panel-lotes .status-mobile-reference-card{display:block!important;width:100%!important;min-width:0!important;overflow:hidden!important;}
+    #panel-lotes .status-mobile-reference-head{
+      display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;
+      min-width:0;padding:8px 9px 7px;border-bottom:1px solid rgba(216,203,181,.72);background:#fff;
+    }
+    #panel-lotes .status-mobile-reference-identity{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;}
+    #panel-lotes .status-mobile-reference-lot{
+      display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:27px;padding:0 8px;
+      border-radius:5px;background:var(--navy);color:#fff;font-size:9px;font-weight:900;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-title{
+      min-width:0;overflow:hidden;color:var(--navy);font-size:11.5px;font-weight:900;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-head>.badge{margin:0;padding:4px 8px!important;font-size:7.5px!important;white-space:nowrap;}
+    #panel-lotes .status-mobile-reference-edit{
+      display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:58px;height:29px;padding:0 8px;
+      border:1px solid rgba(201,162,78,.72);border-radius:5px;background:#fff;color:var(--navy);
+      font:800 8.5px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-edit svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    #panel-lotes .status-mobile-reference-metrics{
+      display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;width:100%;min-width:0;padding:7px 5px 6px;background:#fff;
+    }
+    #panel-lotes .status-mobile-reference-metrics>div{
+      min-width:0;padding:1px 5px;text-align:center;border-right:1px solid rgba(216,203,181,.78);
+    }
+    #panel-lotes .status-mobile-reference-metrics>div:last-child{border-right:0;}
+    #panel-lotes .status-mobile-reference-metrics small{
+      display:block;margin-bottom:4px;overflow:hidden;color:var(--taupe);font-size:6.5px;font-weight:800;line-height:1;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-metrics strong{
+      display:block;min-width:0;overflow:hidden;color:var(--navy);font-size:9px;font-weight:900;line-height:1.12;text-overflow:ellipsis;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-metrics .positive strong{color:#4e8b3a;}
+    #panel-lotes .status-mobile-reference-metrics .negative strong{color:var(--red);}
+    #panel-lotes .status-mobile-reference-foot{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center;
+      min-width:0;padding:6px 9px;border-top:1px solid rgba(216,203,181,.6);background:#faf8f3;
+    }
+    #panel-lotes .status-mobile-reference-foot span{
+      display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden;color:var(--text-3);font-size:7px;font-weight:650;line-height:1.15;text-overflow:ellipsis;white-space:nowrap;
+    }
+    #panel-lotes .status-mobile-reference-foot svg{flex:0 0 10px;width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  }
+  @media(max-width:380px){
+    .b3-mobile-tools{grid-template-columns:1fr;}
+    .b3-mobile-clear{grid-column:1;}
+    #panel-futuros .fut-mobile-grid{grid-template-columns:1fr;}
+    #panel-futuros .fut-mobile-cell{border-right:0!important;}
+    #panel-lotes .status-mobile-reference-head{gap:5px;padding:7px;}
+    #panel-lotes .status-mobile-reference-lot{min-width:44px;padding:0 6px;font-size:8px;}
+    #panel-lotes .status-mobile-reference-title{font-size:10.5px;}
+    #panel-lotes .status-mobile-reference-head>.badge{padding:4px 6px!important;font-size:7px!important;}
+    #panel-lotes .status-mobile-reference-edit{min-width:50px;padding:0 6px;}
+    #panel-lotes .status-mobile-reference-metrics{grid-template-columns:repeat(6,minmax(0,1fr));padding:6px 3px;}
+    #panel-lotes .status-mobile-reference-metrics>div{padding-left:3px;padding-right:3px;}
+    #panel-lotes .status-mobile-reference-metrics small{font-size:5.8px;}
+    #panel-lotes .status-mobile-reference-metrics strong{font-size:8px;}
+    #panel-lotes .status-mobile-reference-foot{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}
+    #panel-lotes .status-mobile-reference-foot span:last-child{grid-column:auto;}
+  }
+</style>
+<style id="status-mobile-summary-only-20260727">
+  /* The in-app browser can report a wider viewport than the visible panel. */
+  @media (max-width:1024px){
+    #panel-lotes .status-table-body .status-row{
+      display:block!important;
+      width:100%!important;
+      min-width:0!important;
+      height:auto!important;
+      min-height:0!important;
+      padding:0!important;
+      overflow:hidden!important;
+    }
+    #panel-lotes .status-table-body .status-row::before,
+    #panel-lotes .status-table-body .status-row>.status-cell,
+    #panel-lotes .status-table-body .status-row>.status-mobile-line,
+    #panel-lotes .status-table-body .status-row.active-edit>.status-cell,
+    #panel-lotes .status-table-body .status-row.active-edit>.status-mobile-line{
+      display:none!important;
+    }
+    #panel-lotes .status-table-body .status-row>.status-mobile-reference-card{
+      display:block!important;
+      width:100%!important;
+      min-width:0!important;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -5745,6 +5988,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
               <button type="button" class="status-view-btn" onclick="toggleFutColumnsPanel()">Colunas visíveis</button>
               <div id="fut-column-panel" class="fut-column-panel"></div>
             </div>
+          </div>
+          <div class="b3-mobile-tools" aria-label="Ordenação e filtros dos contratos B3">
+            <label class="b3-mobile-field b3-mobile-sort-field"><span>Ordenar por</span><select id="b3-mobile-sort" onchange="setFutSort(this.value,(document.getElementById('b3-mobile-direction')||{}).value||'desc')"><option value="vencimento">Vencimento</option><option value="abertura">Data de abertura</option><option value="codigo">Código</option><option value="numeroLote">Número do lote</option><option value="lote">Lote / operação</option><option value="status">Status</option><option value="qtdOriginal">Qtd. contratos</option><option value="aberto">Saldo aberto</option><option value="resultadoRealizado">Resultado</option></select></label>
+            <label class="b3-mobile-field b3-mobile-direction-field"><span>Ordem</span><select id="b3-mobile-direction" onchange="setFutSort((document.getElementById('b3-mobile-sort')||{}).value||'vencimento',this.value)"><option value="desc">Maior / recente</option><option value="asc">Menor / antigo</option></select></label>
+            <label class="b3-mobile-field"><span>Status</span><select id="b3-mobile-status" onchange="updateFutColumnFilter('status',this.value)"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Liquidado">Liquidado</option><option value="Cancelado">Cancelado</option></select></label>
+            <label class="b3-mobile-field"><span>Lado</span><select id="b3-mobile-side" onchange="updateFutColumnFilter('lado',this.value)"><option value="">Todos</option><option value="Venda">Venda</option><option value="Compra">Compra</option></select></label>
+            <button type="button" class="b3-mobile-clear" onclick="limparFiltrosFuturos()">Limpar filtros</button>
           </div>
           <div class="fut-table-wrap">
             <table class="fut-table">
@@ -10619,6 +10869,19 @@ function setFutSort(key,dir){
   try{localStorage.setItem(FUT_SORT_KEY,JSON.stringify(futSortState));}catch(e){}
   renderFuturosPreservingViewport();
 }
+function syncFutMobileControls(){
+  var sort=document.getElementById('b3-mobile-sort');
+  var direction=document.getElementById('b3-mobile-direction');
+  var status=document.getElementById('b3-mobile-status');
+  var side=document.getElementById('b3-mobile-side');
+  if(sort){
+    var supported=['vencimento','abertura','codigo','numeroLote','lote','status','qtdOriginal','aberto','resultadoRealizado'];
+    sort.value=supported.indexOf(futSortState.key)>=0?futSortState.key:'vencimento';
+  }
+  if(direction)direction.value=futSortState.dir==='asc'?'asc':'desc';
+  if(status)status.value=tableFilterSelected('fut','status')[0]||'';
+  if(side)side.value=tableFilterSelected('fut','lado')[0]||'';
+}
 var futResizeState=null;
 function startFutColumnResize(ev,key){
   ev.preventDefault();ev.stopPropagation();
@@ -10746,11 +11009,12 @@ function futHeaderFilterOptions(key,arr,loteMap){
     var dados=futuroDadosLote(lote);
     var value=futColumnFilterValue(c,r,lote,dados,key);
     if(key==='lote'&&!c.loteId){value='livre';}
-    if(value===null||value===undefined||String(value).trim()===''||String(value)==='—')return;
+    if(value===null||value===undefined||String(value).trim()===''||(String(value)==='—'&&key!=='confinamento'))return;
     var label=String(value);
     if(key==='status')label=futuroStatusLabel(r.status);
     if(key==='tipo')label=r.operacao==='livre'?'Livre':'Hedge';
     if(key==='tipoTrava')label=c.tipo==='direto'?'Direto':'Bolsa B3';
+    if(key==='confinamento'&&String(value)==='—')label='— Sem boitel';
     if(key==='numeroLote')label='Lote '+getNumeroLote(lote);
     if(key==='lote')label=c.loteId?loteLabelB3(lote):'Operações livres';
     if(key==='lado')label=r.lado==='compra'?'Compra':'Venda';
@@ -10985,6 +11249,7 @@ function renderFuturos(){
   }
   var note=document.getElementById('fut-list-note');
   if(note)note.textContent=filtrados.length+' de '+arr.length+' lançamento(s)';
+  syncFutMobileControls();
   var list=document.getElementById('fut-list');
   var mobileList=document.getElementById('fut-mobile-list');
   if(!list)return;
@@ -11088,7 +11353,9 @@ function renderFuturos(){
       +'<summary>'
         +'<div class="fut-mobile-top"><div><div class="fut-mobile-title">'+contratoComMes+'</div><div class="fut-mobile-sub">'+loteNome+' · '+loteStatus+'</div><div class="fut-mobile-expand">Toque para ver detalhes</div></div>'+st+'</div>'
         +'<div class="fut-mobile-quick">'
-          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Contratos</div><div class="fut-mobile-quick-value">'+fmtContratosB3(r.qtdLiquidada)+'/'+fmtContratosB3(r.qtdContratos||0)+' ctr · '+r.arrobas.toLocaleString('pt-BR',{maximumFractionDigits:0})+' @</div></div>'
+          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Contratos</div><div class="fut-mobile-quick-value">'+fmtContratosB3(r.qtdContratos||0)+' ctr</div></div>'
+          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Saldo aberto</div><div class="fut-mobile-quick-value">'+fmtContratosB3(r.qtdAberta)+' ctr</div></div>'
+          +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Abertura</div><div class="fut-mobile-quick-value">'+abertura+'</div></div>'
           +'<div class="fut-mobile-quick-item"><div class="fut-mobile-quick-label">Resultado</div><div class="fut-mobile-quick-value '+resClass+'">'+resultado+'</div></div>'
         +'</div>'
       +'</summary>'
@@ -13380,7 +13647,7 @@ function statusSortValue(row,key){
   var v=row.getAttribute('data-sort-'+key);
   if(v===null||v===undefined)v=row.getAttribute('data-filter-'+key)||row.textContent||'';
   var n=parseFloat(String(v).replace(/\./g,'').replace(',','.'));
-  if(['ano','qtd','kmRodados','quebraPct','quebraKg','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem','status'].indexOf(key)>=0&&!isNaN(n))return n;
+  if(['ano','b3','qtd','kmRodados','quebraPct','quebraKg','faturamento','capital','lucro','rentProj','rentmesProj','rentReal','rentmesReal','rcExpectativa','rcRealizado','consumoMedioExpectativa','consumoMedioRealizado','pesoOrigem','pesoChegada','gmdOrigem','gmdChegada','gmcOrigem','gmcChegada','eficiencia','eficienciaChegada','atProdChegada','atProdOrigem','custoAtChegada','custoAtOrigem','status'].indexOf(key)>=0&&!isNaN(n))return n;
   return _statusNorm(v);
 }
 function sortStatusRows(){
@@ -13742,6 +14009,7 @@ function renderLotes(){
     var b3Cobertura=b3Status.cobertura;
     var b3Estado=b3Status.estado||'Aberto';
     var b3Val=b3Estado+' · '+b3Cobertura;
+    var b3CoverageSort=b3TotalNecessario>0?(finNum(b3ResumoAtivo.contratos)/b3TotalNecessario)*100:0;
     var filtroLote='Lote '+numeroLote+(cardTitle?' '+cardTitle:'')+(vend?' '+vend.nome:'')+(useRealizedTechnical?' realizado':' simulado');
     var attrs=' data-qtd-raw="'+qtdRaw+'" data-km-rodados-raw="'+kmRodadosRaw+'" data-faturamento-raw="'+(o?faturamento:0)+'" data-capital-raw="'+(o?capital:0)+'" data-lucro-raw="'+(o?lucro:0)+'" data-proj-capital-raw="'+(o?projectedMetric.capital:0)+'" data-proj-lucro-raw="'+(o?projectedMetric.lucro:0)+'" data-real-capital-raw="'+(o&&realizedMetric?realizedMetric.capital:0)+'" data-real-lucro-raw="'+(o&&realizedMetric?realizedMetric.lucro:0)+'" data-prazo-dias-raw="'+prazoDias+'"'
       +' data-b3-open-raw="'+(b3ResumoAtivo.abertos||0)+'" data-b3-closed-raw="'+(b3ResumoAtivo.liquidados||0)+'"'
@@ -13801,7 +14069,7 @@ function renderLotes(){
       +' data-sort-transportadora="'+escHtml(transportadoraVal)+'"'
       +' data-sort-numeroLote="'+escHtml(numeroLote)+'"'
       +' data-sort-lote="'+escHtml(cardTitle||'A definir')+'"'
-      +' data-sort-b3="'+escHtml(b3Val)+'"'
+      +' data-sort-b3="'+b3CoverageSort+'"'
       +' data-sort-qtd="'+qtdRaw+'"'
       +' data-sort-kmRodados="'+kmRodadosRaw+'"'
       +' data-sort-quebraPct="'+quebraPctRaw+'"'
@@ -13894,6 +14162,28 @@ function renderLotes(){
       +'<span data-status-mobile-field="custoAtChegada" title="'+escHtml(custoAtChegadaVal)+'"><em>Custo @ prod. chegada</em>'+escHtml(custoAtChegadaVal)+'</span>'
       +'<span data-status-mobile-field="custoAtOrigem" title="'+escHtml(custoAtOrigemVal)+'"><em>Custo @ prod. origem</em>'+escHtml(custoAtOrigemVal)+'</span>'
     +'</div>';
+    var mobileReferenceCard='<div class="status-mobile-reference-card">'
+      +'<div class="status-mobile-reference-head">'
+        +'<div class="status-mobile-reference-identity"><span class="status-mobile-reference-lot">Lote '+escHtml(numeroLote)+'</span><strong class="status-mobile-reference-title">'+escHtml(cardTitle||'A definir')+'</strong></div>'
+        +'<span class="badge '+sc.cls+'">'+escHtml(sc.label)+'</span>'
+        +'<button type="button" class="status-mobile-reference-edit" onclick="event.stopPropagation();openEditPanel(\''+l.id+'\',this.closest(\'.status-row\'))" aria-label="Editar lote '+escHtml(numeroLote)+'">'
+          +'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg><span>Editar</span>'
+        +'</button>'
+      +'</div>'
+      +'<div class="status-mobile-reference-metrics">'
+        +'<div data-status-mobile-field="qtd"><small>Qtd</small><strong>'+escHtml(qtdVal)+'</strong></div>'
+        +'<div data-status-mobile-field="entrada"><small>Entrada</small><strong>'+escHtml(dataEntradaCurta)+'</strong></div>'
+        +'<div data-status-mobile-field="abate"><small>Abate</small><strong>'+escHtml(dataAbateCurta)+'</strong></div>'
+        +'<div data-status-mobile-field="b3"><small>B3</small><strong>'+escHtml(b3Cobertura)+'</strong></div>'
+        +'<div data-status-mobile-field="capital"><small>Capital</small><strong>'+escHtml(fmtCompactMoney(capital))+'</strong></div>'
+        +'<div data-status-mobile-field="lucro" class="'+(lucro>=0?'positive':'negative')+'"><small>Lucro</small><strong>'+escHtml(fmtCompactMoney(lucro))+'</strong></div>'
+      +'</div>'
+      +'<div class="status-mobile-reference-foot">'
+        +'<span data-status-mobile-field="origem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>'+escHtml(origemVal)+'</span>'
+        +'<span data-status-mobile-field="frigorifico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"></path><path d="M8 10h2M14 10h2M8 14h2M14 14h2M9 21v-3h6v3"></path></svg>'+escHtml(frigorificoVal)+'</span>'
+        +'<span data-status-mobile-field="vendedor"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>'+escHtml(vendedorVal)+'</span>'
+      +'</div>'
+    +'</div>';
     return '<div class="status-row'+(idx%2?' status-row-alt':'')+'" style="grid-template-columns:'+statusGridTemplate()+'" data-lid="'+l.id+'" data-lote-seq="'+escHtml(numeroLote)+'" data-status="'+(l.status||'embarque')+'" draggable="true"'+attrs+'>'
       +statusLabel
       +statusCell('ano',anoVal,'muted')
@@ -13938,7 +14228,7 @@ function renderLotes(){
       +statusCell('atProdOrigem',atProdOrigemVal,'rate')
       +statusCell('custoAtChegada',custoAtChegadaVal,'money')
       +statusCell('custoAtOrigem',custoAtOrigemVal,'money')
-      +mobileLine
+      +mobileReferenceCard
     +'</div>';
   }
   lotes.sort(function(a,b){
@@ -18328,47 +18618,26 @@ restoreBasicSession();
 +(function () {
   'use strict';
 
-  var STATUS_MOBILE_VISIBLE_FIELDS_KEY = 'vm_agro_status_mobile_visible_fields_v3';
+  var STATUS_MOBILE_VISIBLE_FIELDS_KEY = 'vm_agro_status_mobile_visible_fields_v5';
   var FIELD_DEFS = [
     { key: 'qtd', label: 'Quantidade', group: 'Operacao' },
-    { key: 'quebraPct', label: 'Quebra %', group: 'Operacao' },
-    { key: 'quebraKg', label: 'Quebra kg', group: 'Operacao' },
-    { key: 'boitel', label: 'Boitel', group: 'Operacao' },
-    { key: 'modalidade', label: 'Modalidade', group: 'Operacao' },
-    { key: 'raca', label: 'Raça', group: 'Operacao' },
     { key: 'origem', label: 'Origem', group: 'Operacao' },
     { key: 'vendedor', label: 'Vendedor', group: 'Operacao' },
     { key: 'frigorifico', label: 'Frigorífico', group: 'Operacao' },
-    { key: 'pecuarista', label: 'Pecuarista', group: 'Operacao' },
-    { key: 'transportadora', label: 'Transportadora', group: 'Operacao' },
     { key: 'entrada', label: 'Entrada', group: 'Datas' },
     { key: 'abate', label: 'Abate', group: 'Datas' },
-    { key: 'recebimento', label: 'Recebimento', group: 'Datas' },
     { key: 'b3', label: 'B3', group: 'Protecao B3' },
-    { key: 'trava', label: 'Trava', group: 'Protecao B3' },
     { key: 'capital', label: 'Capital', group: 'Financeiro' },
-    { key: 'faturamento', label: 'Faturamento', group: 'Financeiro' },
-    { key: 'lucro', label: 'Lucro', group: 'Financeiro' },
-    { key: 'rent', label: '% operacao', group: 'Financeiro' },
-    { key: 'rentmes', label: '% mes', group: 'Financeiro' },
-    { key: 'rcExpectativa', label: 'RC expectativa', group: 'Tecnico' },
-    { key: 'rcRealizado', label: 'RC realizado', group: 'Tecnico' },
-    { key: 'consumoMedioExpectativa', label: 'Consumo medio expectativa', group: 'Tecnico' },
-    { key: 'consumoMedioRealizado', label: 'Consumo medio realizado', group: 'Tecnico' },
-    { key: 'gmdOrigem', label: 'GMD origem', group: 'Tecnico' },
-    { key: 'gmdChegada', label: 'GMD chegada', group: 'Tecnico' },
-    { key: 'gmcOrigem', label: 'GMC origem', group: 'Tecnico' },
-    { key: 'gmcChegada', label: 'GMC chegada', group: 'Tecnico' },
-    { key: 'eficiencia', label: 'Eficiencia origem', group: 'Tecnico' },
-    { key: 'eficienciaChegada', label: 'Eficiencia chegada', group: 'Tecnico' }
+    { key: 'lucro', label: 'Lucro', group: 'Financeiro' }
   ];
-  var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'vendedor', 'pecuarista', 'transportadora', 'trava', 'capital', 'lucro', 'rentmes', 'boitel', 'modalidade'];
+  var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'capital', 'lucro', 'origem', 'frigorifico', 'vendedor'];
   var ALLOWED = FIELD_DEFS.reduce(function (map, item) {
     map[item.key] = true;
     return map;
   }, {});
-  var GROUPS = ['Operacao', 'Datas', 'Protecao B3', 'Financeiro', 'Tecnico'];
+  var GROUPS = ['Operacao', 'Datas', 'Protecao B3', 'Financeiro'];
   var observer;
+  var resizeObserver;
   var scheduled = false;
 
   function sanitizeFields(value) {
@@ -18497,9 +18766,11 @@ restoreBasicSession();
   function openStatusMobileColumns(event) {
     if (event) event.stopPropagation();
     if (!isMobile()) return;
-    statusColumnsPanelOpen = true;
-    var panel = document.getElementById('status-column-panel');
-    if (panel) panel.classList.add('open');
+    buildSheet();
+    syncCheckboxes();
+    document.body.classList.add('status-mobile-columns-open');
+    var backdrop = document.getElementById('status-mobile-columns-backdrop-v2');
+    if (backdrop) backdrop.setAttribute('aria-hidden', 'false');
   }
 
   function closeStatusMobileColumns() {
@@ -18550,8 +18821,12 @@ restoreBasicSession();
     }).join('');
     var sortKey = document.getElementById('status-mobile-sort-key');
     var sortDir = document.getElementById('status-mobile-sort-dir');
-    if (sortKey) sortKey.value = ['numeroLote','entrada','abate','recebimento','b3'].indexOf(statusSortState.key) >= 0 ? statusSortState.key : 'numeroLote';
+    if (sortKey) sortKey.value = ['status','numeroLote','entrada','abate','recebimento','b3','qtd','capital','lucro','rentmesProj','rentmesReal'].indexOf(statusSortState.key) >= 0 ? statusSortState.key : 'numeroLote';
     if (sortDir) sortDir.value = statusSortState.dir === 'desc' ? 'desc' : 'asc';
+    var status = document.getElementById('status-mobile-sort-status');
+    var b3 = document.getElementById('status-mobile-sort-b3');
+    if (status) status.value = tableFilterSelected('status', 'status')[0] || '';
+    if (b3) b3.value = tableFilterSelected('status', 'b3')[0] || '';
   }
 
   function buildStatusMobileSortSheet() {
@@ -18569,8 +18844,10 @@ restoreBasicSession();
       '<div class="status-mobile-sort-handle"></div>' +
       '<div class="status-mobile-sort-head"><div><h2 class="status-mobile-sort-title">Ordenar e filtrar</h2><p class="status-mobile-sort-sub">Organize os lotes e refine a visualização.</p></div><button type="button" class="status-mobile-sort-close" aria-label="Fechar">&times;</button></div>' +
       '<div class="status-mobile-sort-body">' +
-        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-key">Ordenar por</label><select id="status-mobile-sort-key"><option value="numeroLote">Lote</option><option value="entrada">Data de entrada</option><option value="abate">Data de abate</option><option value="recebimento">Data de recebimento</option><option value="b3">Trava</option></select></div>' +
+        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-key">Ordenar por</label><select id="status-mobile-sort-key"><option value="numeroLote">Lote</option><option value="status">Etapa do lote</option><option value="entrada">Data de entrada</option><option value="abate">Data de abate</option><option value="recebimento">Data de recebimento</option><option value="b3">Cobertura B3</option><option value="qtd">Quantidade</option><option value="capital">Capital</option><option value="lucro">Lucro</option><option value="rentmesProj">% mes projetada</option><option value="rentmesReal">% mes realizada</option></select></div>' +
         '<div class="status-mobile-sort-field"><label for="status-mobile-sort-dir">Ordem</label><select id="status-mobile-sort-dir"><option value="asc">Crescente</option><option value="desc">Decrescente</option></select></div>' +
+        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-status">Etapa</label><select id="status-mobile-sort-status"><option value="">Todas</option><option value="Embarque">Embarque</option><option value="Confinado">Confinado</option><option value="Escalado">Escalado</option><option value="Abatido">Abatido</option><option value="Recebido">Recebido</option></select></div>' +
+        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-b3">B3</label><select id="status-mobile-sort-b3"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Travado">Travado</option><option value="Liquidado parcial">Liquidado parcial</option><option value="Liquidado">Liquidado</option><option value="Encerrado">Encerrado</option></select></div>' +
         '<div class="status-mobile-sort-field full"><label for="status-mobile-sort-boitel">Boitel</label><select id="status-mobile-sort-boitel"></select></div>' +
         '<div class="status-mobile-sort-field full"><label for="status-mobile-sort-modalidade">Modalidade</label><select id="status-mobile-sort-modalidade"></select></div>' +
       '</div>' +
@@ -18603,8 +18880,12 @@ restoreBasicSession();
     var dir = (document.getElementById('status-mobile-sort-dir') || {}).value || 'asc';
     var boitel = (document.getElementById('status-mobile-sort-boitel') || {}).value || '';
     var modalidade = (document.getElementById('status-mobile-sort-modalidade') || {}).value || '';
+    var status = (document.getElementById('status-mobile-sort-status') || {}).value || '';
+    var b3 = (document.getElementById('status-mobile-sort-b3') || {}).value || '';
     statusColumnFilters.confinamento = boitel ? [boitel] : [];
     statusColumnFilters.modalidade = modalidade ? [modalidade] : [];
+    statusColumnFilters.status = status ? [status] : [];
+    statusColumnFilters.b3 = b3 ? [b3] : [];
     setStatusSort(key, dir);
     applyStatusColumnFilters();
     closeStatusMobileSort();
@@ -18614,12 +18895,18 @@ restoreBasicSession();
   function clearStatusMobileSortFilters() {
     statusColumnFilters.confinamento = [];
     statusColumnFilters.modalidade = [];
+    statusColumnFilters.status = [];
+    statusColumnFilters.b3 = [];
     var boitel = document.getElementById('status-mobile-sort-boitel');
     var modalidade = document.getElementById('status-mobile-sort-modalidade');
+    var status = document.getElementById('status-mobile-sort-status');
+    var b3 = document.getElementById('status-mobile-sort-b3');
     if (boitel) boitel.value = '';
     if (modalidade) modalidade.value = '';
+    if (status) status.value = '';
+    if (b3) b3.value = '';
     applyStatusColumnFilters();
-    showToast('Filtros de boitel e modalidade limpos.');
+    showToast('Filtros do Status limpos.');
   }
 
   function ensureTrigger() {
@@ -18722,10 +19009,21 @@ restoreBasicSession();
       node.hidden = hidden;
       node.classList.toggle('status-mobile-field-hidden', hidden);
     });
-    var count = visible.length;
-    var columns = count >= 9 ? 5 : count >= 7 ? 4 : count >= 3 ? 3 : count;
     panel.querySelectorAll('.status-mobile-line').forEach(function (line) {
-      line.style.setProperty('--status-mobile-grid-columns', String(Math.max(1, columns)));
+      var visibleItems = Array.prototype.filter.call(line.children, function (node) {
+        return node.hasAttribute('data-status-mobile-field') && !node.hidden && !node.classList.contains('status-mobile-field-hidden');
+      }).length;
+      var width = line.getBoundingClientRect().width || panel.clientWidth || window.innerWidth;
+      var columnsByWidth = width >= 360 ? 4 : width >= 280 ? 3 : 2;
+      var columns = Math.max(1, Math.min(4, columnsByWidth, visibleItems || 1));
+      line.style.setProperty('--status-mobile-grid-columns', String(columns));
+      line.style.setProperty('grid-template-columns', 'repeat(' + columns + ', minmax(0, 1fr))', 'important');
+    });
+    panel.querySelectorAll('.status-mobile-reference-metrics, .status-mobile-reference-foot').forEach(function (group) {
+      var visibleItems = Array.prototype.filter.call(group.children, function (node) {
+        return !node.hidden && !node.classList.contains('status-mobile-field-hidden');
+      }).length;
+      group.style.setProperty('grid-template-columns', 'repeat(' + Math.max(1, visibleItems) + ', minmax(0, 1fr))', 'important');
     });
   }
 
@@ -18794,6 +19092,11 @@ restoreBasicSession();
     refreshStatusMobileColumns(false);
     observer = new MutationObserver(scheduleRefresh);
     observer.observe(document.body, { childList: true, subtree: true });
+    if (window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(scheduleRefresh);
+      var panel = getStatusPanel();
+      if (panel) resizeObserver.observe(panel);
+    }
     window.addEventListener('resize', scheduleRefresh, { passive: true });
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') { closeStatusMobileColumns(); closeStatusMobileSort(); }
