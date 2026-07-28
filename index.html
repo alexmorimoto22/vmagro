@@ -6265,10 +6265,40 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <div id="transportadora-form" style="display:none" class="cfg-form">
           <div class="form-title" id="transportadora-form-title">Nova transportadora</div>
           <input type="hidden" id="tf-id">
+          <div class="ep-section">Identificação cadastral</div>
           <div class="g2">
-            <div class="field"><label>Nome da transportadora</label><input type="text" id="tf-nome" placeholder="Ex: Transportadora Modelo"></div>
-            <div class="field"><label>Telefone <span style="font-size:9px;color:var(--text-3);font-weight:400;">(opcional)</span></label><input type="text" id="tf-tel" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>Nome fantasia *</label><input type="text" id="tf-nome" placeholder="Ex: Transportadora Modelo"></div>
+            <div class="field"><label>Razão social</label><input type="text" id="tf-razao" placeholder="Razão social completa"></div>
+            <div class="field"><label>CNPJ / CPF</label><input type="text" id="tf-documento" inputmode="numeric" placeholder="00.000.000/0000-00"></div>
+            <div class="field"><label>Inscrição estadual</label><input type="text" id="tf-ie" placeholder="Inscrição estadual ou Isento"></div>
+            <div class="field"><label>RNTRC / ANTT</label><input type="text" id="tf-rntrc" placeholder="Registro Nacional de Transportadores"></div>
+            <div class="field"><label>Responsável</label><input type="text" id="tf-responsavel" placeholder="Nome do responsável"></div>
           </div>
+          <div class="ep-section">Contato</div>
+          <div class="g2">
+            <div class="field"><label>Telefone</label><input type="tel" id="tf-tel" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>WhatsApp</label><input type="tel" id="tf-whatsapp" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="tf-email" placeholder="contato@transportadora.com.br"></div>
+          </div>
+          <div class="ep-section">Endereço</div>
+          <div class="g2">
+            <div class="field"><label>CEP</label><input type="text" id="tf-cep" inputmode="numeric" placeholder="00000-000"></div>
+            <div class="field"><label>Logradouro</label><input type="text" id="tf-logradouro" placeholder="Rua, avenida ou rodovia"></div>
+            <div class="field"><label>Número</label><input type="text" id="tf-numero" placeholder="Número ou S/N"></div>
+            <div class="field"><label>Complemento</label><input type="text" id="tf-complemento" placeholder="Galpão, sala, km..."></div>
+            <div class="field"><label>Bairro</label><input type="text" id="tf-bairro"></div>
+            <div class="field"><label>Cidade</label><input type="text" id="tf-cidade"></div>
+            <div class="field"><label>UF</label><select id="tf-uf"><option value="">Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></div>
+          </div>
+          <div class="ep-section">Pagamento</div>
+          <div class="g2">
+            <div class="field"><label>Banco</label><input type="text" id="tf-banco" placeholder="Banco"></div>
+            <div class="field"><label>Agência</label><input type="text" id="tf-agencia"></div>
+            <div class="field"><label>Conta</label><input type="text" id="tf-conta"></div>
+            <div class="field"><label>Tipo de conta</label><select id="tf-tipo-conta"><option value="">Selecione</option><option value="corrente">Conta corrente</option><option value="poupanca">Poupança</option><option value="pagamento">Conta de pagamento</option></select></div>
+            <div class="field"><label>Chave Pix</label><input type="text" id="tf-pix"></div>
+          </div>
+          <div class="field"><label>Observações</label><textarea id="tf-observacoes" rows="3" class="ep-textarea" placeholder="Informações operacionais, contatos adicionais ou condições de pagamento"></textarea></div>
           <div class="field" style="display:flex;align-items:center;gap:8px;"><label style="min-height:0;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px!important;"><input type="checkbox" id="tf-ativa" checked style="width:auto;min-height:auto;"> Transportadora ativa</label></div>
           <div class="form-btns">
             <button class="btn-save" onclick="salvarTransportadora()">Salvar</button>
@@ -14342,13 +14372,17 @@ function renderLotes(){
       +'</div>'
       +'<div class="status-mobile-reference-metrics">'
         +'<div data-status-mobile-field="qtd"><small>Qtd</small><strong>'+escHtml(qtdVal)+'</strong></div>'
+        +'<div data-status-mobile-field="quebraPct"><small>Quebra</small><strong>'+escHtml(quebraPctVal)+'</strong></div>'
         +'<div data-status-mobile-field="entrada"><small>Entrada</small><strong>'+escHtml(dataEntradaCurta)+'</strong></div>'
         +'<div data-status-mobile-field="abate"><small>Abate</small><strong>'+escHtml(dataAbateCurta)+'</strong></div>'
         +'<div data-status-mobile-field="b3"><small>B3</small><strong>'+escHtml(b3Cobertura)+'</strong></div>'
         +'<div data-status-mobile-field="capital"><small>Capital</small><strong>'+escHtml(fmtCompactMoney(capital))+'</strong></div>'
+        +'<div data-status-mobile-field="faturamento"><small>Fat. lote</small><strong>'+escHtml(fmtCompactMoney(faturamento))+'</strong></div>'
         +'<div data-status-mobile-field="lucro" class="'+(lucro>=0?'positive':'negative')+'"><small>Lucro</small><strong>'+escHtml(fmtCompactMoney(lucro))+'</strong></div>'
         +'<div data-status-mobile-field="rentProj" class="'+(projectedMetric.rent>=0?'positive':'negative')+'"><small>% operação</small><strong>'+escHtml(rentProjVal)+'</strong></div>'
         +'<div data-status-mobile-field="rentmesProj" class="'+(projectedMetric.rentMes>=0?'positive':'negative')+'"><small>% mês</small><strong>'+escHtml(rentMesProjVal)+'</strong></div>'
+        +'<div data-status-mobile-field="pesoOrigem"><small>Peso origem</small><strong>'+escHtml(pesoOrigemVal)+'</strong></div>'
+        +'<div data-status-mobile-field="pesoChegada"><small>Peso chegada</small><strong>'+escHtml(pesoChegadaVal)+'</strong></div>'
       +'</div>'
       +'<div class="status-mobile-reference-foot">'
         +'<span data-status-mobile-field="origem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>'+escHtml(origemVal)+'</span>'
@@ -17284,7 +17318,10 @@ function renderTransportadoraList(){
   if(!items.length){el.innerHTML='<div class="empty-state">Nenhuma transportadora cadastrada.</div>';return;}
   el.innerHTML=items.map(function(t){
     var status=t.ativa===false?'Inativa':'Ativa';
-    return '<div class="item-card"><div class="ic-header"><div><div class="ic-name">'+escHtml(t.nome||'Transportadora')+'</div><div class="ic-sub">'+escHtml(t.telefone||'Sem telefone')+' · '+status+'</div></div><div style="display:flex;gap:6px;"><button class="btn-ic-edit" onclick="editarTransportadora(\''+escHtml(t.id)+'\')">Editar</button><button class="btn-ic-del" onclick="inativarTransportadora(\''+escHtml(t.id)+'\')">'+(t.ativa===false?'Reativar':'Inativar')+'</button></div></div></div>';
+    var cadastro=[t.documento,t.rntrc?('RNTRC '+t.rntrc):''].filter(Boolean).join(' · ')||'Documento não informado';
+    var contato=[t.telefone,t.email].filter(Boolean).join(' · ')||'Contato não informado';
+    var local=[t.cidade,t.uf].filter(Boolean).join('/')||'Endereço não informado';
+    return '<div class="item-card"><div class="ic-header"><div><div class="ic-name">'+escHtml(t.nome||'Transportadora')+'</div><div class="ic-sub">'+escHtml(cadastro)+' · '+escHtml(status)+'</div><div class="ic-sub">'+escHtml(contato)+' · '+escHtml(local)+'</div></div><div style="display:flex;gap:6px;"><button class="btn-ic-edit" onclick="editarTransportadora(\''+escHtml(t.id)+'\')">Editar</button><button class="btn-ic-del" onclick="inativarTransportadora(\''+escHtml(t.id)+'\')">'+(t.ativa===false?'Reativar':'Inativar')+'</button></div></div></div>';
   }).join('');
 }
 function showTransportadoraForm(id){
@@ -17294,8 +17331,13 @@ function showTransportadoraForm(id){
   var item=id?getTransportadoras().find(function(t){return t.id===id;}):null;
   document.getElementById('transportadora-form-title').textContent=item?'Editar transportadora':'Nova transportadora';
   document.getElementById('tf-id').value=item?item.id:'';
-  document.getElementById('tf-nome').value=item?item.nome||'':'';
-  document.getElementById('tf-tel').value=item?item.telefone||'':'';
+  var fields={
+    'tf-nome':'nome','tf-razao':'razaoSocial','tf-documento':'documento','tf-ie':'inscricaoEstadual','tf-rntrc':'rntrc','tf-responsavel':'responsavel',
+    'tf-tel':'telefone','tf-whatsapp':'whatsapp','tf-email':'email','tf-cep':'cep','tf-logradouro':'logradouro','tf-numero':'numero',
+    'tf-complemento':'complemento','tf-bairro':'bairro','tf-cidade':'cidade','tf-uf':'uf','tf-banco':'banco','tf-agencia':'agencia',
+    'tf-conta':'conta','tf-tipo-conta':'tipoConta','tf-pix':'pix','tf-observacoes':'observacoes'
+  };
+  Object.keys(fields).forEach(function(idCampo){var input=document.getElementById(idCampo);if(input)input.value=item?(item[fields[idCampo]]||''):'';});
   document.getElementById('tf-ativa').checked=!item||item.ativa!==false;
   form.style.display='block';
   document.getElementById('tf-nome').focus();
@@ -17309,8 +17351,18 @@ function salvarTransportadora(){
   var cfg=loadConfig();
   if(!Array.isArray(cfg.transportadoras))cfg.transportadoras=[];
   var id=(document.getElementById('tf-id')||{value:''}).value;
-  var item={id:id||'transport_'+Date.now(),nome:nome,telefone:(document.getElementById('tf-tel')||{value:''}).value.trim(),ativa:!!(document.getElementById('tf-ativa')||{}).checked};
-  var index=cfg.transportadoras.findIndex(function(t){return t.id===item.id;});
+  var index=cfg.transportadoras.findIndex(function(t){return t.id===(id||'');});
+  var item=index>=0?Object.assign({},cfg.transportadoras[index]):{id:id||'transport_'+Date.now()};
+  item.nome=nome;
+  var fields={
+    razaoSocial:'tf-razao',documento:'tf-documento',inscricaoEstadual:'tf-ie',rntrc:'tf-rntrc',responsavel:'tf-responsavel',
+    telefone:'tf-tel',whatsapp:'tf-whatsapp',email:'tf-email',cep:'tf-cep',logradouro:'tf-logradouro',numero:'tf-numero',
+    complemento:'tf-complemento',bairro:'tf-bairro',cidade:'tf-cidade',uf:'tf-uf',banco:'tf-banco',agencia:'tf-agencia',
+    conta:'tf-conta',tipoConta:'tf-tipo-conta',pix:'tf-pix',observacoes:'tf-observacoes'
+  };
+  Object.keys(fields).forEach(function(key){var input=document.getElementById(fields[key]);item[key]=input?String(input.value||'').trim():'';});
+  item.ativa=!!(document.getElementById('tf-ativa')||{}).checked;
+  item.atualizadoEm=new Date().toISOString();
   if(index>=0)cfg.transportadoras[index]=item;else cfg.transportadoras.push(item);
   saveConfig(cfg);
   hideTransportadoraForm();
@@ -18797,6 +18849,7 @@ restoreBasicSession();
   var STATUS_MOBILE_VISIBLE_FIELDS_KEY = 'vm_agro_status_mobile_visible_fields_v5';
   var FIELD_DEFS = [
     { key: 'qtd', label: 'Quantidade', group: 'Operacao' },
+    { key: 'quebraPct', label: 'Quebra', group: 'Operacao' },
     { key: 'origem', label: 'Origem', group: 'Operacao' },
     { key: 'vendedor', label: 'Vendedor', group: 'Operacao' },
     { key: 'frigorifico', label: 'Frigorífico', group: 'Operacao' },
@@ -18804,16 +18857,19 @@ restoreBasicSession();
     { key: 'abate', label: 'Abate', group: 'Datas' },
     { key: 'b3', label: 'B3', group: 'Protecao B3' },
     { key: 'capital', label: 'Capital', group: 'Financeiro' },
+    { key: 'faturamento', label: 'Fat. lote', group: 'Financeiro' },
     { key: 'lucro', label: 'Lucro', group: 'Financeiro' },
     { key: 'rentProj', label: '% operação', group: 'Financeiro' },
-    { key: 'rentmesProj', label: '% mês', group: 'Financeiro' }
+    { key: 'rentmesProj', label: '% mês', group: 'Financeiro' },
+    { key: 'pesoOrigem', label: 'Peso origem', group: 'Tecnico' },
+    { key: 'pesoChegada', label: 'Peso chegada', group: 'Tecnico' }
   ];
   var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'capital', 'lucro', 'origem', 'frigorifico', 'vendedor'];
   var ALLOWED = FIELD_DEFS.reduce(function (map, item) {
     map[item.key] = true;
     return map;
   }, {});
-  var GROUPS = ['Operacao', 'Datas', 'Protecao B3', 'Financeiro'];
+  var GROUPS = ['Operacao', 'Datas', 'Protecao B3', 'Financeiro', 'Tecnico'];
   var observer;
   var resizeObserver;
   var scheduled = false;
