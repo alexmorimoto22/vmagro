@@ -3369,6 +3369,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   .status-mobile-sort-field.full{grid-column:1/-1;}
   .status-mobile-sort-field label{display:block;margin:0 0 5px;color:var(--taupe);font-size:8px;font-weight:850;letter-spacing:.8px;text-transform:uppercase;}
   .status-mobile-sort-field select{width:100%;height:42px;padding:0 34px 0 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:Inter,sans-serif;font-size:12px;font-weight:750;}
+  .status-mobile-sort-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:168px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+  .status-mobile-sort-check{display:flex!important;align-items:center!important;gap:8px!important;min-width:0;min-height:39px;padding:7px 9px!important;border:1px solid rgba(216,203,181,.82);border-radius:7px;background:#fff;color:var(--navy)!important;font-size:13px!important;font-weight:600!important;line-height:1.2;letter-spacing:0!important;text-transform:none!important;cursor:pointer;}
+  .status-mobile-sort-check input{position:static!important;display:block!important;flex:0 0 17px!important;width:17px!important;min-width:17px!important;max-width:17px!important;height:17px!important;min-height:17px!important;max-height:17px!important;margin:0!important;padding:0!important;border-radius:3px!important;accent-color:#0d4f8b;box-shadow:none!important;}
+  .status-mobile-sort-check span{display:block;min-width:0;overflow:hidden;color:inherit;font-size:inherit;font-weight:inherit;line-height:1.2;letter-spacing:0!important;text-overflow:ellipsis;white-space:nowrap;}
+  .status-mobile-sort-field.full{margin-top:2px;}
+  .status-mobile-sort-field.full>label{margin-bottom:7px;letter-spacing:0!important;}
+  .status-mobile-sort-empty{grid-column:1/-1;padding:9px;color:var(--text-3);font-size:11px;text-align:center;}
   .status-mobile-sort-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .status-mobile-sort-action{min-height:42px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--text-2);font-family:Inter,sans-serif;font-size:11px;font-weight:850;cursor:pointer;}
   .status-mobile-sort-action.primary{background:var(--navy);border-color:var(--navy);color:#fff;}
@@ -14340,6 +14347,8 @@ function renderLotes(){
         +'<div data-status-mobile-field="b3"><small>B3</small><strong>'+escHtml(b3Cobertura)+'</strong></div>'
         +'<div data-status-mobile-field="capital"><small>Capital</small><strong>'+escHtml(fmtCompactMoney(capital))+'</strong></div>'
         +'<div data-status-mobile-field="lucro" class="'+(lucro>=0?'positive':'negative')+'"><small>Lucro</small><strong>'+escHtml(fmtCompactMoney(lucro))+'</strong></div>'
+        +'<div data-status-mobile-field="rentProj" class="'+(projectedMetric.rent>=0?'positive':'negative')+'"><small>% operação</small><strong>'+escHtml(rentProjVal)+'</strong></div>'
+        +'<div data-status-mobile-field="rentmesProj" class="'+(projectedMetric.rentMes>=0?'positive':'negative')+'"><small>% mês</small><strong>'+escHtml(rentMesProjVal)+'</strong></div>'
       +'</div>'
       +'<div class="status-mobile-reference-foot">'
         +'<span data-status-mobile-field="origem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>'+escHtml(origemVal)+'</span>'
@@ -18795,7 +18804,9 @@ restoreBasicSession();
     { key: 'abate', label: 'Abate', group: 'Datas' },
     { key: 'b3', label: 'B3', group: 'Protecao B3' },
     { key: 'capital', label: 'Capital', group: 'Financeiro' },
-    { key: 'lucro', label: 'Lucro', group: 'Financeiro' }
+    { key: 'lucro', label: 'Lucro', group: 'Financeiro' },
+    { key: 'rentProj', label: '% operação', group: 'Financeiro' },
+    { key: 'rentmesProj', label: '% mês', group: 'Financeiro' }
   ];
   var DEFAULT_FIELDS = ['qtd', 'entrada', 'abate', 'b3', 'capital', 'lucro', 'origem', 'frigorifico', 'vendedor'];
   var ALLOWED = FIELD_DEFS.reduce(function (map, item) {
@@ -18981,20 +18992,19 @@ restoreBasicSession();
   }
 
   function fillStatusMobileSortFilters() {
-    var boitel = document.getElementById('status-mobile-sort-boitel');
+    var boitel = document.getElementById('status-mobile-sort-boitel-options');
     if (!boitel) return;
-    var boitelAtual = tableFilterSelected('status', 'confinamento')[0] || '';
-    boitel.innerHTML = '<option value="">Todos os boiteis</option>' + statusMobileUniqueValues('confinamento').map(function (value) {
-      return '<option value="' + escHtml(value) + '"' + (value === boitelAtual ? ' selected' : '') + '>' + escHtml(value) + '</option>';
-    }).join('');
+    boitel.innerHTML = statusMobileUniqueValues('confinamento').map(function (value) {
+      return '<label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-boitel" value="' + escHtml(value) + '"><span>' + escHtml(value) + '</span></label>';
+    }).join('') || '<span class="status-mobile-sort-empty">Nenhum boitel disponível</span>';
     var sortKey = document.getElementById('status-mobile-sort-key');
     var sortDir = document.getElementById('status-mobile-sort-dir');
     if (sortKey) sortKey.value = ['status','numeroLote','entrada','abate','recebimento','b3','qtd','capital','lucro','rentmesProj','rentmesReal'].indexOf(statusSortState.key) >= 0 ? statusSortState.key : 'numeroLote';
     if (sortDir) sortDir.value = statusSortState.dir === 'desc' ? 'desc' : 'asc';
-    var status = document.getElementById('status-mobile-sort-status');
-    var b3 = document.getElementById('status-mobile-sort-b3');
-    if (status) status.value = tableFilterSelected('status', 'status')[0] || '';
-    if (b3) b3.value = tableFilterSelected('status', 'b3')[0] || '';
+    [['status-mobile-filter-status','status'],['status-mobile-filter-b3','b3'],['status-mobile-filter-boitel','confinamento']].forEach(function (pair) {
+      var selected=tableFilterSelected('status',pair[1]);
+      document.querySelectorAll('input[name="'+pair[0]+'"]').forEach(function(input){input.checked=selected.indexOf(input.value)>=0;});
+    });
   }
 
   function buildStatusMobileSortSheet() {
@@ -19014,9 +19024,9 @@ restoreBasicSession();
       '<div class="status-mobile-sort-body">' +
         '<div class="status-mobile-sort-field"><label for="status-mobile-sort-key">Ordenar por</label><select id="status-mobile-sort-key"><option value="numeroLote">Lote</option><option value="status">Etapa do lote</option><option value="entrada">Data de entrada</option><option value="abate">Data de abate</option><option value="recebimento">Data de recebimento</option><option value="b3">Cobertura B3</option><option value="qtd">Quantidade</option><option value="capital">Capital</option><option value="lucro">Lucro</option><option value="rentmesProj">% mes projetada</option><option value="rentmesReal">% mes realizada</option></select></div>' +
         '<div class="status-mobile-sort-field"><label for="status-mobile-sort-dir">Ordem</label><select id="status-mobile-sort-dir"><option value="asc">Crescente</option><option value="desc">Decrescente</option></select></div>' +
-        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-status">Etapa</label><select id="status-mobile-sort-status"><option value="">Todas</option><option value="Embarque">Embarque</option><option value="Confinado">Confinado</option><option value="Escalado">Escalado</option><option value="Abatido">Abatido</option><option value="Recebido">Recebido</option></select></div>' +
-        '<div class="status-mobile-sort-field"><label for="status-mobile-sort-b3">B3</label><select id="status-mobile-sort-b3"><option value="">Todos</option><option value="Aberto">Aberto</option><option value="Parcial">Parcial</option><option value="Travado">Travado</option><option value="Liquidado parcial">Liquidado parcial</option><option value="Liquidado">Liquidado</option><option value="Encerrado">Encerrado</option></select></div>' +
-        '<div class="status-mobile-sort-field full"><label for="status-mobile-sort-boitel">Boitel</label><select id="status-mobile-sort-boitel"></select></div>' +
+        '<div class="status-mobile-sort-field full"><label>Etapa</label><div class="status-mobile-sort-checks"><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-status" value="Embarque"><span>Embarque</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-status" value="Confinado"><span>Confinado</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-status" value="Escalado"><span>Escalado</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-status" value="Abatido"><span>Abatido</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-status" value="Recebido"><span>Recebido</span></label></div></div>' +
+        '<div class="status-mobile-sort-field full"><label>B3</label><div class="status-mobile-sort-checks"><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Aberto"><span>Aberto</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Parcial"><span>Parcial</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Travado"><span>Travado</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Liquidado parcial"><span>Liquidado parcial</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Liquidado"><span>Liquidado</span></label><label class="status-mobile-sort-check"><input type="checkbox" name="status-mobile-filter-b3" value="Encerrado"><span>Encerrado</span></label></div></div>' +
+        '<div class="status-mobile-sort-field full"><label>Boitel</label><div class="status-mobile-sort-checks" id="status-mobile-sort-boitel-options"></div></div>' +
       '</div>' +
       '<div class="status-mobile-sort-actions"><button type="button" class="status-mobile-sort-action status-mobile-sort-clear">Limpar filtros</button><button type="button" class="status-mobile-sort-action primary status-mobile-sort-apply">Aplicar</button></div>';
     document.body.appendChild(backdrop);
@@ -19045,13 +19055,11 @@ restoreBasicSession();
   function applyStatusMobileSort() {
     var key = (document.getElementById('status-mobile-sort-key') || {}).value || 'numeroLote';
     var dir = (document.getElementById('status-mobile-sort-dir') || {}).value || 'asc';
-    var boitel = (document.getElementById('status-mobile-sort-boitel') || {}).value || '';
-    var status = (document.getElementById('status-mobile-sort-status') || {}).value || '';
-    var b3 = (document.getElementById('status-mobile-sort-b3') || {}).value || '';
-    statusColumnFilters.confinamento = boitel;
+    function checkedValues(name){return Array.prototype.map.call(document.querySelectorAll('input[name="'+name+'"]:checked'),function(input){return input.value;});}
+    statusColumnFilters.confinamento = checkedValues('status-mobile-filter-boitel');
     statusColumnFilters.modalidade = '';
-    statusColumnFilters.status = status ? [status] : [];
-    statusColumnFilters.b3 = b3 ? [b3] : [];
+    statusColumnFilters.status = checkedValues('status-mobile-filter-status');
+    statusColumnFilters.b3 = checkedValues('status-mobile-filter-b3');
     setStatusSort(key, dir);
     applyStatusColumnFilters();
     closeStatusMobileSort();
@@ -19063,12 +19071,7 @@ restoreBasicSession();
     statusColumnFilters.modalidade = '';
     statusColumnFilters.status = [];
     statusColumnFilters.b3 = [];
-    var boitel = document.getElementById('status-mobile-sort-boitel');
-    var status = document.getElementById('status-mobile-sort-status');
-    var b3 = document.getElementById('status-mobile-sort-b3');
-    if (boitel) boitel.value = '';
-    if (status) status.value = '';
-    if (b3) b3.value = '';
+    document.querySelectorAll('#status-mobile-sort-sheet-v1 input[type="checkbox"]').forEach(function(input){input.checked=false;});
     applyStatusColumnFilters();
     showToast('Filtros do Status limpos.');
   }
