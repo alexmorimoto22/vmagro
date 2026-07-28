@@ -2077,11 +2077,27 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .cash-entry-btn{height:38px;border:1px solid var(--navy);border-radius:8px;background:var(--navy);color:#fff;padding:0 15px;font:850 11px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
 .cash-manual-tag{display:inline-flex;margin-top:3px;border-radius:999px;padding:2px 6px;background:rgba(201,162,78,.14);color:#8a650f;font-size:8px;font-weight:850;text-transform:uppercase;}
 .cash-delete{border:0;background:transparent;color:var(--red);font:850 10px 'Inter',sans-serif;cursor:pointer;padding:3px 0;}
+.cash-settle{min-height:28px;margin:0;padding:4px 10px;border:1px solid var(--olive);border-radius:6px;background:var(--olive);color:#fff;font:800 10px 'Inter',sans-serif;cursor:pointer;}
+.cash-settle:hover{filter:brightness(.94);}
+.cash-reverse{min-height:28px;padding:4px 10px;border:1px solid var(--red);border-radius:6px;background:#fff;color:var(--red);font:800 10px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
+.cash-reverse:hover{background:#faece9;}
+.cash-statement-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid var(--navy);border-radius:7px;background:var(--navy);color:#fff;font:800 11px 'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
+.cash-statement-filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:8px;align-items:end;margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:8px;background:#fff;}
+.cash-statement-field{min-width:0;}.cash-statement-field label{display:block;margin-bottom:5px;color:var(--taupe);font-size:8px;font-weight:850;text-transform:uppercase;}.cash-statement-field input,.cash-statement-field select{width:100%;height:38px;padding:0 9px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font:700 11px 'Inter',sans-serif;}
+.cash-statement-table .credit{color:var(--green);}.cash-statement-table .debit{color:var(--red);}.cash-statement-actions{display:flex;gap:7px;align-items:center;}
+@media(max-width:768px){.cash-statement-filters{grid-template-columns:repeat(2,minmax(0,1fr));}.cash-statement-actions{grid-column:1/-1;}.cash-statement-actions .cash-statement-btn{flex:1;}.cash-hero{align-items:flex-start;}.cash-statement-table{min-width:760px;}}
 .cash-timeline-list{margin-top:10px;border-top:1px solid var(--border);}
 .cash-time-row{display:grid;grid-template-columns:100px minmax(210px,1fr) 130px 125px 125px 125px 140px;gap:9px;align-items:center;padding:11px 7px;border-bottom:1px solid var(--border);font-size:11px;}
 .cash-time-row:nth-child(even){background:rgba(242,237,227,.3);}
 .cash-time-row.head{padding-top:8px;padding-bottom:8px;background:#faf8f1;color:var(--taupe);font-size:8px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;}
 .cash-time-date{font-weight:900;color:var(--navy);}.cash-time-in{color:var(--green);font-weight:900;text-align:right;}.cash-time-out{color:var(--red);font-weight:900;text-align:right;}.cash-time-net,.cash-time-balance{text-align:right;font-weight:950;}.cash-time-net.pos{color:var(--green);}.cash-time-net.neg{color:var(--red);}
+@media(min-width:901px) and (max-width:1200px){
+  .cash-timeline{padding:12px!important;overflow:hidden;}
+  .cash-time-row{grid-template-columns:72px minmax(145px,1fr) 108px 94px 94px 100px 112px;gap:4px;padding:9px 4px;font-size:9.5px;}
+  .cash-time-row.head{font-size:6.8px;}
+  .cash-time-row>div{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cash-time-row>div:nth-child(n+3){font-size:9px;}
+}
 @media(max-width:900px){
   .cash-entry-grid{grid-template-columns:1fr 1fr;}.cash-entry-field.description{grid-column:1/-1;}.cash-entry-btn{width:100%;}
   .cash-timeline{overflow:visible;padding:13px 12px;}
@@ -7746,8 +7762,49 @@ function finLoteRecebIso(lote,orc){
 var CAIXA_MANUAL_KEY='vmagro_caixa_manual_v1';
 var CAIXA_MANUAL_UPDATED_KEY='vmagro_caixa_manual_updated_v1';
 var CAIXA_LANCAMENTOS_KEY='vmagro_caixa_lancamentos_v1';
+var CAIXA_BAIXAS_KEY='vmagro_caixa_baixas_v1';
 function getCaixaLancamentos(){try{var arr=JSON.parse(localStorage.getItem(CAIXA_LANCAMENTOS_KEY)||'[]');return Array.isArray(arr)?arr:[];}catch(e){return [];}}
 function saveCaixaLancamentos(arr){try{localStorage.setItem(CAIXA_LANCAMENTOS_KEY,JSON.stringify(arr||[]));}catch(e){}}
+function getCaixaBaixas(){try{var arr=JSON.parse(localStorage.getItem(CAIXA_BAIXAS_KEY)||'[]');return Array.isArray(arr)?arr:[];}catch(e){return [];}}
+function saveCaixaBaixas(arr){try{localStorage.setItem(CAIXA_BAIXAS_KEY,JSON.stringify(arr||[]));}catch(e){}}
+function totalBaixadoCaixa(targetKey){return getCaixaBaixas().filter(function(item){return item.targetKey===targetKey;}).reduce(function(total,item){return total+finNum(item.valor);},0);}
+function fecharBaixaCaixa(){var modal=document.getElementById('caixa-baixa-modal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}}
+function abrirBaixaCaixa(targetKey,tipo,descricao,valorPendente){
+  try{descricao=decodeURIComponent(descricao||'');}catch(e){descricao=String(descricao||'');}
+  var modal=document.getElementById('caixa-baixa-modal');
+  if(!modal){
+    modal=document.createElement('div');modal.id='caixa-baixa-modal';modal.className='fut-modal-backdrop';modal.setAttribute('aria-hidden','true');
+    modal.innerHTML='<div class="fut-modal" role="dialog" aria-modal="true"><div class="fut-modal-head"><div><div class="fut-modal-title">Dar baixa manual</div><div class="fut-modal-sub" id="caixa-baixa-descricao"></div></div><button type="button" class="fut-modal-close" onclick="fecharBaixaCaixa()">×</button></div><input type="hidden" id="caixa-baixa-target"><input type="hidden" id="caixa-baixa-tipo"><div class="g2"><div class="field"><label>Data da baixa</label><input type="date" id="caixa-baixa-data"></div><div class="field"><label>Valor</label><input type="text" inputmode="decimal" id="caixa-baixa-valor"></div></div><div class="fut-modal-actions"><button type="button" class="cancel" onclick="fecharBaixaCaixa()">Cancelar</button><button type="button" class="save" onclick="salvarBaixaCaixa()">Confirmar baixa</button></div></div>';
+    modal.addEventListener('click',function(event){if(event.target===modal)fecharBaixaCaixa();});document.body.appendChild(modal);
+  }
+  document.getElementById('caixa-baixa-target').value=targetKey;
+  document.getElementById('caixa-baixa-tipo').value=tipo;
+  document.getElementById('caixa-baixa-descricao').textContent=descricao;
+  document.getElementById('caixa-baixa-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('caixa-baixa-valor').value=brNum(valorPendente,2);
+  document.getElementById('caixa-baixa-valor').dataset.pendente=String(valorPendente);
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+}
+function salvarBaixaCaixa(){
+  var targetKey=(document.getElementById('caixa-baixa-target')||{}).value||'';
+  var tipo=(document.getElementById('caixa-baixa-tipo')||{}).value||'';
+  var data=(document.getElementById('caixa-baixa-data')||{}).value||'';
+  var valor=finNum((document.getElementById('caixa-baixa-valor')||{}).value||0);
+  var descricao=(document.getElementById('caixa-baixa-descricao')||{}).textContent||'';
+  var pendente=finNum((document.getElementById('caixa-baixa-valor')||{}).dataset.pendente||0);
+  if(!targetKey||!data||!(valor>0)){toast('Informe a data e o valor da baixa');return;}
+  if(pendente>0&&valor>pendente+.01){toast('O valor da baixa não pode superar o saldo pendente');return;}
+  var arr=getCaixaBaixas();arr.push({id:'cx_baixa_'+Date.now(),targetKey:targetKey,tipo:tipo,data:data,valor:valor,descricao:descricao,criadoEm:new Date().toISOString()});
+  saveCaixaBaixas(arr);fecharBaixaCaixa();renderCaixa();toast('✓ Baixa registrada');
+}
+function estornarBaixaCaixa(id){
+  if(!confirm('Estornar esta baixa? O valor voltará para a lista de pendências.'))return;
+  var noExtrato=!!document.querySelector('#cash-content .cash-statement-table');
+  var arr=getCaixaBaixas(),item=arr.find(function(registro){return registro.id===id;});
+  if(!item)return;
+  saveCaixaBaixas(arr.filter(function(registro){return registro.id!==id;}));
+  if(noExtrato)renderCaixaExtrato();else renderCaixa();toast('✓ Baixa estornada');
+}
 function getCaixaLancamentoLote(loteId,categoria){
   return getCaixaLancamentos().find(function(item){
     return String(item.loteId||'')===String(loteId||'')&&item.categoria===categoria&&item.tipo==='pagar';
@@ -7901,6 +7958,7 @@ function renderCaixa(){
     if(!orc)return;
     var metric=resultadoStatusLote(lote,orc);
     var item={
+      targetKey:'',
       lote:finLotLabel(lote.id),
       qtd:(parseFloat(lote.qtd||orc.qtd)||0).toLocaleString('pt-BR',{maximumFractionDigits:0})+' cab.',
       dataEntrada:finLoteEntradaIso(lote,orc),
@@ -7909,34 +7967,43 @@ function renderCaixa(){
       faturamento:parseFloat(metric.faturamento)||0,
       manual:false
     };
-    if(lote.status==='embarque'&&item.capital>0)pagar.push(item);
-    if(lote.status==='abatido')receber.push(item);
+    if(lote.status==='embarque'&&item.capital>0){item.targetKey='lote_pagar_'+lote.id;pagar.push(item);}
+    if(lote.status==='abatido'){item.targetKey='lote_receber_'+lote.id;receber.push(item);}
   });
   caixaLancamentos.forEach(function(item){
-    var row={id:item.id,lote:item.descricao,qtd:item.loteId?'Vinculado ao lote':'Lançamento manual',dataEntrada:item.data,dataRecebimento:item.data,capital:item.tipo==='pagar'?finNum(item.valor):0,faturamento:item.tipo==='receber'?finNum(item.valor):0,manual:true,vinculado:!!item.loteId};
+    var row={id:item.id,targetKey:'manual_'+item.id,lote:item.descricao,qtd:item.loteId?'Vinculado ao lote':'Lançamento manual',dataEntrada:item.data,dataRecebimento:item.data,capital:item.tipo==='pagar'?finNum(item.valor):0,faturamento:item.tipo==='receber'?finNum(item.valor):0,manual:true,vinculado:!!item.loteId};
     if(item.tipo==='pagar')pagar.push(row);else receber.push(row);
   });
+  pagar.forEach(function(item){item.capital=Math.max(0,item.capital-totalBaixadoCaixa(item.targetKey));});
+  receber.forEach(function(item){item.faturamento=Math.max(0,item.faturamento-totalBaixadoCaixa(item.targetKey));});
+  pagar=pagar.filter(function(item){return item.capital>.005;});
+  receber=receber.filter(function(item){return item.faturamento>.005;});
   pagar.sort(function(a,b){return String(a.dataEntrada||'').localeCompare(String(b.dataEntrada||''));});
   receber.sort(function(a,b){return String(a.dataRecebimento||'').localeCompare(String(b.dataRecebimento||''));});
   var caixa=getCaixaManual();
   var atualizadoEm=caixaManualAtualizacaoLabel();
   var totalPagar=pagar.reduce(function(total,item){return total+item.capital;},0);
   var totalReceber=receber.reduce(function(total,item){return total+item.faturamento;},0);
-  var livre=caixa+totalReceber-totalPagar;
+  var baixas=getCaixaBaixas();
+  var totalBaixasPagar=baixas.filter(function(item){return item.tipo==='pagar';}).reduce(function(total,item){return total+finNum(item.valor);},0);
+  var totalBaixasReceber=baixas.filter(function(item){return item.tipo==='receber';}).reduce(function(total,item){return total+finNum(item.valor);},0);
+  var livre=caixa+totalBaixasReceber-totalBaixasPagar+totalReceber-totalPagar;
   function tableRows(items,tipo){
-    if(!items.length)return '<tr><td colspan="3"><div class="cash-empty">Nenhum lote nesta etapa.</div></td></tr>';
+    if(!items.length)return '<tr><td colspan="4"><div class="cash-empty">Nenhum lote nesta etapa.</div></td></tr>';
     return items.map(function(item){
       var data=tipo==='pagar'?item.dataEntrada:item.dataRecebimento;
       var valor=tipo==='pagar'?item.capital:item.faturamento;
-      return '<tr><td><div class="fin-strong">'+escHtml(item.lote)+'</div><div class="fin-muted">'+escHtml(item.qtd)+'</div>'+(item.manual?'<span class="cash-manual-tag">Manual</span>':'')+'</td><td>'+finDateBR(data)+'</td><td class="cash-money">'+fmt(valor)+(item.manual?'<div><button type="button" class="cash-delete" onclick="excluirCaixaLancamento(\''+item.id+'\')">Excluir</button></div>':'')+'</td></tr>';
+      var descricaoCodificada=encodeURIComponent(String(item.lote||'')).replace(/'/g,'%27');
+      return '<tr><td><div class="fin-strong">'+escHtml(item.lote)+'</div><div class="fin-muted">'+escHtml(item.qtd)+'</div>'+(item.manual?'<span class="cash-manual-tag">Manual</span>':'')+'</td><td>'+finDateBR(data)+'</td><td class="cash-money">'+fmt(valor)+'</td><td><div class="cash-statement-actions"><button type="button" class="cash-settle" onclick="abrirBaixaCaixa(\''+escHtml(item.targetKey)+'\',\''+tipo+'\',\''+descricaoCodificada+'\','+valor+')">Baixar</button>'+(item.manual?' <button type="button" class="cash-delete" onclick="excluirCaixaLancamento(\''+item.id+'\')">Excluir</button>':'')+'</div></td></tr>';
     }).join('');
   }
   var timeline={};
   pagar.forEach(function(item){var d=item.dataEntrada||'';if(!d)return;timeline[d]=timeline[d]||{entradas:0,saidas:0,itens:[]};timeline[d].saidas+=item.capital;timeline[d].itens.push('Pagar: '+item.lote);});
   receber.forEach(function(item){var d=item.dataRecebimento||'';if(!d)return;timeline[d]=timeline[d]||{entradas:0,saidas:0,itens:[]};timeline[d].entradas+=item.faturamento;timeline[d].itens.push('Receber: '+item.lote);});
+  getCaixaBaixas().forEach(function(item){var d=item.data||'';if(!d)return;timeline[d]=timeline[d]||{entradas:0,saidas:0,itens:[]};if(item.tipo==='receber')timeline[d].entradas+=finNum(item.valor);else timeline[d].saidas+=finNum(item.valor);timeline[d].itens.push('Baixa: '+item.descricao);});
   var saldoLinha=caixa;
   var timelineRows=Object.keys(timeline).sort().map(function(data){var dia=timeline[data],saldoInicial=saldoLinha,liquido=dia.entradas-dia.saidas;saldoLinha+=liquido;return '<div class="cash-time-row"><div class="cash-time-date">'+finDateBR(data)+'</div><div title="'+escHtml(dia.itens.join(' · '))+'">'+escHtml(dia.itens.join(' · '))+'</div><div class="cash-time-balance">'+fmt(saldoInicial)+'</div><div class="cash-time-in">'+fmt(dia.entradas)+'</div><div class="cash-time-out">'+fmt(dia.saidas)+'</div><div class="cash-time-net '+(liquido>=0?'pos':'neg')+'">'+fmt(liquido)+'</div><div class="cash-time-balance">'+fmt(saldoLinha)+'</div></div>';}).join('');
-  content.innerHTML='<div class="cash-hero"><div><div class="cash-title">Caixa</div><div class="cash-sub">Visão do saldo disponível, pagamentos dos lotes em embarque e recebimentos dos lotes abatidos.</div></div></div>'
+  content.innerHTML='<div class="cash-hero"><div><div class="cash-title">Caixa</div><div class="cash-sub">Visão do saldo disponível, pagamentos dos lotes em embarque e recebimentos dos lotes abatidos.</div></div><button type="button" class="cash-statement-btn" onclick="renderCaixaExtrato()">Ver extrato</button></div>'
     +'<div class="cash-kpis">'
       +'<div class="cash-kpi"><label class="cash-label" for="cash-manual-input">Caixa</label><div class="cash-manual-row"><input id="cash-manual-input" class="cash-manual-input" type="text" inputmode="decimal" value="'+escHtml(fmtNum(caixa,2))+'" onchange="salvarCaixaManual(this.value)"><div class="cash-update-info"><span class="cash-update-label">Última atualização</span><span class="cash-update-value">'+escHtml(atualizadoEm)+'</span></div></div></div>'
       +'<div class="cash-kpi"><span class="cash-label">A pagar</span><div class="cash-value">'+fmt(totalPagar)+'</div></div>'
@@ -7944,8 +8011,8 @@ function renderCaixa(){
       +'<div class="cash-kpi free"><span class="cash-label">Caixa livre</span><div class="cash-value">'+fmt(livre)+'</div></div>'
     +'</div>'
     +'<div class="cash-grid">'
-      +'<section class="cash-card payable"><div class="cash-card-head"><div class="cash-card-title">A pagar</div><div class="cash-card-total">'+fmt(totalPagar)+'</div></div><table class="cash-table"><thead><tr><th>Lote</th><th>Entrada</th><th style="text-align:right">Capital investido</th></tr></thead><tbody>'+tableRows(pagar,'pagar')+'</tbody></table></section>'
-      +'<section class="cash-card"><div class="cash-card-head"><div class="cash-card-title">A receber</div><div class="cash-card-total">'+fmt(totalReceber)+'</div></div><table class="cash-table"><thead><tr><th>Lote</th><th>Recebimento</th><th style="text-align:right">Fat. lote</th></tr></thead><tbody>'+tableRows(receber,'receber')+'</tbody></table></section>'
+      +'<section class="cash-card payable"><div class="cash-card-head"><div class="cash-card-title">A pagar</div><div class="cash-card-total">'+fmt(totalPagar)+'</div></div><table class="cash-table"><thead><tr><th>Lote</th><th>Entrada</th><th style="text-align:right">Capital investido</th><th>Ação</th></tr></thead><tbody>'+tableRows(pagar,'pagar')+'</tbody></table></section>'
+      +'<section class="cash-card"><div class="cash-card-head"><div class="cash-card-title">A receber</div><div class="cash-card-total">'+fmt(totalReceber)+'</div></div><table class="cash-table"><thead><tr><th>Lote</th><th>Recebimento</th><th style="text-align:right">Fat. lote</th><th>Ação</th></tr></thead><tbody>'+tableRows(receber,'receber')+'</tbody></table></section>'
     +'</div>'
     +'<section class="cash-entry-card"><div class="cash-card-head"><div><div class="cash-card-title">Novo lançamento manual</div><div class="fin-muted">Adicione pagamentos e recebimentos que não pertencem a um lote.</div></div></div><div class="cash-entry-grid">'
       +'<div class="cash-entry-field"><label>Tipo</label><select id="cash-entry-type"><option value="pagar">A pagar</option><option value="receber">A receber</option></select></div>'
@@ -7955,6 +8022,48 @@ function renderCaixa(){
       +'<button type="button" class="cash-entry-btn" onclick="adicionarCaixaLancamento()">Adicionar</button>'
     +'</div></section>'
     +'<section class="cash-timeline"><div class="cash-card-head"><div><div class="cash-card-title">Linha do tempo do caixa</div><div class="fin-muted">Pagamentos e recebimentos agrupados pela data, com saldo acumulado.</div></div></div><div class="cash-timeline-list"><div class="cash-time-row head"><div>Data</div><div>Movimentos</div><div style="text-align:right">Saldo inicial</div><div style="text-align:right">Receber</div><div style="text-align:right">Pagar</div><div style="text-align:right">Líquido</div><div style="text-align:right">Saldo previsto</div></div>'+(timelineRows||'<div class="cash-empty">Nenhum movimento com data definida.</div>')+'</div></section>';
+}
+var caixaExtratoFiltros={modo:'mensal',mes:new Date().toISOString().slice(0,7),inicio:'',fim:'',tipo:'todos'};
+function aplicarFiltrosExtratoCaixa(){
+  caixaExtratoFiltros.modo=(document.getElementById('cash-statement-mode')||{}).value||'mensal';
+  caixaExtratoFiltros.mes=(document.getElementById('cash-statement-month')||{}).value||'';
+  caixaExtratoFiltros.inicio=(document.getElementById('cash-statement-start')||{}).value||'';
+  caixaExtratoFiltros.fim=(document.getElementById('cash-statement-end')||{}).value||'';
+  caixaExtratoFiltros.tipo=(document.getElementById('cash-statement-type')||{}).value||'todos';
+  renderCaixaExtrato();
+}
+function limparFiltrosExtratoCaixa(){caixaExtratoFiltros={modo:'mensal',mes:new Date().toISOString().slice(0,7),inicio:'',fim:'',tipo:'todos'};renderCaixaExtrato();}
+function renderCaixaExtrato(){
+  var content=document.getElementById('cash-content');if(!content)return;
+  var filtro=caixaExtratoFiltros;
+  var inicio='',fim='';
+  if(filtro.modo==='mensal'&&filtro.mes){inicio=filtro.mes+'-01';var partes=filtro.mes.split('-'),ultimo=new Date(Number(partes[0]),Number(partes[1]),0).getDate();fim=filtro.mes+'-'+String(ultimo).padStart(2,'0');}
+  if(filtro.modo==='periodo'){inicio=filtro.inicio||'';fim=filtro.fim||'';}
+  var todos=getCaixaBaixas().slice().sort(function(a,b){return String(a.data||'').localeCompare(String(b.data||''))||String(a.criadoEm||'').localeCompare(String(b.criadoEm||''));});
+  var saldo=getCaixaManual();
+  var movimentos=todos.map(function(item){
+    var anterior=saldo,valor=finNum(item.valor),credito=item.tipo==='receber';saldo+=credito?valor:-valor;
+    return {item:item,anterior:anterior,saldo:saldo,valor:valor,credito:credito};
+  });
+  var visiveis=movimentos.filter(function(mov){var data=mov.item.data||'';if(inicio&&data<inicio)return false;if(fim&&data>fim)return false;if(filtro.tipo==='creditos'&&!mov.credito)return false;if(filtro.tipo==='debitos'&&mov.credito)return false;return true;});
+  var creditos=visiveis.filter(function(mov){return mov.credito;}).reduce(function(total,mov){return total+mov.valor;},0);
+  var debitos=visiveis.filter(function(mov){return !mov.credito;}).reduce(function(total,mov){return total+mov.valor;},0);
+  var saldoInicial=getCaixaManual();
+  movimentos.forEach(function(mov){if(inicio&&String(mov.item.data||'')<inicio)saldoInicial+=mov.credito?mov.valor:-mov.valor;});
+  var saldoPeriodo=saldoInicial+creditos-debitos;
+  var rows=visiveis.map(function(mov){var item=mov.item;return '<tr><td>'+finDateBR(item.data)+'</td><td><div class="fin-strong">'+escHtml(item.descricao||'Movimento')+'</div><div class="fin-muted">'+(mov.credito?'Crédito':'Débito')+' · '+escHtml(item.targetKey||'Lançamento manual')+'</div></td><td class="cash-money '+(mov.credito?'credit':'debit')+'">'+(mov.credito?'+ ':'- ')+fmt(mov.valor)+'</td><td class="cash-money">'+fmt(mov.saldo)+'</td><td><button type="button" class="cash-reverse" onclick="estornarBaixaCaixa(\''+escHtml(item.id)+'\')">Estornar</button></td></tr>';}).join('');
+  var periodoLabel=filtro.modo==='mensal'&&filtro.mes?filtro.mes.split('-').reverse().join('/'):(filtro.modo==='periodo'?(finDateBR(inicio)+' a '+finDateBR(fim)):'Todo o período');
+  content.innerHTML='<div class="cash-hero"><div><div class="cash-title">Extrato do Caixa</div><div class="cash-sub">Créditos e débitos realizados · '+escHtml(periodoLabel)+'</div></div><button type="button" class="cash-statement-btn" onclick="renderCaixa()">Voltar ao Caixa</button></div>'
+    +'<div class="cash-statement-filters">'
+      +'<div class="cash-statement-field"><label>Visualização</label><select id="cash-statement-mode" onchange="caixaExtratoFiltros.modo=this.value;renderCaixaExtrato()"><option value="mensal"'+(filtro.modo==='mensal'?' selected':'')+'>Mensal</option><option value="periodo"'+(filtro.modo==='periodo'?' selected':'')+'>Por período</option><option value="todos"'+(filtro.modo==='todos'?' selected':'')+'>Todo o período</option></select></div>'
+      +'<div class="cash-statement-field"><label>Mês</label><input type="month" id="cash-statement-month" value="'+escHtml(filtro.mes)+'"'+(filtro.modo!=='mensal'?' disabled':'')+'></div>'
+      +'<div class="cash-statement-field"><label>Data inicial</label><input type="date" id="cash-statement-start" value="'+escHtml(filtro.inicio)+'"'+(filtro.modo!=='periodo'?' disabled':'')+'></div>'
+      +'<div class="cash-statement-field"><label>Data final</label><input type="date" id="cash-statement-end" value="'+escHtml(filtro.fim)+'"'+(filtro.modo!=='periodo'?' disabled':'')+'></div>'
+      +'<div class="cash-statement-field"><label>Movimentos</label><select id="cash-statement-type"><option value="todos"'+(filtro.tipo==='todos'?' selected':'')+'>Créditos e débitos</option><option value="creditos"'+(filtro.tipo==='creditos'?' selected':'')+'>Somente créditos</option><option value="debitos"'+(filtro.tipo==='debitos'?' selected':'')+'>Somente débitos</option></select></div>'
+      +'<div class="cash-statement-actions"><button type="button" class="cash-statement-btn" onclick="aplicarFiltrosExtratoCaixa()">Aplicar</button><button type="button" class="btn-cancel" onclick="limparFiltrosExtratoCaixa()">Limpar</button></div>'
+    +'</div>'
+    +'<div class="cash-kpis"><div class="cash-kpi"><span class="cash-label">Saldo inicial</span><div class="cash-value">'+fmt(saldoInicial)+'</div></div><div class="cash-kpi"><span class="cash-label">Créditos</span><div class="cash-value" style="color:var(--green)">'+fmt(creditos)+'</div></div><div class="cash-kpi"><span class="cash-label">Débitos</span><div class="cash-value" style="color:var(--red)">'+fmt(debitos)+'</div></div><div class="cash-kpi free"><span class="cash-label">Saldo do período</span><div class="cash-value">'+fmt(saldoPeriodo)+'</div></div></div>'
+    +'<section class="cash-entry-card"><div class="cash-card-head"><div><div class="cash-card-title">Movimentações</div><div class="fin-muted">'+visiveis.length+' lançamento(s) realizado(s).</div></div></div><div class="fin-table-wrap"><table class="cash-table cash-statement-table"><thead><tr><th>Data</th><th>Descrição</th><th style="text-align:right">Crédito / débito</th><th style="text-align:right">Saldo</th><th>Ação</th></tr></thead><tbody>'+(rows||'<tr><td colspan="5"><div class="cash-empty">Nenhuma movimentação encontrada no período.</div></td></tr>')+'</tbody></table></div></section>';
 }
 function finAutoLancamentosLotes(){
   var out=[];
@@ -17859,7 +17968,7 @@ function buildHomeExportData(){
   if(resumo.length===1)resumo=exportSummaryCards('#panel-home','.home-metric','.home-metric-label','.home-metric-value','.home-metric-sub');
   var lotes=exportRowsFromTable('#panel-home','.home-table');
   if(lotes.length<2)lotes=buildStatusLotRows();
-  return {tab:'Home',title:'Relatório Home',file:'VM_Agro_Home_'+exportDateFile(),filters:filters,sheets:[{name:'Resumo',rows:resumo},{name:'Lotes',rows:lotes}]};
+  return {tab:'Home',title:'Relatório Home',file:'vm-agro-home-'+exportDateFile(),filters:filters,sheets:[{name:'Resumo',rows:resumo},{name:'Lotes',rows:lotes}]};
 }
 function buildCaixaExportData(){
   var pagar=[['Lote','Quantidade','Data de entrada','Capital investido']];
@@ -17881,7 +17990,7 @@ function buildCaixaExportData(){
   });
   var caixa=getCaixaManual(),livre=caixa+totalReceber-totalPagar;
   var resumo=[['Indicador','Valor','Observação'],['Caixa',fmt(caixa),'Atualizado em '+caixaManualAtualizacaoLabel()],['A pagar',fmt(totalPagar),'Lotes em embarque'],['A receber',fmt(totalReceber),'Lotes abatidos'],['Caixa livre',fmt(livre),'Caixa + a receber - a pagar']];
-  return {tab:'Caixa',title:'Relatório de Caixa',file:'VM_Agro_Caixa_'+exportDateFile(),filters:[],sheets:[{name:'Resumo do Caixa',rows:resumo},{name:'A Pagar',rows:pagar},{name:'A Receber',rows:receber}]};
+  return {tab:'Caixa',title:'Relatório de Caixa',file:'vm-agro-caixa-'+exportDateFile(),filters:[],sheets:[{name:'Resumo do Caixa',rows:resumo},{name:'A Pagar',rows:pagar},{name:'A Receber',rows:receber}]};
 }
 function buildConfigExportData(){
   var fields=[['Campo','Valor']],seen={};
@@ -17910,7 +18019,7 @@ function buildConfigExportData(){
     if(rows.length){tableIndex++;sheets.push({name:'Tabela '+tableIndex,rows:rows});}
   });
   if(fields.length===1&&sheets.length===1)fields.push(['Informação','Nenhuma configuração visível nesta tela']);
-  return {tab:'Configurações',title:'Relatório de Configurações',file:'VM_Agro_Configuracoes_'+exportDateFile(),filters:[],sheets:sheets};
+  return {tab:'Configurações',title:'Relatório de Configurações',file:'vm-agro-configuracoes-'+exportDateFile(),filters:[],sheets:sheets};
 }
 function buildStatusLotRows(){
   var rows=[['Status','Ano','Confinamento','Modalidade','Raça','Origem','Vendedor','Lote','B3','Qtd','Quebra %','Quebra kg','Entrada','Abate','Recebimento','Faturamento','Capital','Lucro','% operação','% ao mês','RC expectativa','RC realizado','Consumo médio expectativa','Consumo médio realizado','Efic. origem','Efic. chegada']];
@@ -18009,7 +18118,7 @@ function buildStatusExportData(){
   var filters=[['Status',document.querySelector('.status-pills .pill.active')?exportText(document.querySelector('.status-pills .pill.active')):'Todos']];
   document.querySelectorAll('#panel-lotes .status-filter-control input,#panel-lotes .status-filter-control select').forEach(function(i){if(i.value)filters.push([i.getAttribute('placeholder')||i.getAttribute('aria-label')||'Filtro',i.value]);});
   var lotes=statusExportLotesFiltrados();
-  return {tab:'Status',title:'Relatório por Status',file:'VM_Agro_Status_'+exportDateFile(),filters:filters,sheets:[
+  return {tab:'Status',title:'Relatório por Status',file:'vm-agro-status-'+exportDateFile(),filters:filters,sheets:[
     {name:'Resumo por Status',rows:buildStatusSummaryRows()},
     {name:'Lotes por Status',rows:buildStatusLotRows()},
     {name:'Projetado',rows:buildProjectedExportRows(lotes)},
@@ -18074,7 +18183,7 @@ function buildB3ExportData(){
       fmt(r.custos||0)
     ]);
   });
-  return {tab:'B3',title:'Relatório B3',file:'VM_Agro_B3_'+exportDateFile(),filters:filters,sheets:[{name:'Resumo B3',rows:resumo},{name:'Contratos',rows:contratos}]};
+  return {tab:'B3',title:'Relatório B3',file:'vm-agro-b3-'+exportDateFile(),filters:filters,sheets:[{name:'Resumo B3',rows:resumo},{name:'Contratos',rows:contratos}]};
 }
 function calculatorReportNumber(id){
   var el=document.getElementById(id);if(!el)return null;
@@ -18227,7 +18336,7 @@ function buildCalculatorReportData(){
     b3:{linked:b3Items.length>0,items:b3Items}
   };
   var refName=ref||(loteNum!==null?'Lote_'+loteNum:'Simulacao');
-  data.fileBase='VM_Agro_Simulacao_'+calculatorReportSafeName(refName)+'_'+exportDateFile();
+  data.fileBase='vm-agro-simulacao-'+calculatorReportSafeName(refName)+'-'+exportDateFile();
   return data;
 }
 function daysOrNull(v){return v===null||v===undefined?null:Number(v);}
@@ -18358,7 +18467,7 @@ async function downloadReportPdf(data,tab){
     });
   }
   footer();
-  var pdfName=(data.file||'VM_Agro_Relatorio')+'.pdf';
+  var pdfName=(data.file||'vm-agro-relatorio')+'.pdf';
   var result=await deliverReportFiles([{blob:doc.output('blob'),name:pdfName,type:'application/pdf'}],tab||currentExportTab(),'Relatório da VM Agro');
   if(result==='downloaded')toast('✓ PDF exportado');else if(result==='shared')toast('✓ PDF compartilhado');
 }
@@ -18401,7 +18510,7 @@ function hasCalculatorReportValue(value){
 function calculatorReportJpgName(report,complete,index,total,hdParts){
   var lot=report&&report.identification?report.identification.lotNumber:null;
   var ref=report&&report.identification?report.identification.reference:null;
-  var prefix='VM_Agro_';
+  var prefix='vm-agro-';
   if(lot!==null&&lot!==undefined&&String(lot).trim()!=='')prefix+='Lote_'+calculatorReportSafeName(lot)+'_';
   else if(ref)prefix+=calculatorReportSafeName(ref)+'_';
   var name=prefix+(complete?(hdParts?'Simulacao_Completa_HD':'Simulacao_Completa'):'Simulacao_Resumo')+'_'+exportDateFile();
@@ -18711,7 +18820,7 @@ function exportarDados(){
   if(typeof URL.createObjectURL!=='function'){toast('⚠ Navegador não suporta download');return;}
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='hastaagro-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.download='vm-agro-backup-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   toast('✓ Backup exportado');
 }
