@@ -5358,6 +5358,34 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     }
   }
 </style>
+<style id="desktop-table-selection-20260730">
+  .table-selection-summary{display:none;}
+  @media(min-width:769px){
+    .table-selection-check{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;color:var(--text-2);font-size:8px;font-weight:800;white-space:nowrap;cursor:pointer;}
+    .table-selection-check input,.status-row-select,.fut-row-select{width:16px;height:16px;min-width:16px;margin:0;accent-color:var(--navy);cursor:pointer;}
+    #panel-lotes .status-select-cell{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;padding:4px!important;overflow:hidden!important;}
+    #panel-lotes .status-select-cell .table-selection-check{gap:0;}
+    #panel-lotes .status-row.row-selected{background:#eef4e8!important;box-shadow:inset 3px 0 0 var(--olive)!important;}
+    #panel-lotes .status-total-row [data-status-total-col="select"]{justify-content:center;text-align:center;font-size:8px;}
+    #panel-futuros .fut-select-cell{width:58px!important;min-width:58px!important;max-width:58px!important;padding:6px!important;text-align:center!important;}
+    #panel-futuros .fut-table tbody tr.row-selected>td{background:#eef4e8!important;}
+    #panel-futuros .fut-table tbody tr.row-selected>.fut-select-cell{box-shadow:inset 3px 0 0 var(--olive);}
+    #panel-futuros .table-selection-summary{display:block;margin:0 0 8px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:#faf8f3;color:var(--text-2);font-size:9px;font-weight:700;}
+    #panel-futuros [data-fut-col="acoes"]{width:54px!important;min-width:54px!important;max-width:54px!important;padding-left:4px!important;padding-right:4px!important;text-align:center!important;}
+    #panel-futuros th[data-fut-col="acoes"] .fut-table-head-line{padding:0 3px!important;justify-content:center!important;}
+    #panel-futuros th[data-fut-col="acoes"] .table-column-drag,
+    #panel-futuros th[data-fut-col="acoes"] .fut-col-resizer{display:none!important;}
+    #panel-futuros th[data-fut-col="acoes"] .fut-table-sort{justify-content:center!important;padding:0!important;font-size:7px!important;text-align:center!important;}
+    .fut-actions-dot{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--navy);font-size:20px;font-weight:900;line-height:1;cursor:pointer;}
+    .fut-actions-dot:hover,.fut-actions-dot:focus-visible{border-color:var(--gold);background:#faf8f3;outline:none;}
+  }
+  .fut-actions-floating-menu{position:fixed;z-index:10120;display:grid;width:156px;padding:6px;border:1px solid var(--border);border-radius:8px;background:#fff;box-shadow:0 14px 36px rgba(13,27,42,.22);}
+  .fut-actions-floating-menu button{width:100%;min-height:34px;padding:7px 10px;border:0;border-radius:5px;background:transparent;color:var(--text-2);font:750 11px 'Inter',sans-serif;text-align:left;cursor:pointer;}
+  .fut-actions-floating-menu button:hover{background:var(--surface2);color:var(--navy);}
+  .fut-actions-floating-menu button.success{color:var(--olive);}
+  .fut-actions-floating-menu button.warn{color:#985000;}
+  .fut-actions-floating-menu button.danger{color:var(--red);}
+</style>
 <style id="status-desktop-kanban-20260728">
   .status-kanban-reference-edit{display:none;}
   @media(min-width:769px){
@@ -6188,11 +6216,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
           <div class="fut-table-controls">
             <div class="fut-table-hint">Clique no título da coluna para ordenar. Arraste a borda do título para ajustar a largura.</div>
             <div class="fut-table-actions">
+              <button type="button" class="status-view-btn" onclick="clearFutSelection()">Limpar seleção</button>
               <button type="button" class="status-view-btn" onclick="limparFiltrosFuturos()">Limpar filtros</button>
               <button type="button" class="status-view-btn" onclick="toggleFutColumnsPanel()">Colunas visíveis</button>
               <div id="fut-column-panel" class="fut-column-panel"></div>
             </div>
           </div>
+          <div class="table-selection-summary" id="fut-selection-summary">Nenhum contrato selecionado. Os totais consideram todos os contratos filtrados.</div>
           <div class="b3-mobile-tools" aria-label="Ordenação e filtros dos contratos B3">
             <button type="button" class="status-mobile-columns-trigger" onclick="openB3MobileColumns(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg><span>Colunas visíveis</span></button>
             <button type="button" class="status-mobile-sort-trigger" onclick="openB3MobileSort(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h8M8 18h4M4 5v14M2 17l2 2 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Ordenar</span></button>
@@ -6772,7 +6802,10 @@ let activeOrcEditIndex=null;
 let activeLoteReturnStatus=null;
 let pillFilter='';
 var statusColumnFilters={status:'',ano:'',confinamento:'',modalidade:'',raca:'',origem:'',vendedor:'',frigorifico:'',pecuarista:'',transportadora:'',numeroLote:'',lote:'',b3:'',qtd:'',kmRodados:'',quebraPct:'',quebraKg:'',entrada:'',abate:'',recebimento:'',faturamento:'',capital:'',lucro:'',rentProj:'',rentmesProj:'',rentReal:'',rentmesReal:'',rcExpectativa:'',rcRealizado:'',consumoMedioExpectativa:'',consumoMedioRealizado:'',pesoOrigem:'',pesoChegada:'',gmdOrigem:'',gmdChegada:'',gmcOrigem:'',gmcChegada:'',eficiencia:'',eficienciaChegada:'',atProdChegada:'',atProdOrigem:'',custoAtChegada:'',custoAtOrigem:''};
+var statusSelectedLoteIds={};
+var futSelectedContractIds={};
 var STATUS_COLS=[
+  {key:'select',label:'',w:42,fixed:true},
   {key:'status',label:'Status',w:126},{key:'ano',label:'Ano',w:52},{key:'confinamento',label:'Confinamento',w:112},
   {key:'modalidade',label:'Modalidade',w:128},{key:'raca',label:'Raça',w:118},{key:'origem',label:'Origem',w:118},{key:'vendedor',label:'Vendedor',w:112},{key:'frigorifico',label:'Frigorífico',w:132},{key:'pecuarista',label:'Pecuarista',w:132},{key:'transportadora',label:'Transportadora',w:142},{key:'numeroLote',label:'Nº lote',w:128},{key:'lote',label:'Nome do lote',w:210},{key:'b3',label:'B3',w:136},{key:'qtd',label:'Qtd',w:62},{key:'kmRodados',label:'KM rodados',w:92},{key:'quebraPct',label:'Quebra %',w:86},{key:'quebraKg',label:'Quebra kg',w:96},
   {key:'entrada',label:'Entrada',w:92},{key:'abate',label:'Abate',w:92},{key:'recebimento',label:'Recebimento',w:104},
@@ -6810,6 +6843,8 @@ try{
     });
   }
 }catch(e){}
+var statusSelectColIndex=STATUS_COLS.findIndex(function(c){return c.key==='select';});
+if(statusSelectColIndex>0)STATUS_COLS.unshift(STATUS_COLS.splice(statusSelectColIndex,1)[0]);
 var STATUS_SORT_KEY='vm_status_sort_v1';
 var statusSortState=(function(){
   try{return JSON.parse(localStorage.getItem(STATUS_SORT_KEY)||'{}')||{};}catch(e){return {};}
@@ -7131,7 +7166,7 @@ var FUT_COLS=[
   {key:'entradaLote',label:'Entrada',w:96},{key:'faturamentoLote',label:'Fat. lote',w:132},{key:'codigo',label:'Código',w:92},{key:'vencimento',label:'Mês',w:132},
   {key:'lado',label:'Lado',w:76},{key:'qtdOriginal',label:'Qtd original',w:92},{key:'aberto',label:'Aberto',w:82},
   {key:'liquidado',label:'Liquidado',w:92},{key:'abertura',label:'Abertura',w:118},{key:'liquidacao',label:'Liquidação média',w:126},
-  {key:'resultadoRealizado',label:'Resultado realizado',w:138},{key:'resultadoAberto',label:'Resultado aberto',w:122},{key:'acoes',label:'Ações',w:270,fixed:true}
+  {key:'resultadoRealizado',label:'Resultado realizado',w:138},{key:'resultadoAberto',label:'Resultado aberto',w:122},{key:'acoes',label:'Ações',w:54,fixed:true}
 ];
 var FUT_COLUMN_GROUPS=[
   {label:'Identificação',keys:['status','tipo','tipoTrava','numeroLote','lote','totalContratosLote','momentoLote','confinamento','pecuarista','origem','qtdLote','entradaLote','faturamentoLote']},
@@ -10946,6 +10981,7 @@ function getFutColWidths(){
   try{return JSON.parse(localStorage.getItem(FUT_COL_WIDTH_KEY)||'{}')||{};}catch(e){return {};}
 }
 function futColWidth(key){
+  if(key==='acoes')return 54;
   var col=FUT_COLS.find(function(c){return c.key===key;});
   var saved=getFutColWidths();
   return Math.max(78,parseFloat(saved[key]||(col&&col.w)||100)||100);
@@ -11031,7 +11067,7 @@ function futColumnStyle(key){
 }
 function applyFutTableLayout(){
   var visible=futVisibleCols();
-  var total=visible.reduce(function(sum,c){return sum+futColWidth(c.key);},0);
+  var total=58+visible.reduce(function(sum,c){return sum+futColWidth(c.key);},0);
   var table=document.querySelector('#panel-futuros .fut-table');
   if(table){
     var host=table.parentElement;
@@ -11501,7 +11537,7 @@ function renderFutTableTotal(registros,visibleCols){
     liquidacao:main(pesoLiquidacao?'R$ '+fmtNum(precoLiquidacaoPeso/pesoLiquidacao,2)+'/@':'—','média ponderada'),
     resultadoRealizado:main(pesoLiquidacao?fmt(resultadoTotal):'—',pesoLiquidacao?'média '+fmt(resultadoTotal/pesoLiquidacao)+' / ctr':'média ponderada —')
   };
-  row.innerHTML=(visibleCols||[]).map(function(col){
+  row.innerHTML='<td class="fut-select-cell"><span class="fut-total-main">'+((registros||[]).length)+(futSelectionCount()?' sel.':' itens')+'</span><span class="fut-total-sub">base do cálculo</span></td>'+(visibleCols||[]).map(function(col){
     return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+(values[col.key]||'—')+'</td>';
   }).join('');
 }
@@ -11578,7 +11614,58 @@ function applyB3MobileSort(){
 }
 function clearB3MobileSort(){limparFiltrosFuturos();closeB3MobileSort();}
 
+function closeFutActionsMenu(){
+  document.removeEventListener('click',handleFutActionsOutsideClick);
+  var menu=document.getElementById('fut-actions-floating-menu');
+  if(menu)menu.remove();
+}
+function handleFutActionsOutsideClick(){closeFutActionsMenu();}
+function runFutAction(action,id){
+  closeFutActionsMenu();
+  if(action==='liquidar')abrirModalLiquidarFuturo(id);
+  else if(action==='status'){
+    var contrato=getFuturos().find(function(item){return item.id===id;});
+    if(contrato&&contrato.loteId)abrirLoteNoStatus(contrato.loteId);
+  }
+  else if(action==='editar')editarFuturo(id);
+  else if(action==='historico')verLiquidacoesFuturo(id);
+  else if(action==='cancelar')cancelarFuturo(id);
+  else if(action==='excluir')deletarFuturo(id);
+}
+function toggleFutActionsMenu(event,id){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var current=document.getElementById('fut-actions-floating-menu');
+  if(current&&current.getAttribute('data-fut-id')===id){closeFutActionsMenu();return;}
+  closeFutActionsMenu();
+  var contrato=getFuturos().find(function(item){return item.id===id;});
+  if(!contrato)return;
+  var resultado=futuroResultado(contrato);
+  var itens=[];
+  if(resultado.qtdAberta>0&&resultado.status!=='cancelado')itens.push({key:'liquidar',label:'Liquidar',cls:'success'});
+  if(contrato.loteId)itens.push({key:'status',label:'Abrir Status',cls:''});
+  itens.push({key:'editar',label:'Editar',cls:''});
+  if(resultado.liquidacoes.length||(contrato.liquidacoesCanceladas||[]).length||(contrato.transferHistory||[]).length)itens.push({key:'historico',label:'Histórico',cls:''});
+  if(resultado.status!=='cancelado')itens.push({key:'cancelar',label:'Cancelar',cls:'warn'});
+  itens.push({key:'excluir',label:'Excluir',cls:'danger'});
+  var menu=document.createElement('div');
+  menu.id='fut-actions-floating-menu';
+  menu.className='fut-actions-floating-menu';
+  menu.setAttribute('data-fut-id',id);
+  menu.setAttribute('role','menu');
+  menu.innerHTML=itens.map(function(item){return '<button type="button" role="menuitem" class="'+item.cls+'" onclick="event.stopPropagation();runFutAction(\''+item.key+'\',\''+id+'\')">'+item.label+'</button>';}).join('');
+  menu.onclick=function(ev){ev.stopPropagation();};
+  document.body.appendChild(menu);
+  var anchor=event.currentTarget,rect=anchor.getBoundingClientRect();
+  var menuWidth=156,left=Math.min(window.innerWidth-menuWidth-10,Math.max(10,rect.right-menuWidth));
+  var estimatedHeight=Math.min(260,itens.length*38+12);
+  var top=rect.bottom+6;
+  if(top+estimatedHeight>window.innerHeight-10)top=Math.max(10,rect.top-estimatedHeight-6);
+  menu.style.left=left+'px';menu.style.top=top+'px';
+  setTimeout(function(){document.addEventListener('click',handleFutActionsOutsideClick);},0);
+}
+
 function renderFuturos(){
+  closeFutActionsMenu();
   fillFuturoLoteSelects();
   fillFuturoPecuaristaSelect();
   var lotes=lotesDisponiveisB3();
@@ -11589,6 +11676,8 @@ function renderFuturos(){
     if(linked&&!canViewLot(linked))return false;
     return !c.loteId||loteMap[c.loteId]||!!linked;
   });
+  var contratosAtuais={};arr.forEach(function(c){contratosAtuais[c.id]=true;});
+  Object.keys(futSelectedContractIds).forEach(function(id){if(!contratosAtuais[id])delete futSelectedContractIds[id];});
   renderFutMonthDashboard(lotes,arr);
   var filtrados=arr.filter(function(c){
     var r=futuroResultado(c);
@@ -11605,8 +11694,10 @@ function renderFuturos(){
       });
     });
   });
-  var total={registros:filtrados.length,contratos:0,abertos:0,liquidados:0,arrobas:0,resultado:0};
-  filtrados.forEach(function(c){
+  var futTemSelecao=futSelectionCount()>0;
+  var baseCalculoFut=futTemSelecao?filtrados.filter(function(c){return !!futSelectedContractIds[c.id];}):filtrados;
+  var total={registros:baseCalculoFut.length,contratos:0,abertos:0,liquidados:0,arrobas:0,resultado:0};
+  baseCalculoFut.forEach(function(c){
     var r=futuroResultado(c);
     total.contratos+=r.qtdContratos||0;
     total.arrobas+=r.arrobas;
@@ -11616,7 +11707,7 @@ function renderFuturos(){
   });
   var futLotesUnicos={},futQtdLotes=0,futNecessidadeLotes=0,futFaturamentoLotes=0;
   var futAberturaPeso=0,futAberturaQtd=0,futLiquidacaoPeso=0,futLiquidacaoQtd=0;
-  filtrados.forEach(function(c){
+  baseCalculoFut.forEach(function(c){
     var r=futuroResultado(c);
     var qtdContrato=parseFloat(r.qtdContratos)||0;
     var qtdLiquidada=parseFloat(r.qtdLiquidada)||0;
@@ -11658,7 +11749,11 @@ function renderFuturos(){
     sum.innerHTML=dashboardCardsShellHtml('futuros','fut-summary',futCardKeys.map(function(key){return dashboardDraggableCardHtml('futuros',key,futCards[key]||'');}).join('')+dashboardAddCardHtml('futuros'));
   }
   var note=document.getElementById('fut-list-note');
-  if(note)note.textContent=filtrados.length+' de '+arr.length+' lançamento(s)';
+  if(note)note.textContent=filtrados.length+' de '+arr.length+' lançamento(s)'+(futTemSelecao?' · cálculos: '+baseCalculoFut.length+' selecionado(s)':'');
+  var selectionSummary=document.getElementById('fut-selection-summary');
+  if(selectionSummary)selectionSummary.textContent=futTemSelecao
+    ?baseCalculoFut.length+' contrato(s) selecionado(s). Somas e médias consideram somente a seleção.'
+    :'Nenhum contrato selecionado. Os totais consideram todos os contratos filtrados.';
   syncFutMobileControls();
   var list=document.getElementById('fut-list');
   var mobileList=document.getElementById('fut-mobile-list');
@@ -11666,7 +11761,7 @@ function renderFuturos(){
   var visibleCols=futVisibleCols();
   var head=document.getElementById('fut-table-head');
   if(head){
-    head.innerHTML=visibleCols.map(function(col){
+    head.innerHTML='<th class="fut-select-cell"><label class="table-selection-check" title="Selecionar todos os contratos visíveis"><input type="checkbox" id="fut-select-all" aria-label="Selecionar todos os contratos visíveis" onchange="toggleAllVisibleFutContracts(this.checked,event)"></label></th>'+visibleCols.map(function(col){
       var active=futSortState.key===col.key;
       var mark=active?(futSortState.dir==='asc'?'↑':'↓'):'';
       var title=col.key==='acoes'?'<span class="fut-table-sort">'+escHtml(col.label)+'</span>'
@@ -11678,8 +11773,9 @@ function renderFuturos(){
   }
   renderFutColumnsPanel();
   if(!filtrados.length){
-    list.innerHTML='<tr><td colspan="'+visibleCols.length+'" style="text-align:center;color:var(--text-3);padding:24px;">Nenhum contrato encontrado.</td></tr>';
+    list.innerHTML='<tr><td colspan="'+(visibleCols.length+1)+'" style="text-align:center;color:var(--text-3);padding:24px;">Nenhum contrato encontrado.</td></tr>';
     if(mobileList)mobileList.innerHTML='<div class="home-empty-small">Nenhum contrato encontrado.</div>';
+    renderFutTableTotal([],visibleCols);
     applyFutTableLayout();
     scheduleFutTableViewport();
     scheduleMobileSpreadsheetViewport();
@@ -11743,6 +11839,7 @@ function renderFuturos(){
       +((r.liquidacoes.length||(c.liquidacoesCanceladas||[]).length||(c.transferHistory||[]).length)?'<button class="fut-action" onclick="verLiquidacoesFuturo(\''+c.id+'\')">Histórico</button>':'')
       +(r.status!=='cancelado'?'<button class="fut-action warn" onclick="cancelarFuturo(\''+c.id+'\')">Cancelar</button>':'')
       +'<button class="fut-action danger" onclick="deletarFuturo(\''+c.id+'\')">Excluir</button>';
+    var desktopActions='<button type="button" class="fut-actions-dot" aria-label="Abrir ações do contrato" title="Ações" onclick="toggleFutActionsMenu(event,\''+c.id+'\')">&#8942;</button>';
     var cells={
       status:st,
       tipo:'<span class="strong">'+(r.operacao==='livre'?'Livre':'Hedge')+'</span>',
@@ -11756,9 +11853,9 @@ function renderFuturos(){
       codigo:'<span class="strong">'+contrato+'</span>',vencimento:mesContrato?'<span class="fut-contract-month '+classeMesContrato+'">'+escHtml(mesContrato)+'</span>':'<span class="muted">Sem vencimento</span>',lado:'<span class="fut-side-tag '+(r.lado==='compra'?'buy':'sell')+'">'+(r.lado==='compra'?'Compra':'Venda')+'</span>',
       qtdOriginal:fmtContratosB3(r.qtdContratos||0)+' ctr',aberto:fmtContratosB3(r.qtdAberta||0)+' ctr',liquidado:fmtContratosB3(r.qtdLiquidada||0)+' ctr',
       abertura:'<span class="money">'+abertura+'</span><div class="muted">'+vendaData+'</div>',liquidacao:'<span class="money">'+liq+'</span><div class="muted">'+liqData+'</div>',
-      resultadoRealizado:'<span class="money '+resClass+'">'+resultado+'</span>',resultadoAberto:'<span class="money">Em aberto</span>',acoes:actions
+      resultadoRealizado:'<span class="money '+resClass+'">'+resultado+'</span>',resultadoAberto:'<span class="money">Em aberto</span>',acoes:desktopActions
     };
-    rows.push('<tr>'+visibleCols.map(function(col){return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+cells[col.key]+'</td>';}).join('')+'</tr>');
+    rows.push('<tr data-fut-id="'+c.id+'" class="'+(futSelectedContractIds[c.id]?'row-selected':'')+'"><td class="fut-select-cell"><input type="checkbox" class="fut-row-select" aria-label="Selecionar contrato '+contrato+'"'+(futSelectedContractIds[c.id]?' checked':'')+' onclick="event.stopPropagation()" onchange="toggleFutContractSelection(\''+c.id+'\',this.checked,event)"></td>'+visibleCols.map(function(col){return '<td data-fut-col="'+col.key+'"'+futColumnStyle(col.key)+'>'+cells[col.key]+'</td>';}).join('')+'</tr>');
     var numeroLoteMobile=lote?escHtml(getNumeroLote(lote)||'—'):'—';
     cards.push('<details class="fut-mobile-card b3-mobile-reference-card">'
       +'<summary>'
@@ -11803,7 +11900,10 @@ function renderFuturos(){
   });
   list.innerHTML=rows.join('');
   if(mobileList){mobileList.innerHTML=cards.join('');applyB3MobileCardFields();}
-  renderFutTableTotal(registros,visibleCols);
+  var registrosCalculo=futTemSelecao?registros.filter(function(registro){return !!futSelectedContractIds[registro.c.id];}):registros;
+  renderFutTableTotal(registrosCalculo,visibleCols);
+  var futAll=document.getElementById('fut-select-all');
+  if(futAll){var selectedVisible=registros.filter(function(registro){return !!futSelectedContractIds[registro.c.id];}).length;futAll.checked=registros.length>0&&selectedVisible===registros.length;futAll.indeterminate=selectedVisible>0&&selectedVisible<registros.length;}
   applyFutTableLayout();
   scheduleFutTableViewport();
   scheduleMobileSpreadsheetViewport();
@@ -13765,6 +13865,57 @@ function setStatusTotal(id,value,cls){
   el.textContent=value;
   el.className='status-total-value '+(cls||'');
 }
+function statusSelectionCount(){return Object.keys(statusSelectedLoteIds).filter(function(id){return statusSelectedLoteIds[id];}).length;}
+function toggleStatusLoteSelection(id,checked,event){
+  if(event)event.stopPropagation();
+  if(checked)statusSelectedLoteIds[id]=true;else delete statusSelectedLoteIds[id];
+  var row=document.querySelector('#lote-list .status-row[data-lid="'+id+'"]');
+  if(row)row.classList.toggle('row-selected',!!checked);
+  applyStatusColumnFilters();
+}
+function toggleAllVisibleStatusLotes(checked,event){
+  if(event)event.stopPropagation();
+  document.querySelectorAll('#lote-list .status-row[data-lid]').forEach(function(row){
+    if(row.classList.contains('status-filtered-out')||row.style.display==='none')return;
+    var id=row.getAttribute('data-lid');
+    if(checked)statusSelectedLoteIds[id]=true;else delete statusSelectedLoteIds[id];
+    var input=row.querySelector('.status-row-select');
+    if(input)input.checked=!!checked;
+    row.classList.toggle('row-selected',!!checked);
+  });
+  applyStatusColumnFilters();
+}
+function clearStatusSelection(){statusSelectedLoteIds={};applyStatusColumnFilters();}
+function syncStatusSelectionControls(){
+  var visible=[],selectedVisible=0;
+  document.querySelectorAll('#lote-list .status-row[data-lid]').forEach(function(row){
+    var id=row.getAttribute('data-lid');
+    var checked=!!statusSelectedLoteIds[id];
+    var input=row.querySelector('.status-row-select');
+    if(input)input.checked=checked;
+    row.classList.toggle('row-selected',checked);
+    if(!row.classList.contains('status-filtered-out')&&row.style.display!=='none'){visible.push(row);if(checked)selectedVisible++;}
+  });
+  var all=document.getElementById('status-select-all');
+  if(all){all.checked=visible.length>0&&selectedVisible===visible.length;all.indeterminate=selectedVisible>0&&selectedVisible<visible.length;}
+  var count=statusSelectionCount();
+  document.querySelectorAll('[data-status-selection-count]').forEach(function(el){el.textContent=count?count+' selecionado(s)':'Selecionar';});
+}
+function futSelectionCount(){return Object.keys(futSelectedContractIds).filter(function(id){return futSelectedContractIds[id];}).length;}
+function toggleFutContractSelection(id,checked,event){
+  if(event)event.stopPropagation();
+  if(checked)futSelectedContractIds[id]=true;else delete futSelectedContractIds[id];
+  renderFuturosPreservingViewport();
+}
+function toggleAllVisibleFutContracts(checked,event){
+  if(event)event.stopPropagation();
+  document.querySelectorAll('#fut-list tr[data-fut-id]').forEach(function(row){
+    var id=row.getAttribute('data-fut-id');
+    if(checked)futSelectedContractIds[id]=true;else delete futSelectedContractIds[id];
+  });
+  renderFuturosPreservingViewport();
+}
+function clearFutSelection(){futSelectedContractIds={};renderFuturosPreservingViewport();}
 function setStatusSub(id,value){
   var el=document.getElementById(id);
   if(el)el.textContent=value||'';
@@ -13782,6 +13933,7 @@ function applyStatusColumnFilters(){
   var performanceParams=getParams();
   applyPerformanceTheme(performanceParams);
   var rows=document.querySelectorAll('#lote-list .status-row[data-lid]');
+  var selectedCount=statusSelectionCount(),usarSelecao=selectedCount>0,exibidos=0;
   var qtd=0,kmRodados=0,faturamento=0,capital=0,lucro=0,projCapital=0,projLucro=0,realCapital=0,realLucro=0,visiveis=0,prazoPeso=0,capitalPrazo=0,prazoSoma=0,prazoQtd=0,b3Travados=0,b3Total=0,b3Abertos=0,b3Liquidados=0;
   var quebraPctPeso=0,quebraKgPeso=0,rcExpectativaPeso=0,rcExpectativaQtd=0,rcRealizadoPeso=0,rcRealizadoQtd=0,consumoExpectativaPeso=0,consumoExpectativaQtd=0,consumoRealizadoPeso=0,consumoRealizadoQtd=0;
   var pesoOrigemPeso=0,pesoChegadaPeso=0,gmdOrigemPeso=0,gmdChegadaPeso=0,gmcOrigemPeso=0,gmcChegadaPeso=0,eficienciaPeso=0,eficienciaChegadaPeso=0,atProdChegadaPeso=0,atProdOrigemPeso=0,custoAtChegadaPeso=0,custoAtOrigemPeso=0;
@@ -13791,6 +13943,8 @@ function applyStatusColumnFilters(){
     row.classList.toggle('status-filtered-out',!show);
     row.style.display=show?'':'none';
     if(!show)return;
+    exibidos++;
+    if(usarSelecao&&!statusSelectedLoteIds[row.getAttribute('data-lid')])return;
     visiveis++;
     var qtdRow=parseFloat(row.getAttribute('data-qtd-raw'))||0;
     qtd+=qtdRow;
@@ -13896,6 +14050,7 @@ function applyStatusColumnFilters(){
   setStatusTotal('status-total-custo-at-origem',custoAtOrigemQtd>0?fmt(custoAtOrigemPeso/custoAtOrigemQtd)+'/@':'—');
   setStatusTotal('status-total-custo-at-chegada',custoAtChegadaQtd>0?fmt(custoAtChegadaPeso/custoAtChegadaQtd)+'/@':'—');
   setStatusFooterValue('status','TOTAL');
+  setStatusFooterValue('select',usarSelecao?visiveis+' sel.':'Todos');
   setStatusFooterValue('numeroLote',visiveis+' lote(s)');
   setStatusFooterValue('lote','—');
   setStatusFooterValue('b3',fmtContratosB3(b3Travados)+'/'+fmtContratosLoteB3(b3Total)+' ctr');
@@ -13931,11 +14086,12 @@ function applyStatusColumnFilters(){
   setStatusFooterValue('custoAtOrigem',custoAtOrigemQtd>0?fmt(custoAtOrigemPeso/custoAtOrigemQtd)+'/@':'—','money');
   setStatusSub('status-total-prazo',prazoMedio>0?'Prazo médio: '+prazoMedio.toLocaleString('pt-BR',{maximumFractionDigits:0})+' dias':'Prazo médio: —');
   var note=document.getElementById('status-filter-count');
-  if(note)note.textContent=visiveis+' lote(s) exibido(s)';
+  if(note)note.textContent=exibidos+' lote(s) exibido(s)'+(usarSelecao?' · '+visiveis+' selecionado(s)':'');
   var sheetCount=document.getElementById('status-sheet-count');
-  if(sheetCount)sheetCount.textContent=visiveis+' de '+rows.length+' lançamento(s)';
+  if(sheetCount)sheetCount.textContent=exibidos+' de '+rows.length+' lançamento(s)'+(usarSelecao?' · cálculos: '+visiveis+' selecionado(s)':'');
   var mobileCount=document.getElementById('status-mobile-count');
-  if(mobileCount)mobileCount.textContent=visiveis+' lotes exibidos';
+  if(mobileCount)mobileCount.textContent=exibidos+' lotes exibidos';
+  syncStatusSelectionControls();
   // Reaplica o layout depois dos totais, como no rodape da B3.
   applyStatusGridTemplate();
 }
@@ -13957,7 +14113,7 @@ function getStatusColVisible(){
   var saved={};
   try{saved=JSON.parse(localStorage.getItem(STATUS_COL_VISIBLE_KEY)||'{}')||{};}catch(e){saved={};}
   var out={};
-  STATUS_COLS.forEach(function(c){out[c.key]=saved[c.key]!==false;});
+  STATUS_COLS.forEach(function(c){out[c.key]=c.fixed?true:saved[c.key]!==false;});
   return out;
 }
 function getStatusColWidths(){
@@ -13999,7 +14155,7 @@ function statusGridTemplate(){
 function statusComputedColWidth(c,widths){
   widths=widths||getStatusColWidths();
   var w=parseFloat(widths[c.key]||c.w)||c.w;
-  return Math.max(c.key==='status'?126:(c.key==='numeroLote'?128:78),w);
+  return Math.max(c.key==='select'?42:(c.key==='status'?126:(c.key==='numeroLote'?128:78)),w);
 }
 function statusGridWidth(){
   var visible=getStatusColVisible();
@@ -14140,7 +14296,7 @@ function setStatusColumnVisible(key,checked){
 }
 function setStatusAllColumns(checked){
   var visible={};
-  STATUS_COLS.forEach(function(col){visible[col.key]=!!checked;});
+  STATUS_COLS.forEach(function(col){visible[col.key]=col.fixed?true:!!checked;});
   if(!checked){visible.status=true;visible.lote=true;}
   try{localStorage.setItem(STATUS_COL_VISIBLE_KEY,JSON.stringify(visible));}catch(e){}
   statusColumnsPanelOpen=true;
@@ -14207,6 +14363,8 @@ function renderLotes(){
   var ST_COLORS={'embarque':'#C9A24E','confinando':'var(--green)','escalado':'var(--accent)','abatido':'#515640','recebido':'var(--text-3)'};
   var todosLotes=getLotes();
   if(garantirNumerosLote(todosLotes))saveLotes(todosLotes);
+  var lotesAtuais={};todosLotes.forEach(function(lote){lotesAtuais[lote.id]=true;});
+  Object.keys(statusSelectedLoteIds).forEach(function(id){if(!lotesAtuais[id])delete statusSelectedLoteIds[id];});
   syncStatusPillHeadCounts(todosLotes.filter(function(lote){return canViewLot(lote);}));
   var lotes=todosLotes.filter(function(l){
     if(!canViewLot(l))return false;
@@ -14273,6 +14431,7 @@ function renderLotes(){
   }
   function statusHeaderHtml(){
     return STATUS_COLS.map(function(c){
+      if(c.key==='select')return '<div class="status-head-cell status-select-cell" data-status-col="select"><input type="checkbox" id="status-select-all" aria-label="Selecionar todos os lotes visíveis" onchange="toggleAllVisibleStatusLotes(this.checked,event)"></div>';
       var mark=statusSortState.key===c.key?(statusSortState.dir==='asc'?'↑':'↓'):'';
       return '<div class="status-head-cell '+statusColClass(c.key)+'" data-col="'+c.key+'" onclick="setStatusSort(\''+c.key+'\')">'
         +escHtml(c.label)
@@ -14295,6 +14454,7 @@ function renderLotes(){
       lucro:'R$',rentProj:'%',rentmesProj:'%',rentReal:'%',rentmesReal:'%',rcExpectativa:'%',rcRealizado:'%',consumoMedioExpectativa:'%',consumoMedioRealizado:'%',pesoOrigem:'kg',pesoChegada:'kg',gmdOrigem:'kg/dia',gmdChegada:'kg/dia',gmcOrigem:'kg/dia',gmcChegada:'kg/dia',eficiencia:'kg MS/@ origem',eficienciaChegada:'kg MS/@ cheg.',atProdChegada:'@',atProdOrigem:'@',custoAtChegada:'R$/@',custoAtOrigem:'R$/@'
     };
     return STATUS_COLS.map(function(c){
+      if(c.key==='select')return '<div class="status-filter-cell status-select-cell" data-status-col="select"><label class="table-selection-check" title="Selecionar todos os lotes visíveis"><input type="checkbox" id="status-select-all" aria-label="Selecionar todos os lotes visíveis" onchange="toggleAllVisibleStatusLotes(this.checked,event)"></label></div>';
       if(c.key==='status')return filterStatus(c);
       if(c.key==='b3')return filterB3(c);
       return filterInput(c,placeholders[c.key]||c.label);
@@ -14308,7 +14468,7 @@ function renderLotes(){
       +'<div class="status-column-panel-sub">Selecione quais colunas deseja ver na tabela de Status.</div>'
       +statusFreezeOptionsHtml()
       +'<div class="columns-select-tools"><label class="columns-select-all"><input type="checkbox"'+(allSelected?' checked':'')+' onchange="setStatusAllColumns(this.checked)"><span>Selecionar tudo</span></label></div>'
-      +'<div class="status-column-options">'+groupedColumnOptionsHtml(STATUS_COLS,HOME_STATUS_COLUMN_GROUPS,function(c){
+      +'<div class="status-column-options">'+groupedColumnOptionsHtml(STATUS_COLS.filter(function(c){return !c.fixed;}),HOME_STATUS_COLUMN_GROUPS,function(c){
         var checked=visible[c.key]!==false?' checked':'';
         return '<label class="status-column-option"><input type="checkbox"'+checked+' onchange="setStatusColumnVisible(\''+c.key+'\',this.checked)"> <span>'+escHtml(c.label)+'</span></label>';
       })+'</div>'
@@ -14319,7 +14479,7 @@ function renderLotes(){
     return '<div class="status-viewbar">'
       +'<div class="status-sort-tools"><button type="button" class="status-view-switch" onclick="setStatusDesktopView(\''+(kanban?'table':'kanban')+'\')">'+(kanban?'Tabela':'Kanban')+'</button><span>'+(kanban?'Arraste os cards para mudar a etapa.':'Clique no título do filtro para ordenar ↑↓')+'</span></div>'
       +'<div class="status-view-actions">'
-        +(kanban?'<button type="button" class="status-view-btn" onclick="window.openStatusMobileColumns(event)">Colunas visíveis</button><button type="button" class="status-view-btn" onclick="window.openStatusMobileSort(event)">Ordenar</button>':'<button type="button" class="status-view-btn" onclick="limparStatusColumnFilters()">Limpar filtros</button><button type="button" class="status-view-btn" onclick="toggleStatusColumnsPanel()">Colunas visíveis</button>'+statusColumnPanelHtml())
+        +(kanban?'<button type="button" class="status-view-btn" onclick="window.openStatusMobileColumns(event)">Colunas visíveis</button><button type="button" class="status-view-btn" onclick="window.openStatusMobileSort(event)">Ordenar</button>':'<button type="button" class="status-view-btn" onclick="clearStatusSelection()">Limpar seleção</button><button type="button" class="status-view-btn" onclick="limparStatusColumnFilters()">Limpar filtros</button><button type="button" class="status-view-btn" onclick="toggleStatusColumnsPanel()">Colunas visíveis</button>'+statusColumnPanelHtml())
       +'</div>'
     +'</div>';
   }
@@ -14623,7 +14783,9 @@ function renderLotes(){
         +'<span data-status-mobile-field="vendedor" title="'+escHtml(vendedorVal)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>'+escHtml(vendedorVal)+'</span>'
       +'</div>'
     +'</div>';
-    return '<div class="status-row'+(idx%2?' status-row-alt':'')+'" style="grid-template-columns:'+statusGridTemplate()+'" data-lid="'+l.id+'" data-lote-seq="'+escHtml(numeroLote)+'" data-status="'+(l.status||'embarque')+'" draggable="true"'+attrs+'>'
+    var selectCell='<div class="status-cell status-select-cell" data-status-col="select"><input type="checkbox" class="status-row-select" aria-label="Selecionar lote '+escHtml(numeroLote)+'"'+(statusSelectedLoteIds[l.id]?' checked':'')+' onclick="event.stopPropagation()" onchange="toggleStatusLoteSelection(\''+l.id+'\',this.checked,event)"></div>';
+    return '<div class="status-row'+(idx%2?' status-row-alt':'')+(statusSelectedLoteIds[l.id]?' row-selected':'')+'" style="grid-template-columns:'+statusGridTemplate()+'" data-lid="'+l.id+'" data-lote-seq="'+escHtml(numeroLote)+'" data-status="'+(l.status||'embarque')+'" draggable="true"'+attrs+'>'
+      +selectCell
       +statusLabel
       +statusCell('ano',anoVal,'muted')
       +statusCellHtml('confinamento',boitelTagHtml(confinamento),confinamento,'muted')
